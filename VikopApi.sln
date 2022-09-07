@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32819.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VikopApi.Domain", "VikopApi.Domain\VikopApi.Domain.csproj", "{C85D2654-6D35-4727-8A5A-BC59D99BE02F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C85D2654-6D35-4727-8A5A-BC59D99BE02F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C85D2654-6D35-4727-8A5A-BC59D99BE02F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C85D2654-6D35-4727-8A5A-BC59D99BE02F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C85D2654-6D35-4727-8A5A-BC59D99BE02F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5B8410A1-93D3-45E6-ACAB-31A08EEA4A31}
+	EndGlobalSection
+EndGlobal
