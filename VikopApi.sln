@@ -5,6 +5,17 @@ VisualStudioVersion = 17.3.32819.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VikopApi.Domain", "VikopApi.Domain\VikopApi.Domain.csproj", "{C85D2654-6D35-4727-8A5A-BC59D99BE02F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VikopApi.Database", "VikopApi.Database\VikopApi.Database.csproj", "{E2F4B2FB-8EBD-422C-AE5E-116C583EC183}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B7FCC902-754E-440C-B700-473F10D0F2C5}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VikopApi.Api", "VikopApi.Api\VikopApi.Api.csproj", "{DC7BE535-3615-448E-8DAD-4C282ACCADE8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VikopApi.Application", "VikopApi.Application\VikopApi.Application.csproj", "{3EBEE7A9-08C9-4F8E-A2BD-3CE55D0C510D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +26,18 @@ Global
 		{C85D2654-6D35-4727-8A5A-BC59D99BE02F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C85D2654-6D35-4727-8A5A-BC59D99BE02F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C85D2654-6D35-4727-8A5A-BC59D99BE02F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2F4B2FB-8EBD-422C-AE5E-116C583EC183}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2F4B2FB-8EBD-422C-AE5E-116C583EC183}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2F4B2FB-8EBD-422C-AE5E-116C583EC183}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2F4B2FB-8EBD-422C-AE5E-116C583EC183}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC7BE535-3615-448E-8DAD-4C282ACCADE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC7BE535-3615-448E-8DAD-4C282ACCADE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC7BE535-3615-448E-8DAD-4C282ACCADE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC7BE535-3615-448E-8DAD-4C282ACCADE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EBEE7A9-08C9-4F8E-A2BD-3CE55D0C510D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EBEE7A9-08C9-4F8E-A2BD-3CE55D0C510D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EBEE7A9-08C9-4F8E-A2BD-3CE55D0C510D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EBEE7A9-08C9-4F8E-A2BD-3CE55D0C510D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
