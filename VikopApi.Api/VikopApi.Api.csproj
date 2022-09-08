@@ -25,4 +25,8 @@
     <ProjectReference Include="..\VikopApi.Database\VikopApi.Database.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\images\profile-pictures\placeholder.jpg" />
+  </ItemGroup>
+
 </Project>
