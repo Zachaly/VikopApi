@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
+using System.Text;
 using VikopApi.Database;
 using VikopApi.Domain.Models;
 
@@ -19,7 +22,26 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequireUppercase = true;
 }).
-AddEntityFrameworkStores<AppDbContext>();
+AddEntityFrameworkStores<AppDbContext>().
+AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(config => {
+    config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(config =>
+{
+    var bytes = Encoding.UTF8.GetBytes(builder.Configuration["Auth:SecretKey"]);
+    var key = new SymmetricSecurityKey(bytes);
+
+    config.SaveToken = true;
+    config.RequireHttpsMetadata = false;
+    config.TokenValidationParameters = new TokenValidationParameters
+    {
+        IssuerSigningKey = key,
+        ValidIssuer = builder.Configuration["Auth:Issuer"],
+        ValidAudience = builder.Configuration["Auth:Audience"],
+    };
+});
 
 builder.Services.AddApplicationInfrastucture();
 builder.Services.AddApplicationServices();

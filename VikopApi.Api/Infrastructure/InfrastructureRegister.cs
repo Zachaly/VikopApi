@@ -1,4 +1,5 @@
-﻿using VikopApi.Database;
+﻿using VikopApi.Api.Infrastructure.AuthManager;
+using VikopApi.Database;
 using VikopApi.Domain.Infractructure;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -10,7 +11,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         public static IServiceCollection AddApplicationInfrastucture(this IServiceCollection @this)
         {
+            @this.AddHttpContextAccessor();
             @this.AddScoped<IApplicationUserManager, ApplicationUserManager>();
+            @this.AddScoped<IAuthManager, AuthManager>();
             return @this;
         }
     }
