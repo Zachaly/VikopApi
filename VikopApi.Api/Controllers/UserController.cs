@@ -78,8 +78,10 @@ namespace VikopApi.Api.Controllers
             }
 
             var token = await _authManager.GetToken(user);
-            
-            return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+
+            var tokenJson = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return Ok(tokenJson);
         }
 
         /// <summary>
@@ -87,7 +89,7 @@ namespace VikopApi.Api.Controllers
         /// </summary>
         [HttpGet]
         [Authorize]
-        public IActionResult Id() 
-            => Ok(_authManager.GetCurrentUserId);
+        public IActionResult Id() => Ok(_authManager.GetCurrentUserId());
+        
     }
 }
