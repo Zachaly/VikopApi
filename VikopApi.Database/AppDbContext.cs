@@ -6,6 +6,8 @@ namespace VikopApi.Database
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Finding> Findings { get; set; }
+
         public AppDbContext(DbContextOptions options) : base(options)
         {
 

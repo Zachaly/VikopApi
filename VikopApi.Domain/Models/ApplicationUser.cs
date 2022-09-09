@@ -7,5 +7,6 @@ namespace VikopApi.Domain.Models
     {
         public string ProfilePicture { get; set; }
         public Rank Rank { get; set; }
+        public ICollection<Finding> Findings { get; set; }
     }
 }

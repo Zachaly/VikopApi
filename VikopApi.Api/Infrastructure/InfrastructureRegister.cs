@@ -14,6 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             @this.AddHttpContextAccessor();
             @this.AddScoped<IApplicationUserManager, ApplicationUserManager>();
+            @this.AddScoped<IFindingManager, FindingManager>();
             @this.AddScoped<IAuthManager, AuthManager>();
             @this.AddScoped<IFileManager, FileManager>();
             return @this;

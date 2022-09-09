@@ -18,7 +18,8 @@ namespace VikopApi.Database
         }
 
         public T GetUserById<T>(string id, Func<ApplicationUser, T> selector)
-            => _dbContext.Users.Where(user => user.Id == id).Select(selector).FirstOrDefault();
+            => _dbContext.Users.Where(user => user.Id == id).
+                Select(selector).FirstOrDefault();
 
         public IEnumerable<T> GetUsers<T>(Func<ApplicationUser, T> selector)
             => _dbContext.Users.Select(selector);

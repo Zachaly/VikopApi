@@ -31,7 +31,8 @@ namespace VikopApi.Api.Controllers
             {
                 UserName = model.Username,
                 Email = model.Email,
-                ProfilePicture = "placeholder.jpg"
+                ProfilePicture = "placeholder.jpg",
+                Rank = 0
             };
 
             await _userManager.CreateAsync(user, model.Password);

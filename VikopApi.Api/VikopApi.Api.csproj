@@ -29,4 +29,8 @@
     <None Include="wwwroot\images\profile-pictures\placeholder.jpg" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\finding-images\" />
+  </ItemGroup>
+
 </Project>
