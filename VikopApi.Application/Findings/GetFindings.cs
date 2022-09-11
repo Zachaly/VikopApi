@@ -18,7 +18,9 @@ namespace VikopApi.Application.Findings
                 Description = finding.Description,
                 Id = finding.Id,
                 Link = finding.Link,
-                Title = finding.Title
+                Title = finding.Title,
+                CommentCount = finding.Comments.Count,
+                Created = finding.Created
             }).OrderByDescending(finding => finding.Id);
 
         public class FindingModel
@@ -28,6 +30,8 @@ namespace VikopApi.Application.Findings
             public string Description { get; set; }
             public string CreatorName { get; set; }
             public string Link { get; set; }
+            public int CommentCount { get; set; }
+            public DateTime Created { get; set; }
         }
     }
 }

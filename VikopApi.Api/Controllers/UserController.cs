@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
@@ -24,15 +25,34 @@ namespace VikopApi.Api.Controllers
         /// <summary>
         /// Creates new user with given data
         /// </summary>
+        /// <response code="200">
+        /// Id of new user
+        /// </response>
+        /// <response code="200">
+        /// Lists of validation errors:
+        /// * Email
+        /// * Password
+        /// * Username
+        /// </response>
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterModel model)
+        public async Task<IActionResult> Register(
+            RegisterModel model,
+            [FromServices] IValidator<RegisterModel> validator)
         {
+            var validation = validator.Validate(model);
+
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.Errors.Select(error => error.ErrorMessage));
+            }
+
             var user = new ApplicationUser
             {
                 UserName = model.Username,
                 Email = model.Email,
                 ProfilePicture = "placeholder.jpg",
-                Rank = 0
+                Rank = 0,
+                Created = DateTime.Now
             };
 
             await _userManager.CreateAsync(user, model.Password);
@@ -57,11 +77,6 @@ namespace VikopApi.Api.Controllers
         /// <summary>
         /// User login
         /// </summary>
-        /// <param name="loginModel">
-        /// Consists of: 
-        /// * email
-        /// * password
-        /// </param>
         /// <returns>JWT Token</returns>
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel loginModel)

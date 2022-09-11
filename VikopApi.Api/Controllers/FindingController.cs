@@ -12,6 +12,17 @@ namespace VikopApi.Api.Controllers
         /// <summary>
         /// Gets all findings
         /// </summary>
+        /// <response code="200">
+        /// List of findings containing:
+        /// * id
+        /// * title
+        /// * description
+        /// * creatorName
+        /// * creatorId
+        /// * link
+        /// * commentCount
+        /// * created - creation date
+        /// </response>
         [HttpGet]
         public IActionResult GetAll([FromServices] GetFindings getFindings)
             => Ok(getFindings.Execute());
@@ -19,6 +30,23 @@ namespace VikopApi.Api.Controllers
         /// <summary>
         /// Gets finding with given id
         /// </summary>
+        /// <response code="200">
+        /// Finding model:
+        /// * id
+        /// * title
+        /// * description
+        /// * creatorName
+        /// * creatorId
+        /// * link
+        /// * commentCount
+        /// * created - creation date
+        /// * comments: 
+        ///     - content
+        ///     - created
+        ///     - id
+        ///     - creatorName
+        ///     - creatorId
+        /// </response>
         [HttpGet("{id}")]
         public IActionResult Get(int id, [FromServices] GetFinding getFinding)
             => Ok(getFinding.Execute(id));

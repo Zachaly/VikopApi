@@ -1,3 +1,5 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -5,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
+using VikopApi.Api.Validators;
 using VikopApi.Database;
 using VikopApi.Domain.Models;
 
@@ -45,6 +48,9 @@ builder.Services.AddAuthentication(config => {
 
 builder.Services.AddApplicationInfrastucture();
 builder.Services.AddApplicationServices();
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
 
 builder.Services.AddControllers();
 

@@ -10,5 +10,7 @@ namespace VikopApi.Domain.Models
         public string Picture { get; set; }
         public string CreatorId { get; set; }
         public ApplicationUser Creator { get; set; }
+        public DateTime Created { get; set; }
+        public ICollection<FindingComment> Comments { get; set; }
     }
 }

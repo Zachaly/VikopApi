@@ -18,7 +18,8 @@ namespace VikopApi.Application.Findings
                 Title = request.Title,
                 Description = request.Description,
                 Link = request.Link,
-                Picture = request.Picture
+                Picture = request.Picture,
+                Created = DateTime.Now,
             });
 
         public class Request

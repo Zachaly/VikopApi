@@ -18,7 +18,17 @@ namespace VikopApi.Application.Findings
                 Description = finding.Description,
                 Id = finding.Id,
                 Link = finding.Link,
-                Title = finding.Title
+                Title = finding.Title,
+                Created = finding.Created,
+                Comments = finding.Comments.Select(comment => comment.Comment)
+                .Select(comment => new CommentModel
+                {
+                    Content = comment.Content,
+                    Created = comment.Created,
+                    CreatorId = comment.CreatorId,
+                    CreatorName = comment.Creator.UserName,
+                    Id = comment.Id
+                }).OrderByDescending(comment => comment.Created)
             });
 
         public class Response
@@ -28,6 +38,17 @@ namespace VikopApi.Application.Findings
             public string Description { get; set; }
             public string CreatorName { get; set; }
             public string Link { get; set; }
+            public DateTime Created { get; set; }
+            public IEnumerable<CommentModel> Comments { get; set; }
+        }
+
+        public class CommentModel
+        {
+            public int Id { get; set; }
+            public string CreatorId { get; set; }
+            public string CreatorName { get; set; }
+            public string Content { get; set; }
+            public DateTime Created { get; set; }
         }
     }
 }

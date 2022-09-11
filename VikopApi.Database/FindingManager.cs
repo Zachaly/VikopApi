@@ -21,12 +21,16 @@ namespace VikopApi.Database
         }
 
         public T GetFindingById<T>(int id, Func<Finding, T> selector)
-            => _dbContext.Findings.Include(finding => finding.Creator).
-                Where(finding => finding.Id == id).
-                Select(selector).FirstOrDefault();
+            => _dbContext.Findings.Include(finding => finding.Creator)
+                .Include(finding => finding.Comments)
+                .ThenInclude(comment => comment.Comment)
+                .ThenInclude(comment => comment.Creator)
+                .Where(finding => finding.Id == id)
+                .Select(selector).FirstOrDefault();
 
         public IEnumerable<T> GetFindings<T>(Func<Finding, T> selector)
-            => _dbContext.Findings.Include(finding => finding.Creator).
-                Select(selector);
+            => _dbContext.Findings.Include(finding => finding.Creator)
+                .Include(finding => finding.Comments)
+                .Select(selector);
     }
 }
