@@ -22,6 +22,12 @@ namespace VikopApi.Database
 
         public async Task<bool> AddFindingComment(int commentId, int findingId)
         {
+            if(!_dbContext.Findings.Any(finding => finding.Id == findingId) || 
+                !_dbContext.Comments.Any(comment => comment.Id == commentId))
+            {
+                throw new DbUpdateException("Comment or finding with given id does not exists!");
+            }
+
             _dbContext.FindingComments.Add(new FindingComment 
             { 
                 CommentId = commentId,
