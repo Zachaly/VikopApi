@@ -12,5 +12,6 @@ namespace VikopApi.Domain.Models
         public ApplicationUser Creator { get; set; }
         public DateTime Created { get; set; }
         public ICollection<FindingComment> Comments { get; set; }
+        public ICollection<FindingReaction> Reactions { get; set; }
     }
 }

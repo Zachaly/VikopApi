@@ -8,5 +8,6 @@ namespace VikopApi.Domain.Models
         public ApplicationUser Creator { get; set; }
         public string Content { get; set; }
         public DateTime Created { get; set; }
+        public ICollection<CommentReaction> Reactions { get; set; }
     }
 }

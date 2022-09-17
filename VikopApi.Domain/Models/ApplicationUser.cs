@@ -10,5 +10,7 @@ namespace VikopApi.Domain.Models
         public ICollection<Finding> Findings { get; set; }
         public DateTime Created { get; set; }
         public ICollection<Comment> Comments { get; set; }
+        public ICollection<FindingReaction> FindingReactions { get; set; }
+        public ICollection<CommentReaction> CommentReactions { get; set; }
     }
 }

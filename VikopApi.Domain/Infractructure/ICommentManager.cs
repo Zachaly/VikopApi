@@ -4,8 +4,11 @@ namespace VikopApi.Domain.Infractructure
 {
     public interface ICommentManager
     {
-        public Task<bool> AddComment(Comment comment);
-        public Task<bool> AddFindingComment(int commentId, int findingId);
-        public T GetCommentById<T>(int id, Func<Comment, T> selector);
+        Task<bool> AddComment(Comment comment);
+        Task<bool> AddFindingComment(int commentId, int findingId);
+        T GetCommentById<T>(int id, Func<Comment, T> selector);
+        Task<bool> AddReaction(CommentReaction reaction);
+        Task<bool> DeleteReaction(int commentId, string userId);
+        Task<bool> ChangeReaction(CommentReaction newReaction);
     }
 }

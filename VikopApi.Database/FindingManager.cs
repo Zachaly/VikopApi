@@ -20,6 +20,45 @@ namespace VikopApi.Database
             return await _dbContext.SaveChangesAsync() > 0;
         }
 
+        public async Task<bool> AddReaction(FindingReaction reaction)
+        {
+            if(GetReaction(reaction.UserId, reaction.FindingId) != null)
+            {
+                return false;
+            }
+
+            _dbContext.FindingReactions.Add(reaction);
+
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
+
+        private FindingReaction GetReaction(string userId, int findingId)
+            => _dbContext.FindingReactions
+                .FirstOrDefault(reaction => reaction.FindingId == findingId && reaction.UserId == userId);
+
+        public async Task<bool> ChangeReaction(FindingReaction newReaction)
+        {
+            var originalReaction = GetReaction(newReaction.UserId, newReaction.FindingId);
+
+            if(originalReaction is null)
+            {
+                return false;
+            }
+
+            originalReaction.Reaction = newReaction.Reaction;
+
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> DeleteReaction(int findingId, string userId)
+        {
+            var reaction = GetReaction(userId, findingId);
+
+            _dbContext.FindingReactions.Remove(reaction);
+
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
+
         public T GetFindingById<T>(int id, Func<Finding, T> selector)
             => _dbContext.Findings.Include(finding => finding.Creator)
                 .Include(finding => finding.Comments)
