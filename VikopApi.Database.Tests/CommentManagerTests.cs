@@ -11,6 +11,9 @@ namespace VikopApi.Database.Tests
             _commentManager = new CommentManager(_dbContext);
         }
 
+        private int SumReactions(IEnumerable<CommentReaction> reactions)
+            => reactions.Sum(reaction => (int)reaction.Reaction);
+
         [Fact]
         public void Get_Comment_By_Id()
         {
@@ -19,6 +22,8 @@ namespace VikopApi.Database.Tests
             Assert.Equal(5, comment.Id);
             Assert.Equal("comment5", comment.Content);
             Assert.Equal("3", comment.CreatorId);
+            Assert.Equal(3, comment.Reactions.Count());
+            Assert.Equal(-1, SumReactions(comment.Reactions));
         }
 
         [Fact]
@@ -88,6 +93,104 @@ namespace VikopApi.Database.Tests
         public async Task Add_Invalid_Finding_Comment()
         {
             await Assert.ThrowsAsync<DbUpdateException>(async () => await _commentManager.AddFindingComment(21, 37));
+        }
+
+        [Fact]
+        public async Task Add_Reaction()
+        {
+            var reaction = new CommentReaction
+            {
+                CommentId = 1,
+                UserId = "1",
+                Reaction = Reaction.Positive
+            };
+
+            var res = await _commentManager.AddReaction(reaction);
+
+            var comment = _dbContext.Comments.Include(x => x.Reactions).FirstOrDefault(x => x.Id == 1);
+
+            Assert.True(res);
+            Assert.Equal(2, comment.Reactions.Count());
+            Assert.Equal(0, SumReactions(comment.Reactions));
+        }
+
+        [Fact]
+        public async Task Add_Existent_Reaction()
+        {
+            var reaction = new CommentReaction
+            {
+                CommentId = 1,
+                UserId = "2",
+                Reaction = Reaction.Positive
+            };
+
+            var res = await _commentManager.AddReaction(reaction);
+
+            var comment = _dbContext.Comments.Include(x => x.Reactions).FirstOrDefault(x => x.Id == 1);
+
+            Assert.False(res);
+            Assert.Single(comment.Reactions);
+            Assert.Equal(-1, SumReactions(comment.Reactions));
+        }
+
+        [Fact]
+        public async Task Change_Reaction()
+        {
+            var reaction = new CommentReaction
+            {
+                CommentId = 5,
+                UserId = "3",
+                Reaction = Reaction.Positive
+            };
+
+            var res = await _commentManager.ChangeReaction(reaction);
+
+            var comment = _dbContext.Comments.Include(x => x.Reactions).FirstOrDefault(x => x.Id == 5);
+
+            Assert.True(res);
+            Assert.Equal(3, comment.Reactions.Count());
+            Assert.Equal(1, SumReactions(comment.Reactions));
+        }
+
+        [Fact]
+        public async Task Change_Nonexistent_Reaction()
+        {
+            var reaction = new CommentReaction
+            {
+                CommentId = 1,
+                UserId = "3",
+                Reaction = Reaction.Positive
+            };
+
+            var res = await _commentManager.ChangeReaction(reaction);
+
+            var comment = _dbContext.Comments.Include(x => x.Reactions).FirstOrDefault(x => x.Id == 1);
+
+            Assert.False(res);
+            Assert.Single(comment.Reactions);
+            Assert.Equal(-1, SumReactions(comment.Reactions));
+        }
+
+        [Fact]
+        public async Task Delete_Reaction()
+        {
+            var res = await _commentManager.DeleteReaction(1, "2");
+
+            var comment = _dbContext.Comments.Include(x => x.Reactions).FirstOrDefault(x => x.Id == 1);
+
+            Assert.True(res);
+            Assert.Empty(comment.Reactions);
+        }
+
+        [Fact]
+        public async Task Delete_Nonexistent_Reaction()
+        {
+            var res = await _commentManager.DeleteReaction(1, "1");
+
+            var comment = _dbContext.Comments.Include(x => x.Reactions).FirstOrDefault(x => x.Id == 1);
+
+            Assert.True(res);
+            Assert.Single(comment.Reactions);
         }
     }
 }

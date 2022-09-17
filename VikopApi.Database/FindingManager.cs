@@ -54,6 +54,11 @@ namespace VikopApi.Database
         {
             var reaction = GetReaction(userId, findingId);
 
+            if(reaction is null)
+            {
+                return true;
+            }
+
             _dbContext.FindingReactions.Remove(reaction);
 
             return await _dbContext.SaveChangesAsync() > 0;
@@ -64,12 +69,16 @@ namespace VikopApi.Database
                 .Include(finding => finding.Comments)
                 .ThenInclude(comment => comment.Comment)
                 .ThenInclude(comment => comment.Creator)
+                .Include(finding => finding.Comments)
+                .ThenInclude(comment => comment.Comment)
+                .ThenInclude(comment => comment.Reactions)
                 .Where(finding => finding.Id == id)
                 .Select(selector).FirstOrDefault();
 
         public IEnumerable<T> GetFindings<T>(Func<Finding, T> selector)
             => _dbContext.Findings.Include(finding => finding.Creator)
                 .Include(finding => finding.Comments)
+                .Include(finding => finding.Reactions)
                 .Select(selector);
     }
 }

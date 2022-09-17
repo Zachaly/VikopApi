@@ -23,6 +23,9 @@ namespace VikopApi.Database.Tests
             Assert.Contains(findings, finding => finding.Id == 3 && finding.Comments.Count() == 3);
         }
 
+        private int SumReactions(IEnumerable<FindingReaction> reactions)
+            => reactions.Sum(reaction => (int)reaction.Reaction);
+
         [Fact]
         public void Get_Finding_By_Id()
         {
@@ -32,6 +35,8 @@ namespace VikopApi.Database.Tests
             Assert.Equal("finding1", finding.Title);
             Assert.Equal("user1", finding.Creator.UserName);
             Assert.Single(finding.Comments);
+            Assert.Equal(3, finding.Reactions.Count());
+            Assert.Equal(1, SumReactions(finding.Reactions));
         }
 
         [Fact]
@@ -72,6 +77,112 @@ namespace VikopApi.Database.Tests
             var finding = new Finding();
 
             await Assert.ThrowsAsync<DbUpdateException>(async () => await _findingManager.AddFinding(finding));
+        }
+
+        [Fact]
+        public async Task Add_Reaction()
+        {
+            var reaction = new FindingReaction
+            {
+                FindingId = 3,
+                UserId = "2",
+                Reaction = Reaction.Positive
+            };
+
+            var res = await _findingManager.AddReaction(reaction);
+
+            var finding = _dbContext.Findings.Include(finding => finding.Reactions)
+                .FirstOrDefault(finding => finding.Id == 3);
+
+            Assert.True(res);
+            Assert.Equal(3, finding.Reactions.Count());
+            Assert.Equal(3, SumReactions(finding.Reactions));
+        }
+
+        [Fact]
+        public async Task Add_Existent_Reaction()
+        {
+            var reaction = new FindingReaction
+            {
+                FindingId = 2,
+                UserId = "2",
+                Reaction = Reaction.Positive
+            };
+
+            var res = await _findingManager.AddReaction(reaction);
+
+            var finding = _dbContext.Findings.Include(finding => finding.Reactions)
+                .FirstOrDefault(finding => finding.Id == 2);
+
+            Assert.False(res);
+            Assert.Equal(2, finding.Reactions.Count());
+            Assert.Equal(-2, SumReactions(finding.Reactions));
+        }
+
+        [Fact]
+        public async Task Change_Reaction()
+        {
+            var reaction = new FindingReaction
+            {
+                FindingId = 3,
+                UserId = "1",
+                Reaction = Reaction.Negative
+            };
+
+            var res = await _findingManager.ChangeReaction(reaction);
+
+            var finding = _dbContext.Findings.Include(finding => finding.Reactions)
+                .FirstOrDefault(finding => finding.Id == 3);
+
+            Assert.True(res);
+            Assert.Equal(2, finding.Reactions.Count());
+            Assert.Equal(0, SumReactions(finding.Reactions));
+        }
+
+        [Fact]
+        public async Task Change_Nonexistent_Reaction()
+        {
+            var reaction = new FindingReaction
+            {
+                FindingId = 3,
+                UserId = "2",
+                Reaction = Reaction.Negative
+            };
+
+            var res = await _findingManager.ChangeReaction(reaction);
+
+            var finding = _dbContext.Findings.Include(finding => finding.Reactions)
+                .FirstOrDefault(finding => finding.Id == 3);
+
+            Assert.False(res);
+            Assert.Equal(2, finding.Reactions.Count());
+            Assert.Equal(2, SumReactions(finding.Reactions));
+        }
+
+        [Fact]
+        public async Task Delete_Reaction()
+        {
+            var res = await _findingManager.DeleteReaction(2, "3");
+
+            var finding = _dbContext.Findings.Include(finding => finding.Reactions)
+                .FirstOrDefault(finding => finding.Id == 2);
+
+            Assert.True(res);
+            Assert.Single(finding.Reactions);
+            Assert.Equal(-1, SumReactions(finding.Reactions));
+        }
+
+        [Fact]
+        public async Task Delete_Nonexistent_Reaction()
+        {
+            var res = await _findingManager.DeleteReaction(2, "1");
+
+            var finding = _dbContext.Findings.Include(finding => finding.Reactions)
+                .FirstOrDefault(finding => finding.Id == 2);
+
+            Assert.True(res);
+            Assert.Equal(2, finding.Reactions.Count());
+            Assert.Equal(-2, SumReactions(finding.Reactions));
         }
     }
 }

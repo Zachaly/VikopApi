@@ -3,7 +3,7 @@ namespace VikopApi.Domain.Enums
 {
     public enum Reaction
     {
-        Positive = 0,
+        Positive = 1,
         Negative = -1,
     }
 }

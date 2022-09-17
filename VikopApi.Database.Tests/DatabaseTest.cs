@@ -93,7 +93,19 @@ namespace VikopApi.Database.Tests
                 },
             };
 
-            _dbContext.AddRange(findings);
+            var reactions = new List<FindingReaction>
+            {
+                new FindingReaction { FindingId = 1, UserId = "1", Reaction = Reaction.Positive },
+                new FindingReaction { FindingId = 1, UserId = "2", Reaction = Reaction.Positive },
+                new FindingReaction { FindingId = 1, UserId = "3", Reaction = Reaction.Negative },
+                new FindingReaction { FindingId = 2, UserId = "2", Reaction = Reaction.Negative },
+                new FindingReaction { FindingId = 2, UserId = "3", Reaction = Reaction.Negative },
+                new FindingReaction { FindingId = 3, UserId = "3", Reaction = Reaction.Positive },
+                new FindingReaction { FindingId = 3, UserId = "1", Reaction = Reaction.Positive },
+            };
+
+            _dbContext.Findings.AddRange(findings);
+            _dbContext.FindingReactions.AddRange(reactions);
         }
 
         private void CommentsSetup()
@@ -137,8 +149,6 @@ namespace VikopApi.Database.Tests
                 }
             };
 
-            _dbContext.AddRange(comments);
-
             var findingComments = new List<FindingComment>
             {
                 new FindingComment { FindingId = 1, CommentId = 1},
@@ -148,7 +158,21 @@ namespace VikopApi.Database.Tests
                 new FindingComment { FindingId = 3, CommentId = 5},
             };
 
+            var reactions = new List<CommentReaction>
+            {
+                new CommentReaction { CommentId = 1, UserId = "2", Reaction = Reaction.Negative },
+                new CommentReaction { CommentId = 2, UserId = "3", Reaction = Reaction.Negative },
+                new CommentReaction { CommentId = 3, UserId = "2", Reaction = Reaction.Positive },
+                new CommentReaction { CommentId = 4, UserId = "3", Reaction = Reaction.Positive },
+                new CommentReaction { CommentId = 4, UserId = "2", Reaction = Reaction.Positive },
+                new CommentReaction { CommentId = 5, UserId = "1", Reaction = Reaction.Positive },
+                new CommentReaction { CommentId = 5, UserId = "2", Reaction = Reaction.Negative },
+                new CommentReaction { CommentId = 5, UserId = "3", Reaction = Reaction.Negative },
+            };
+
+            _dbContext.AddRange(comments);
             _dbContext.AddRange(findingComments);
+            _dbContext.AddRange(reactions);
         }
     }
 }

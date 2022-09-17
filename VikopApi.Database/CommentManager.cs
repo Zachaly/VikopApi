@@ -72,6 +72,11 @@ namespace VikopApi.Database
         {
             var reaction = GetReaction(commentId, userId);
 
+            if(reaction is null)
+            {
+                return true;
+            }
+
             _dbContext.CommentReactions.Remove(reaction);
 
             return await _dbContext.SaveChangesAsync() > 0;
@@ -79,6 +84,7 @@ namespace VikopApi.Database
 
         public T GetCommentById<T>(int id, Func<Comment, T> selector)
         => _dbContext.Comments.Include(comment => comment.Creator)
+            .Include(comment => comment.Reactions)
             .Where(comment => comment.Id == id)
             .Select(selector).FirstOrDefault();
     }
