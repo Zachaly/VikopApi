@@ -80,10 +80,24 @@ namespace VikopApi.Api.Controllers
             return Ok(await changeReaction.Execute(request));
         }
 
+        /// <summary>
+        /// Deletes current user's reaction
+        /// </summary>
         [HttpDelete("{commentId}")]
+        [Authorize]
         public async Task<IActionResult> DeleteReaction(
             int commentId,
             [FromServices] DeleteReaction deleteReaction)
             => Ok(await deleteReaction.Execute(commentId, _authManager.GetCurrentUserId()));
+
+        /// <summary>
+        /// Get current user's reaction of given comment
+        /// </summary>
+        [HttpGet("{commentId}")]
+        [Authorize]
+        public IActionResult CurrentUserReaction(
+            int commentId,
+            [FromServices] GetUserReaction getUserReaction)
+            => Ok(getUserReaction.Execute(commentId, _authManager.GetCurrentUserId()));
     }
 }

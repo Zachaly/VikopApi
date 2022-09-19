@@ -32,7 +32,8 @@ namespace VikopApi.Application.Comments
                 Created = comment.Created,
                 CreatorId = comment.CreatorId,
                 CreatorName = comment.Creator.UserName,
-                Id = comment.Id
+                Id = comment.Id,
+                Reactions = comment.Reactions.Sum(reaction => (int)reaction.Reaction)
             });
         }
 
@@ -50,6 +51,7 @@ namespace VikopApi.Application.Comments
             public string CreatorName { get; set; }
             public string Content { get; set; }
             public DateTime Created { get; set; }
+            public int Reactions { get; set; }
         }
     }
 }

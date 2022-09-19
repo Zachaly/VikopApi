@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using VikopApi.Domain.Infractructure;
 using VikopApi.Domain.Models;
 
@@ -87,5 +86,11 @@ namespace VikopApi.Database
             .Include(comment => comment.Reactions)
             .Where(comment => comment.Id == id)
             .Select(selector).FirstOrDefault();
+
+        public T GetUserReaction<T>(int commentId, string userId, Func<CommentReaction, T> selector)
+            => _dbContext.CommentReactions
+                .Where(reaction => reaction.CommentId == commentId && reaction.UserId == userId)
+                .Select(selector)
+                .FirstOrDefault();
     }
 }

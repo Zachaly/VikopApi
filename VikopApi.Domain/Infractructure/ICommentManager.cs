@@ -10,5 +10,6 @@ namespace VikopApi.Domain.Infractructure
         Task<bool> AddReaction(CommentReaction reaction);
         Task<bool> DeleteReaction(int commentId, string userId);
         Task<bool> ChangeReaction(CommentReaction newReaction);
+        T GetUserReaction<T>(int commentId, string userId, Func<CommentReaction, T> selector);
     }
 }

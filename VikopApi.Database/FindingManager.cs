@@ -66,6 +66,7 @@ namespace VikopApi.Database
 
         public T GetFindingById<T>(int id, Func<Finding, T> selector)
             => _dbContext.Findings.Include(finding => finding.Creator)
+                .Include(finding => finding.Reactions)
                 .Include(finding => finding.Comments)
                 .ThenInclude(comment => comment.Comment)
                 .ThenInclude(comment => comment.Creator)
@@ -80,5 +81,11 @@ namespace VikopApi.Database
                 .Include(finding => finding.Comments)
                 .Include(finding => finding.Reactions)
                 .Select(selector);
+
+        public T GetUserReaction<T>(int findingId, string userId, Func<FindingReaction, T> selector)
+            => _dbContext.FindingReactions
+                .Where(reaction => reaction.UserId == userId && reaction.FindingId == findingId)
+                .Select(selector)
+                .FirstOrDefault();
     }
 }

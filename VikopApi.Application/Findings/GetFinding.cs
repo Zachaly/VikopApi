@@ -27,8 +27,10 @@ namespace VikopApi.Application.Findings
                     Created = comment.Created,
                     CreatorId = comment.CreatorId,
                     CreatorName = comment.Creator.UserName,
-                    Id = comment.Id
-                }).OrderByDescending(comment => comment.Created)
+                    Id = comment.Id,
+                    Reactions = comment.Reactions.Sum(reaction => (int)reaction.Reaction)
+                }).OrderByDescending(comment => comment.Created),
+                Reactions = finding.Reactions.Sum(reaction => (int)reaction.Reaction)
             });
 
         public class Response
@@ -40,6 +42,7 @@ namespace VikopApi.Application.Findings
             public string Link { get; set; }
             public DateTime Created { get; set; }
             public IEnumerable<CommentModel> Comments { get; set; }
+            public int Reactions { get; set; }
         }
 
         public class CommentModel
@@ -49,6 +52,7 @@ namespace VikopApi.Application.Findings
             public string CreatorName { get; set; }
             public string Content { get; set; }
             public DateTime Created { get; set; }
+            public int Reactions { get; set; }
         }
     }
 }

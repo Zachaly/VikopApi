@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 using NuGet.Frameworks;
 using VikopApi.Domain.Infractructure;
 
@@ -183,6 +184,22 @@ namespace VikopApi.Database.Tests
             Assert.True(res);
             Assert.Equal(2, finding.Reactions.Count());
             Assert.Equal(-2, SumReactions(finding.Reactions));
+        }
+
+        [Fact]
+        public void Get_Nonexistent_User_Reaction()
+        {
+            var res = _findingManager.GetUserReaction(2, "1", reaction => (int?)reaction.Reaction ?? 0);
+
+            Assert.Equal(0, res);
+        }
+
+        [Fact]
+        public void Get_User_Reaction()
+        {
+            var res = _findingManager.GetUserReaction(1, "1", reaction => (int?)reaction.Reaction ?? 0);
+
+            Assert.Equal(1, res);
         }
     }
 }

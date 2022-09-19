@@ -1,6 +1,7 @@
 ﻿
 namespace VikopApi.Application.Comments
 {
+    [Service]
     public class DeleteReaction
     {
         private readonly ICommentManager _commentManager;

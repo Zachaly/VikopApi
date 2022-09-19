@@ -119,5 +119,16 @@ namespace VikopApi.Api.Controllers
             [FromServices] DeleteReaction deleteReaction,
             [FromServices] IAuthManager authManager)
             => Ok(await deleteReaction.Execute(findingId, authManager.GetCurrentUserId()));
+
+        /// <summary>
+        /// Get current user's reaction of given finding
+        /// </summary>
+        [HttpGet("{findingId}")]
+        [Authorize]
+        public IActionResult CurrentUserReaction(
+            int findingId,
+            [FromServices] IAuthManager authManager,
+            [FromServices] GetUserReaction getUserReaction)
+            => Ok(getUserReaction.Execute(findingId, authManager.GetCurrentUserId()));
     }
 }
