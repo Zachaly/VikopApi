@@ -15,6 +15,7 @@ namespace VikopApi.Database.Tests
             UsersSetup();
             FindingSetup();
             CommentsSetup();
+            SubCommentsSetup();
 
             _dbContext.SaveChanges();
         }
@@ -173,6 +174,68 @@ namespace VikopApi.Database.Tests
             _dbContext.AddRange(comments);
             _dbContext.AddRange(findingComments);
             _dbContext.AddRange(reactions);
+        }
+
+        private void SubCommentsSetup()
+        {
+            var comments = new List<Comment>
+            {
+                new Comment
+                {
+                    Id = 11,
+                    Content = "subcomment1",
+                    Created = new DateTime(2022, 2, 2),
+                    CreatorId = "1",
+                },
+                new Comment
+                {
+                    Id = 12,
+                    Content = "subcomment2",
+                    Created = new DateTime(2021, 2, 2),
+                    CreatorId = "1",
+                },
+                new Comment
+                {
+                    Id = 13,
+                    Content = "subcomment3",
+                    Created = new DateTime(2021, 2, 2),
+                    CreatorId = "2",
+                },
+                new Comment
+                {
+                    Id = 14,
+                    Content = "subcomment4",
+                    Created = new DateTime(2021, 2, 2),
+                    CreatorId = "3",
+                },
+            };
+
+            var subcomments = new List<SubComment>
+            {
+                new SubComment
+                {
+                    CommentId = 11,
+                    MainCommentId = 1
+                },
+                new SubComment
+                {
+                    CommentId = 12,
+                    MainCommentId = 1
+                },
+                new SubComment
+                {
+                    CommentId = 13,
+                    MainCommentId = 2
+                },
+                new SubComment
+                {
+                    CommentId = 14,
+                    MainCommentId = 3
+                },
+            };
+
+            _dbContext.Comments.AddRange(comments);
+            _dbContext.SubComments.AddRange(subcomments);
         }
     }
 }

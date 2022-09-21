@@ -11,6 +11,7 @@ namespace VikopApi.Database
         public DbSet<FindingComment> FindingComments { get; set; }
         public DbSet<FindingReaction> FindingReactions { get; set; }
         public DbSet<CommentReaction> CommentReactions { get; set; }
+        public DbSet<SubComment> SubComments { get; set; }
 
         public AppDbContext(DbContextOptions options) : base(options)
         {
@@ -52,6 +53,14 @@ namespace VikopApi.Database
                 .WithMany(user => user.CommentReactions)
                 .HasForeignKey(reaction => reaction.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<SubComment>().HasKey(comment => new { comment.CommentId, comment.MainCommentId });
+            builder.Entity<SubComment>()
+                .HasOne(comment => comment.MainComment)
+                .WithMany(comment => comment.SubComments)
+                .HasForeignKey(comment => comment.MainCommentId)
+                .OnDelete(DeleteBehavior.NoAction);
+
         }
     }
 }

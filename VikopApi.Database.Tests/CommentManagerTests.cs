@@ -192,5 +192,15 @@ namespace VikopApi.Database.Tests
             Assert.True(res);
             Assert.Single(comment.Reactions);
         }
+
+        [Fact]
+        public void Get_Subcomments()
+        {
+            var res = _commentManager.GetSubComments(1, comment => new { comment.MainCommentId, comment.CommentId });
+
+            Assert.Equal(2, res.Count());
+            Assert.Contains(res, comment => comment.CommentId == 11 && comment.MainCommentId == 1);
+            Assert.Contains(res, comment => comment.CommentId == 12 && comment.MainCommentId == 1);
+        }
     }
 }

@@ -9,5 +9,6 @@ namespace VikopApi.Domain.Models
         public string Content { get; set; }
         public DateTime Created { get; set; }
         public ICollection<CommentReaction> Reactions { get; set; }
+        public ICollection<SubComment> SubComments { get; set; }
     }
 }

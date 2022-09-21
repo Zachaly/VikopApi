@@ -27,7 +27,7 @@ namespace VikopApi.Database.Tests
             Assert.Equal("1", user.Id);
             Assert.Equal("user1", user.UserName);
             Assert.Single(user.Findings);
-            Assert.Equal(2, user.Comments.Count());
+            Assert.Equal(4, user.Comments.Count());
         }
 
         [Fact]

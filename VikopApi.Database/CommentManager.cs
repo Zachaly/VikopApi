@@ -82,15 +82,34 @@ namespace VikopApi.Database
         }
 
         public T GetCommentById<T>(int id, Func<Comment, T> selector)
-        => _dbContext.Comments.Include(comment => comment.Creator)
-            .Include(comment => comment.Reactions)
-            .Where(comment => comment.Id == id)
-            .Select(selector).FirstOrDefault();
+            => _dbContext.Comments.Include(comment => comment.Creator)
+                .Include(comment => comment.Reactions)
+                .Where(comment => comment.Id == id)
+                .Select(selector).FirstOrDefault();
 
         public T GetUserReaction<T>(int commentId, string userId, Func<CommentReaction, T> selector)
             => _dbContext.CommentReactions
                 .Where(reaction => reaction.CommentId == commentId && reaction.UserId == userId)
                 .Select(selector)
                 .FirstOrDefault();
+
+        public async Task<bool> AddSubComment(SubComment subComment)
+        {
+            _dbContext.SubComments.Add(subComment);
+
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
+
+        public IEnumerable<T> GetSubComments<T>(int mainCommentId, Func<SubComment, T> selector)
+            => _dbContext.Comments
+                .Include(comment => comment.SubComments)
+                .ThenInclude(subcomment => subcomment.Comment)
+                .ThenInclude(comment => comment.Creator)
+                .Include(comment => comment.SubComments)
+                .ThenInclude(subcomment => subcomment.Comment)
+                .ThenInclude(comment => comment.Reactions)
+                .FirstOrDefault(comment => comment.Id == mainCommentId)?
+                .SubComments.Select(selector);
+
     }
 }

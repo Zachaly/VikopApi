@@ -84,7 +84,6 @@ namespace VikopApi.Api.Controllers
         /// Deletes current user's reaction
         /// </summary>
         [HttpDelete("{commentId}")]
-        [Authorize]
         public async Task<IActionResult> DeleteReaction(
             int commentId,
             [FromServices] DeleteReaction deleteReaction)
@@ -94,10 +93,32 @@ namespace VikopApi.Api.Controllers
         /// Get current user's reaction of given comment
         /// </summary>
         [HttpGet("{commentId}")]
-        [Authorize]
         public IActionResult CurrentUserReaction(
             int commentId,
             [FromServices] GetUserReaction getUserReaction)
             => Ok(getUserReaction.Execute(commentId, _authManager.GetCurrentUserId()));
+
+
+        [HttpGet("{commentId}")]
+        [AllowAnonymous]
+        public IActionResult SubComments(
+            int commentId,
+            [FromServices] GetSubComments getSubComments)
+            => Ok(getSubComments.Execute(commentId));
+
+        [HttpPost]
+        public async Task<IActionResult> AddSubComment(
+            SubCommentModel subComment,
+            [FromServices] AddSubComment addSubComment)
+        {
+            var request = new AddSubComment.Request
+            {
+                Content = subComment.Content,
+                CreatorId = _authManager.GetCurrentUserId(),
+                MainCommentId = subComment.CommentId,
+            };
+
+            return Ok(await addSubComment.Execute(request));
+        }
     }
 }
