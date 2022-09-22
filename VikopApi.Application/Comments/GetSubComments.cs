@@ -16,7 +16,7 @@ namespace VikopApi.Application.Comments
             {
                 Id = subcomment.Comment.Id,
                 Content = subcomment.Comment.Content,
-                Created = subcomment.Comment.Created,
+                Created = subcomment.Comment.Created.GetTime(),
                 CreatorId = subcomment.Comment.CreatorId,
                 CreatorName = subcomment.Comment.Creator.UserName,
                 Reactions = subcomment.Comment.Reactions.Sum(reaction => (int)reaction.Reaction)
@@ -28,7 +28,7 @@ namespace VikopApi.Application.Comments
             public string CreatorId { get; set; }
             public string CreatorName { get; set; }
             public string Content { get; set; }
-            public DateTime Created { get; set; }
+            public string Created { get; set; }
             public int Reactions { get; set; }
         }
     }

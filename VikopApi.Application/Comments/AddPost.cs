@@ -1,12 +1,17 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace VikopApi.Application.Comments
 {
     [Service]
-    public class AddFindingComment
+    public class AddPost
     {
         private readonly ICommentManager _commentManager;
 
-        public AddFindingComment(ICommentManager commentManager)
+        public AddPost(ICommentManager commentManager)
         {
             _commentManager = commentManager;
         }
@@ -25,7 +30,13 @@ namespace VikopApi.Application.Comments
             if (!res)
                 return null;
 
-            await _commentManager.AddFindingComment(comment.Id, request.FindingId);
+            var post = new Post
+            {
+                CommentId = comment.Id
+            };
+
+            await _commentManager.AddPost(post);
+
             return _commentManager.GetCommentById(comment.Id, comment => new Response
             {
                 Content = comment.Content,
@@ -41,7 +52,6 @@ namespace VikopApi.Application.Comments
         {
             public string CreatorId { get; set; }
             public string Content { get; set; }
-            public int FindingId { get; set; }
         }
 
         public class Response

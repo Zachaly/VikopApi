@@ -120,5 +120,24 @@ namespace VikopApi.Api.Controllers
 
             return Ok(await addSubComment.Execute(request));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddPost(
+            PostModel post,
+            [FromServices] AddPost addPost)
+        {
+            var request = new AddPost.Request
+            {
+                Content = post.Content,
+                CreatorId = _authManager.GetCurrentUserId()
+            };
+
+            return Ok(await addPost.Execute(request));
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult GetPosts([FromServices] GetPosts getPosts)
+            => Ok(getPosts.Execute());
     }
 }

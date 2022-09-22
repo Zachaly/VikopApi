@@ -19,18 +19,19 @@ namespace VikopApi.Application.Findings
                 Id = finding.Id,
                 Link = finding.Link,
                 Title = finding.Title,
-                Created = finding.Created,
+                Created = finding.Created.GetTime(),
                 Comments = finding.Comments.Select(comment => comment.Comment)
                 .Select(comment => new CommentModel
                 {
                     Content = comment.Content,
-                    Created = comment.Created,
+                    Created = comment.Created.GetTime(),
                     CreatorId = comment.CreatorId,
                     CreatorName = comment.Creator.UserName,
                     Id = comment.Id,
-                    Reactions = comment.Reactions.Sum(reaction => (int)reaction.Reaction)
+                    Reactions = comment.Reactions.SumReactions()
                 }).OrderByDescending(comment => comment.Created),
-                Reactions = finding.Reactions.Sum(reaction => (int)reaction.Reaction)
+                Reactions = finding.Reactions.SumReactions(),
+                CommentCount = finding.Comments.Count()
             });
 
         public class Response
@@ -40,9 +41,10 @@ namespace VikopApi.Application.Findings
             public string Description { get; set; }
             public string CreatorName { get; set; }
             public string Link { get; set; }
-            public DateTime Created { get; set; }
+            public string Created { get; set; }
             public IEnumerable<CommentModel> Comments { get; set; }
             public int Reactions { get; set; }
+            public int CommentCount { get; set; }
         }
 
         public class CommentModel
@@ -51,7 +53,7 @@ namespace VikopApi.Application.Findings
             public string CreatorId { get; set; }
             public string CreatorName { get; set; }
             public string Content { get; set; }
-            public DateTime Created { get; set; }
+            public string Created { get; set; }
             public int Reactions { get; set; }
         }
     }

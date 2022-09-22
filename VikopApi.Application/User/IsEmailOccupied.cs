@@ -13,6 +13,6 @@ namespace VikopApi.Application.User
 
         public bool Execute(string email)
             => _appUserManager.GetUsers(user => user.NormalizedEmail)
-            .Any(userEmail => email.ToUpper() == userEmail);
+                .Any(userEmail => email.ToUpper() == userEmail);
     }
 }

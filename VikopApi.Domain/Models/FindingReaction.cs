@@ -2,7 +2,7 @@
 
 namespace VikopApi.Domain.Models
 {
-    public class FindingReaction
+    public class FindingReaction : IReaction
     {
         public int FindingId { get; set; }
         public Finding Finding { get; set; }

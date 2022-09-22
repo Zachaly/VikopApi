@@ -36,11 +36,11 @@ namespace VikopApi.Application.Comments
             return _commentManager.GetCommentById(comment.Id, comment => new Response
             {
                 Content = comment.Content,
-                Created = comment.Created,
+                Created = comment.Created.GetTime(),
                 CreatorId = comment.CreatorId,
                 CreatorName = comment.Creator.UserName,
                 Id = comment.Id,
-                Reactions = comment.Reactions.Sum(reaction => (int)reaction.Reaction)
+                Reactions = comment.Reactions.SumReactions()
             });
         }
 
@@ -57,7 +57,7 @@ namespace VikopApi.Application.Comments
             public string CreatorId { get; set; }
             public string CreatorName { get; set; }
             public string Content { get; set; }
-            public DateTime Created { get; set; }
+            public string Created { get; set; }
             public int Reactions { get; set; }
         }
     }

@@ -12,6 +12,7 @@ namespace VikopApi.Database
         public DbSet<FindingReaction> FindingReactions { get; set; }
         public DbSet<CommentReaction> CommentReactions { get; set; }
         public DbSet<SubComment> SubComments { get; set; }
+        public DbSet<Post> Posts { get; set; }
 
         public AppDbContext(DbContextOptions options) : base(options)
         {

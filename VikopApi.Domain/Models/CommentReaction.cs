@@ -2,7 +2,7 @@
 
 namespace VikopApi.Domain.Models
 {
-    public class CommentReaction
+    public class CommentReaction : IReaction
     {
 
         public int CommentId { get; set; }

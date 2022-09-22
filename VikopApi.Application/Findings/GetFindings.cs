@@ -20,8 +20,8 @@ namespace VikopApi.Application.Findings
                 Link = finding.Link,
                 Title = finding.Title,
                 CommentCount = finding.Comments.Count,
-                Created = finding.Created,
-                Reactions = finding.Reactions.Sum(reaction => (int)reaction.Reaction)
+                Created = finding.Created.GetTime(),
+                Reactions = finding.Reactions.SumReactions()
             }).OrderByDescending(finding => finding.Id);
 
         public class FindingModel
@@ -32,7 +32,7 @@ namespace VikopApi.Application.Findings
             public string CreatorName { get; set; }
             public string Link { get; set; }
             public int CommentCount { get; set; }
-            public DateTime Created { get; set; }
+            public string Created { get; set; }
             public int Reactions { get; set; }
         }
     }
