@@ -1,5 +1,4 @@
-﻿
-namespace VikopApi.Application.User
+﻿namespace VikopApi.Application.User
 {
     [Service]
     public class GetUser

@@ -1,5 +1,4 @@
-﻿
-namespace VikopApi.Api.DTO
+﻿namespace VikopApi.Api.DTO
 {
     public class RegisterModel
     {

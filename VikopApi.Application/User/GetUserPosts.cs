@@ -1,17 +1,17 @@
-﻿namespace VikopApi.Application.Comments
+﻿namespace VikopApi.Application.User
 {
     [Service]
-    public class GetPosts
+    public class GetUserPosts
     {
-        private readonly ICommentManager _commentManager;
+        private readonly IApplicationUserManager _appUserManager;
 
-        public GetPosts(ICommentManager commentManager)
+        public GetUserPosts(IApplicationUserManager applicationUserManager)
         {
-            _commentManager = commentManager;
+            _appUserManager = applicationUserManager;
         }
 
-        public IEnumerable<PostModel> Execute()
-            => _commentManager.GetPosts(post => new PostModel
+        public IEnumerable<PostModel> Execute(string id)
+            => _appUserManager.GetUserPosts(id, post => new PostModel
             {
                 Id = post.Comment.Id,
                 Content = post.Comment.Content,

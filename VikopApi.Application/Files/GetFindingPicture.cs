@@ -1,5 +1,4 @@
-﻿
-namespace VikopApi.Application.Files
+﻿namespace VikopApi.Application.Files
 {
     [Service]
     public class GetFindingPicture

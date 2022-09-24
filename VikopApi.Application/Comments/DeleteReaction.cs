@@ -1,5 +1,4 @@
-﻿
-namespace VikopApi.Application.Comments
+﻿namespace VikopApi.Application.Comments
 {
     [Service]
     public class DeleteReaction

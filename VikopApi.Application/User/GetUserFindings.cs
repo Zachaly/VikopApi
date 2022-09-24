@@ -1,19 +1,18 @@
-﻿namespace VikopApi.Application.Findings
+﻿namespace VikopApi.Application.User
 {
     [Service]
-    public class GetFindings
+    public class GetUserFindings
     {
-        private readonly IFindingManager _findingManager;
+        private IApplicationUserManager _appUserManager;
 
-        public GetFindings(IFindingManager findingManager)
+        public GetUserFindings(IApplicationUserManager applicationUserManager)
         {
-            _findingManager = findingManager;
+            _appUserManager = applicationUserManager;
         }
 
-        public IEnumerable<FindingModel> Execute()
-            => _findingManager.GetFindings( finding => new FindingModel
+        public IEnumerable<FindingModel> Execute(string id)
+            => _appUserManager.GetUserFindings(id, finding => new FindingModel
             {
-                CreatorId = finding.CreatorId,
                 CreatorName = finding.Creator.UserName,
                 Description = finding.Description,
                 Id = finding.Id,
@@ -22,14 +21,13 @@
                 CommentCount = finding.Comments.Count,
                 Created = finding.Created.GetTime(),
                 Reactions = finding.Reactions.SumReactions()
-            }).OrderByDescending(finding => finding.Id);
+            });
 
         public class FindingModel
         {
             public int Id { get; set; }
             public string Title { get; set; }
             public string Description { get; set; }
-            public string CreatorId { get; set; }
             public string CreatorName { get; set; }
             public string Link { get; set; }
             public int CommentCount { get; set; }

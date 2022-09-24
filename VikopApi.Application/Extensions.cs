@@ -1,5 +1,4 @@
-﻿
-namespace VikopApi.Application
+﻿namespace VikopApi.Application
 {
     internal static class Extensions
     {

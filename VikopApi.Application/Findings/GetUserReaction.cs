@@ -1,5 +1,4 @@
-﻿
-namespace VikopApi.Application.Findings
+﻿namespace VikopApi.Application.Findings
 {
     [Service]
     public class GetUserReaction

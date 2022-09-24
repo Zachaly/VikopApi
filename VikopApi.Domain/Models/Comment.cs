@@ -1,5 +1,4 @@
-﻿
-namespace VikopApi.Domain.Models
+﻿namespace VikopApi.Domain.Models
 {
     public class Comment
     {

@@ -71,8 +71,16 @@ namespace VikopApi.Api.Controllers
         /// Returns user with given id
         /// </summary>
         [HttpGet("{id}")]
-        public IActionResult GetUser(string id, [FromServices] GetUser getUser)
+        public IActionResult Profile(string id, [FromServices] GetUser getUser)
             => Ok(getUser.Execute(id));
+
+        [HttpGet("{id}")]
+        public IActionResult Posts(string id, [FromServices] GetUserPosts getUserPosts)
+            => Ok(getUserPosts.Execute(id));
+
+        [HttpGet("{id}")]
+        public IActionResult Findings(string id, [FromServices] GetUserFindings getUserFindings)
+            => Ok(getUserFindings.Execute(id));
 
         /// <summary>
         /// User login

@@ -1,5 +1,4 @@
-﻿
-namespace VikopApi.Domain.Enums
+﻿namespace VikopApi.Domain.Enums
 {
     public enum Reaction
     {

@@ -1,5 +1,4 @@
-﻿
-namespace VikopApi.Application.Findings
+﻿namespace VikopApi.Application.Findings
 {
     [Service]
     public class GetFinding
@@ -14,6 +13,7 @@ namespace VikopApi.Application.Findings
         public Response Execute(int id) 
             => _findingManager.GetFindingById(id, finding => new Response
             {
+                CreatorId = finding.CreatorId,
                 CreatorName = finding.Creator.UserName,
                 Description = finding.Description,
                 Id = finding.Id,
@@ -39,6 +39,7 @@ namespace VikopApi.Application.Findings
             public int Id { get; set; }
             public string Title { get; set; }
             public string Description { get; set; }
+            public string CreatorId { get; set; }
             public string CreatorName { get; set; }
             public string Link { get; set; }
             public string Created { get; set; }
