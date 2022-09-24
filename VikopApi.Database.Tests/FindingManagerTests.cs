@@ -17,7 +17,7 @@ namespace VikopApi.Database.Tests
         [Fact]
         public void Get_Findings()
         {
-            var findings = _findingManager.GetFindings(x => x);
+            var findings = _findingManager.GetAllFindings(x => x);
 
             Assert.Equal(3, findings.Count());
             Assert.Contains(findings, finding => finding.Id == 1 && finding.Creator.UserName == "user1");

@@ -15,5 +15,7 @@ namespace VikopApi.Domain.Infractructure
         IEnumerable<T> GetSubComments<T>(int mainCommentId, Func<SubComment, T> selector);
         Task<bool> AddPost(Post post);
         IEnumerable<T> GetPosts<T>(Func<Post, T> selector);
+        IEnumerable<T> GetTopPosts<T>(Func<Post, T> selector);
+        IEnumerable<T> GetNewPosts<T>(Func<Post, T> selector);
     }
 }

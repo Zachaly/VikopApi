@@ -28,6 +28,14 @@ namespace VikopApi.Api.Controllers
         public IActionResult GetAll([FromServices] GetFindings getFindings)
             => Ok(getFindings.Execute());
 
+        [HttpGet]
+        public IActionResult New([FromServices] GetNewFindings getNewFindings)
+            => Ok(getNewFindings.Execute());
+
+        [HttpGet]
+        public IActionResult Hot([FromServices] GetTopFindings getTopFindings)
+            => Ok(getTopFindings.Execute());
+
         /// <summary>
         /// Gets finding with given id
         /// </summary>

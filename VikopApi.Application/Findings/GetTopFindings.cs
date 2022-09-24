@@ -1,17 +1,17 @@
 ﻿namespace VikopApi.Application.Findings
 {
     [Service]
-    public class GetFindings
+    public class GetTopFindings
     {
         private readonly IFindingManager _findingManager;
 
-        public GetFindings(IFindingManager findingManager)
+        public GetTopFindings(IFindingManager findingManager)
         {
             _findingManager = findingManager;
         }
 
         public IEnumerable<FindingModel> Execute()
-            => _findingManager.GetAllFindings(finding => new FindingModel
+            => _findingManager.GetTopFindings(finding => new FindingModel
             {
                 CreatorId = finding.CreatorId,
                 CreatorName = finding.Creator.UserName,

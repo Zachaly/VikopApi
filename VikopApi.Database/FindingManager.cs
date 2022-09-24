@@ -22,7 +22,7 @@ namespace VikopApi.Database
 
         public async Task<bool> AddReaction(FindingReaction reaction)
         {
-            if(GetReaction(reaction.UserId, reaction.FindingId) != null)
+            if (GetReaction(reaction.UserId, reaction.FindingId) != null)
             {
                 return false;
             }
@@ -40,7 +40,7 @@ namespace VikopApi.Database
         {
             var originalReaction = GetReaction(newReaction.UserId, newReaction.FindingId);
 
-            if(originalReaction is null)
+            if (originalReaction is null)
             {
                 return false;
             }
@@ -54,7 +54,7 @@ namespace VikopApi.Database
         {
             var reaction = GetReaction(userId, findingId);
 
-            if(reaction is null)
+            if (reaction is null)
             {
                 return true;
             }
@@ -76,7 +76,7 @@ namespace VikopApi.Database
                 .Where(finding => finding.Id == id)
                 .Select(selector).FirstOrDefault();
 
-        public IEnumerable<T> GetFindings<T>(Func<Finding, T> selector)
+        public IEnumerable<T> GetAllFindings<T>(Func<Finding, T> selector)
             => _dbContext.Findings.Include(finding => finding.Creator)
                 .Include(finding => finding.Comments)
                 .Include(finding => finding.Reactions)
@@ -87,5 +87,28 @@ namespace VikopApi.Database
                 .Where(reaction => reaction.UserId == userId && reaction.FindingId == findingId)
                 .Select(selector)
                 .FirstOrDefault();
+
+        public IEnumerable<T> GetNewFindings<T>(Func<Finding, T> selector)
+             => _dbContext.Findings.Include(finding => finding.Creator)
+                .Include(finding => finding.Comments)
+                .Include(finding => finding.Reactions)
+                .OrderByDescending(finding => finding.Created)
+                .Select(selector);
+
+        // many things need to be included if finding value is determined also by comments
+        public IEnumerable<T> GetTopFindings<T>(Func<Finding, T> selector)
+            => _dbContext.Findings.Include(finding => finding.Creator)
+                .Include(finding => finding.Comments)
+                .ThenInclude(comment => comment.Comment)
+                .ThenInclude(comment => comment.SubComments)
+                .ThenInclude(subcomment => subcomment.Comment)
+                .ThenInclude(subcomment => subcomment.Reactions)
+                .Include(finding => finding.Comments)
+                .ThenInclude(comment => comment.Comment)
+                .ThenInclude(comment => comment.Reactions)
+                .Include(finding => finding.Reactions)
+                .AsEnumerable()
+                .OrderByDescending(finding => finding.FindingValue())
+                .Select(selector);
     }
 }
