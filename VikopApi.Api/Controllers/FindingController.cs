@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using VikopApi.Api.DTO;
 using VikopApi.Api.Infrastructure.AuthManager;
+using VikopApi.Api.Infrastructure.FileManager;
 using VikopApi.Application.Findings;
 using VikopApi.Domain.Enums;
 
@@ -66,16 +67,17 @@ namespace VikopApi.Api.Controllers
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Add(
-            AddFindingModel request,
+            [FromForm] AddFindingModel request,
             [FromServices] AddFinding addFinding,
-            [FromServices] IAuthManager authManager) 
+            [FromServices] IAuthManager authManager,
+            [FromServices] IFileManager fileManager) 
             => Ok(await addFinding.Execute(new AddFinding.Request
                 {
                     Title = request.Title,
                     CreatorId = authManager.GetCurrentUserId(),
                     Link = request.Link,
                     Description = request.Description,
-                    Picture = request.Picture
+                    Picture = await fileManager.SaveFindingPicture(request.Picture),
                 }));
         /// <summary>
         /// Adds reaction to finding

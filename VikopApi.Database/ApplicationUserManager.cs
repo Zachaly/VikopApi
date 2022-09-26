@@ -39,6 +39,18 @@ namespace VikopApi.Database
         public IEnumerable<T> GetUsers<T>(Func<ApplicationUser, T> selector)
             => _dbContext.Users.Select(selector);
 
+        public async Task<bool> UpdateUser(string userId, Action<ApplicationUser> changes)
+        {
+            var user = _dbContext.Users.FirstOrDefault(user => user.Id == userId);
 
+            if(user is null)
+            {
+                throw new DbUpdateException("User does not exist");
+            }
+
+            changes(user);
+
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
     }
 }

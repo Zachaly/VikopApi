@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using VikopApi.Api.DTO;
 using VikopApi.Api.Infrastructure.AuthManager;
+using VikopApi.Api.Infrastructure.FileManager;
+using VikopApi.Application.Files;
 using VikopApi.Application.User;
 using VikopApi.Domain.Models;
 
@@ -15,11 +17,14 @@ namespace VikopApi.Api.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IAuthManager _authManager;
+        private readonly string _placeholderImage;
 
-        public UserController(UserManager<ApplicationUser> userManager, IAuthManager authManager)
+        public UserController(UserManager<ApplicationUser> userManager, IAuthManager authManager,
+            IConfiguration config)
         {
             _userManager = userManager;
             _authManager = authManager;
+            _placeholderImage = config["Image:Placeholder"];
         }
 
         /// <summary>
@@ -50,7 +55,7 @@ namespace VikopApi.Api.Controllers
             {
                 UserName = model.Username,
                 Email = model.Email,
-                ProfilePicture = "placeholder.jpg",
+                ProfilePicture = _placeholderImage,
                 Rank = 0,
                 Created = DateTime.Now
             };
@@ -114,6 +119,29 @@ namespace VikopApi.Api.Controllers
         [HttpGet]
         [Authorize]
         public IActionResult Id() => Ok(_authManager.GetCurrentUserId());
-        
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> Update(
+            [FromForm] UpdateUserModel model,
+            [FromServices] UpdateUser updateUser,
+            [FromServices] IFileManager fileManager,
+            [FromServices] GetProfilePicture getProfilePicture)
+        {
+            var request = new UpdateUser.Request
+            {
+                UserName = model.Username,
+                Id = _authManager.GetCurrentUserId(),
+                Picture = ""
+            };
+
+            if(model.ProfilePicture != null)
+            {
+                fileManager.RemoveProfilePicture(getProfilePicture.Execute(request.Id));
+                request.Picture = await fileManager.SaveProfilePicture(model.ProfilePicture);
+            }
+
+            return Ok(await updateUser.Execute(request));
+        }
     }
 }
