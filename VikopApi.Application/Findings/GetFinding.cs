@@ -1,4 +1,6 @@
-﻿namespace VikopApi.Application.Findings
+﻿using VikopApi.Application.HelperModels;
+
+namespace VikopApi.Application.Findings
 {
     [Service]
     public class GetFinding
@@ -21,15 +23,8 @@
                 Title = finding.Title,
                 Created = finding.Created.GetTime(),
                 Comments = finding.Comments.Select(comment => comment.Comment)
-                .Select(comment => new CommentModel
-                {
-                    Content = comment.Content,
-                    Created = comment.Created.GetTime(),
-                    CreatorId = comment.CreatorId,
-                    CreatorName = comment.Creator.UserName,
-                    Id = comment.Id,
-                    Reactions = comment.Reactions.SumReactions()
-                }).OrderByDescending(comment => comment.Created),
+                    .Select(comment => new CommentModel(comment))
+                    .OrderByDescending(comment => comment.Created),
                 Reactions = finding.Reactions.SumReactions(),
                 CommentCount = finding.Comments.Count()
             });
@@ -46,16 +41,6 @@
             public IEnumerable<CommentModel> Comments { get; set; }
             public int Reactions { get; set; }
             public int CommentCount { get; set; }
-        }
-
-        public class CommentModel
-        {
-            public int Id { get; set; }
-            public string CreatorId { get; set; }
-            public string CreatorName { get; set; }
-            public string Content { get; set; }
-            public string Created { get; set; }
-            public int Reactions { get; set; }
         }
     }
 }

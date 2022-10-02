@@ -14,13 +14,15 @@
             => _appUserManager.GetUserById(id, user => new Response
             {
                 Id = user.Id,
-                UserName = user.UserName
+                UserName = user.UserName,
+                Created = user.Created.ToString("dd.MM.yyyy"),
             });
 
         public class Response
         {
             public string Id { get; set; }
             public string UserName { get; set; }
+            public string Created { get; set; }
         }
     }
 }

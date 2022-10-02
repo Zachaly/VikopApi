@@ -1,4 +1,6 @@
-﻿namespace VikopApi.Application.Comments
+﻿using VikopApi.Application.HelperModels;
+
+namespace VikopApi.Application.Comments
 {
     [Service]
     public class AddSubComment
@@ -10,7 +12,7 @@
             _commentManager = commentManager;
         }
 
-        public async Task<Response> Execute(Request request)
+        public async Task<CommentModel> Execute(Request request)
         {
             var comment = new Comment
             {
@@ -33,33 +35,12 @@
 
             await _commentManager.AddSubComment(subcomment);
 
-            return _commentManager.GetCommentById(comment.Id, comment => new Response
-            {
-                Content = comment.Content,
-                Created = comment.Created.GetTime(),
-                CreatorId = comment.CreatorId,
-                CreatorName = comment.Creator.UserName,
-                Id = comment.Id,
-                Reactions = comment.Reactions.SumReactions()
-            });
+            return _commentManager.GetCommentById(comment.Id, comment => new CommentModel(comment));
         }
 
-        public class Request
+        public class Request : CommentRequest
         {
-            public string CreatorId { get; set; }
-            public string Content { get; set; }
             public int MainCommentId { get; set; }
-            public string? Picture { get; set; }
-        }
-
-        public class Response
-        {
-            public int Id { get; set; }
-            public string CreatorId { get; set; }
-            public string CreatorName { get; set; }
-            public string Content { get; set; }
-            public string Created { get; set; }
-            public int Reactions { get; set; }
         }
     }
 }
