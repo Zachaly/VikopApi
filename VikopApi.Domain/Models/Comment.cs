@@ -9,5 +9,6 @@
         public DateTime Created { get; set; }
         public ICollection<CommentReaction> Reactions { get; set; }
         public ICollection<SubComment> SubComments { get; set; }
+        public string? Picture { get; set; }
     }
 }

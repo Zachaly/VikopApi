@@ -1,10 +1,10 @@
-﻿
-namespace VikopApi.Api.Infrastructure.FileManager
+﻿namespace VikopApi.Api.Infrastructure.FileManager
 {
     public class FileManager : IFileManager
     {
         private readonly string _profilePicturePath;
         private readonly string _findingPicturePath;
+        private readonly string _commentPicturePath;
         private readonly string _placeholderImage;
 
         public FileManager(IConfiguration config)
@@ -12,10 +12,11 @@ namespace VikopApi.Api.Infrastructure.FileManager
             _profilePicturePath = config["Image:Profile"];
             _findingPicturePath = config["Image:Finding"];
             _placeholderImage = config["Image:Placeholder"];
+            _commentPicturePath = config["Image:Comment"];
         }
 
         private FileStream GetFile(string path, string fileName)
-            => new FileStream(Path.Combine(path, fileName), FileMode.Open, FileAccess.Read);
+            => new FileStream(Path.Combine(path, fileName ?? _placeholderImage), FileMode.Open, FileAccess.Read);
 
         public FileStream GetProfilePicture(string fileName)
             => GetFile(_profilePicturePath, fileName);
@@ -23,11 +24,14 @@ namespace VikopApi.Api.Infrastructure.FileManager
         public FileStream GetFindingPicture(string fileName)
             => GetFile(_findingPicturePath, fileName);
 
-        private async Task<string> SaveFile(IFormFile file, string path)
+        public FileStream GetCommentPicture(string fileName)
+            => GetFile(_commentPicturePath, fileName);
+
+        private async Task<string> SaveFile(IFormFile file, string path, string placeholder)
         {
             if(file is null)
             {
-                return _placeholderImage;
+                return placeholder;
             }
 
             try
@@ -46,15 +50,18 @@ namespace VikopApi.Api.Infrastructure.FileManager
             }
             catch (Exception)
             {
-                return _placeholderImage;
+                return placeholder;
             }
         }
 
         public async Task<string> SaveFindingPicture(IFormFile file)
-            => await SaveFile(file, _findingPicturePath);
+            => await SaveFile(file, _findingPicturePath, _placeholderImage);
 
         public async Task<string> SaveProfilePicture(IFormFile file)
-            => await SaveFile(file, _profilePicturePath);
+            => await SaveFile(file, _profilePicturePath, _placeholderImage);
+
+        public async Task<string> SaveCommentPicture(IFormFile file)
+            => await SaveFile(file, _commentPicturePath, "");
 
         private bool RemoveFile(string fileName, string path)
         {
@@ -84,5 +91,8 @@ namespace VikopApi.Api.Infrastructure.FileManager
 
         public bool RemoveFindingPicture(string fileName)
             => RemoveFile(fileName, _findingPicturePath);
+
+        public bool RemoveCommentPicture(string fileName)
+            => RemoveFile(fileName, _commentPicturePath);
     }
 }

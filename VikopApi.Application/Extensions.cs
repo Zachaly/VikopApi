@@ -7,6 +7,5 @@
 
         public static int SumReactions(this IEnumerable<IReaction> @this)
             => @this.Sum(reaction => (int)reaction.Reaction);
-
     }
 }

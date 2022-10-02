@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using VikopApi.Api.DTO;
 using VikopApi.Api.Infrastructure.AuthManager;
+using VikopApi.Api.Infrastructure.FileManager;
 using VikopApi.Application.Comments;
 using VikopApi.Domain.Enums;
 
@@ -12,10 +13,12 @@ namespace VikopApi.Api.Controllers
     public class CommentController : ControllerBase
     {
         private readonly IAuthManager _authManager;
+        private readonly IFileManager _fileManager;
 
-        public CommentController(IAuthManager authManager)
+        public CommentController(IAuthManager authManager, IFileManager fileManager)
         {
             _authManager = authManager;
+            _fileManager = fileManager;
         }
 
         /// <summary>
@@ -31,15 +34,21 @@ namespace VikopApi.Api.Controllers
         /// </response>
         [HttpPost]
         public async Task<IActionResult> AddFindingComment(
-            FindingCommentModel commentModel,
+            [FromForm] FindingCommentModel commentModel,
             [FromServices] AddFindingComment addComment)
         {
             var request = new AddFindingComment.Request
             {
                 Content = commentModel.Content,
                 CreatorId = _authManager.GetCurrentUserId(),
-                FindingId = commentModel.FindingId
+                FindingId = commentModel.FindingId,
+                Picture = ""
             };
+
+            if(commentModel.Picture != null)
+            {
+                request.Picture = await _fileManager.SaveCommentPicture(commentModel.Picture);
+            }
 
             return Ok(await addComment.Execute(request));
         }
@@ -108,7 +117,7 @@ namespace VikopApi.Api.Controllers
 
         [HttpPost]
         public async Task<IActionResult> AddSubComment(
-            SubCommentModel subComment,
+            [FromForm] SubCommentModel subComment,
             [FromServices] AddSubComment addSubComment)
         {
             var request = new AddSubComment.Request
@@ -116,7 +125,13 @@ namespace VikopApi.Api.Controllers
                 Content = subComment.Content,
                 CreatorId = _authManager.GetCurrentUserId(),
                 MainCommentId = subComment.CommentId,
+                Picture = ""
             };
+
+            if (subComment.Picture != null)
+            {
+                request.Picture = await _fileManager.SaveCommentPicture(subComment.Picture);
+            }
 
             return Ok(await addSubComment.Execute(request));
         }

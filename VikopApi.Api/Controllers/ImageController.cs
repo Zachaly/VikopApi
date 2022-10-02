@@ -21,5 +21,9 @@ namespace VikopApi.Api.Controllers
         [HttpGet("{findingId}")]
         public IActionResult FindingPicture(int findingId, [FromServices] GetFindingPicture getFindingPicture)
             => new FileStreamResult(_fileManager.GetFindingPicture(getFindingPicture.Execute(findingId)), "image/jpg");
+
+        [HttpGet("{commentId}")]
+        public IActionResult CommentPicture(int commentId, [FromServices] GetCommentPicture getCommentPicture)
+            => new FileStreamResult(_fileManager.GetCommentPicture(getCommentPicture.Execute(commentId)), "image/jpg");
     }
 }

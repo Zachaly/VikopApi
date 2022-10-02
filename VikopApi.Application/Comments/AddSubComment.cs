@@ -17,6 +17,7 @@
                 Content = request.Content,
                 Created = DateTime.Now,
                 CreatorId = request.CreatorId,
+                Picture = request.Picture,
             };
 
             var res = await _commentManager.AddComment(comment);
@@ -48,6 +49,7 @@
             public string CreatorId { get; set; }
             public string Content { get; set; }
             public int MainCommentId { get; set; }
+            public string? Picture { get; set; }
         }
 
         public class Response
