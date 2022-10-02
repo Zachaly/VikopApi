@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
+using VikopApi.Api.Infrastructure.BackgroundServices;
 using VikopApi.Api.Validators;
 using VikopApi.Database;
 using VikopApi.Domain.Models;
@@ -49,9 +50,12 @@ builder.Services.AddAuthentication(config => {
 builder.Services.AddApplicationInfrastucture();
 builder.Services.AddApplicationServices();
 
+builder.Services.AddSingleton<RankUpdater>();
+
+builder.Services.AddHostedService<RankUpdater>();
+
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
-
 builder.Services.AddControllers();
 
 builder.Services.AddCors();

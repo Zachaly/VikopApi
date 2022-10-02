@@ -5,6 +5,7 @@
         public int Id { get; set; }
         public string CreatorId { get; set; }
         public string CreatorName { get; set; }
+        public int CreatorRank { get; set; }
         public string Content { get; set; }
         public string Created { get; set; }
         public int Reactions { get; set; }
@@ -21,6 +22,7 @@
             Created = comment.Created.GetTime();
             CreatorId = comment.CreatorId;
             CreatorName = comment.Creator.UserName;
+            CreatorRank = (int)comment.Creator.Rank;
             Id = comment.Id;
             Reactions = comment.Reactions.SumReactions();
             HasPicture = !string.IsNullOrEmpty(comment.Picture);

@@ -17,6 +17,7 @@ namespace VikopApi.Application.Findings
             {
                 CreatorId = finding.CreatorId,
                 CreatorName = finding.Creator.UserName,
+                CreatorRank = (int)finding.Creator.Rank,
                 Description = finding.Description,
                 Id = finding.Id,
                 Link = finding.Link,
@@ -36,6 +37,7 @@ namespace VikopApi.Application.Findings
             public string Description { get; set; }
             public string CreatorId { get; set; }
             public string CreatorName { get; set; }
+            public int CreatorRank { get; set; }
             public string Link { get; set; }
             public string Created { get; set; }
             public IEnumerable<CommentModel> Comments { get; set; }

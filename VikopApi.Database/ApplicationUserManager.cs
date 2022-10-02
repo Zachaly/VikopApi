@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VikopApi.Domain.Infractructure;
 using VikopApi.Domain.Models;
+using VikopApi.Domain.Enums;
 
 namespace VikopApi.Database
 {
@@ -38,6 +39,34 @@ namespace VikopApi.Database
 
         public IEnumerable<T> GetUsers<T>(Func<ApplicationUser, T> selector)
             => _dbContext.Users.Select(selector);
+
+        public async Task<bool> UpdateRanks()
+        {
+            var users = _dbContext.Users.Where(user => (int)user.Rank < 2);
+
+            await users.ForEachAsync(user =>
+            {
+                var timeSinceCreation = DateTime.Now - user.Created;
+
+                if (timeSinceCreation.Days > 30 && user.Rank == Rank.Green)
+                {
+                    user.Rank = Rank.Orange;
+                }
+                else if(timeSinceCreation.Days > 365 && user.Rank == Rank.Orange)
+                {
+                    user.Rank = Rank.Red;
+                }
+            });
+
+            // added because SaveChangesAsync will be negative if there are no changes in context
+            if(!_dbContext.ChangeTracker.Entries()
+                .Any(entity => entity.State == EntityState.Modified))
+            {
+                return true;
+            }
+
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
 
         public async Task<bool> UpdateUser(string userId, Action<ApplicationUser> changes)
         {

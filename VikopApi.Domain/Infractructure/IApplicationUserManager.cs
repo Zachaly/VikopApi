@@ -9,5 +9,6 @@ namespace VikopApi.Domain.Infractructure
         IEnumerable<T> GetUserPosts<T>(string userId, Func<Post, T> selector);
         IEnumerable<T> GetUserFindings<T>(string userId, Func<Finding, T> selector);
         Task<bool> UpdateUser(string userId, Action<ApplicationUser> changes);
+        Task<bool> UpdateRanks();
     }
 }
