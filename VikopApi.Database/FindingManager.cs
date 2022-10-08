@@ -76,10 +76,12 @@ namespace VikopApi.Database
                 .Where(finding => finding.Id == id)
                 .Select(selector).FirstOrDefault();
 
-        public IEnumerable<T> GetAllFindings<T>(Func<Finding, T> selector)
+        public IEnumerable<T> GetAllFindings<T>(int pageIndex, int pageSize, Func<Finding, T> selector)
             => _dbContext.Findings.Include(finding => finding.Creator)
                 .Include(finding => finding.Comments)
                 .Include(finding => finding.Reactions)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
                 .Select(selector);
 
         public T GetUserReaction<T>(int findingId, string userId, Func<FindingReaction, T> selector)
@@ -88,15 +90,17 @@ namespace VikopApi.Database
                 .Select(selector)
                 .FirstOrDefault();
 
-        public IEnumerable<T> GetNewFindings<T>(Func<Finding, T> selector)
+        public IEnumerable<T> GetNewFindings<T>(int pageIndex, int pageSize, Func<Finding, T> selector)
              => _dbContext.Findings.Include(finding => finding.Creator)
                 .Include(finding => finding.Comments)
                 .Include(finding => finding.Reactions)
                 .OrderByDescending(finding => finding.Created)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
                 .Select(selector);
 
         // many things need to be included if finding value is determined also by comments
-        public IEnumerable<T> GetTopFindings<T>(Func<Finding, T> selector)
+        public IEnumerable<T> GetTopFindings<T>(int pageIndex, int pageSize, Func<Finding, T> selector)
             => _dbContext.Findings.Include(finding => finding.Creator)
                 .Include(finding => finding.Comments)
                 .ThenInclude(comment => comment.Comment)
@@ -109,6 +113,11 @@ namespace VikopApi.Database
                 .Include(finding => finding.Reactions)
                 .AsEnumerable()
                 .OrderByDescending(finding => finding.FindingValue())
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
                 .Select(selector);
+
+        public int GetPageCount(int pageSize)
+            => (int)Math.Ceiling(_dbContext.Findings.Count() / (decimal)pageSize);
     }
 }

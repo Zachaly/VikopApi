@@ -12,7 +12,8 @@ namespace VikopApi.Application.Findings
             _findingManager = findingManager;
         }
 
-        public IEnumerable<FindingListItemModel> Execute()
-            => _findingManager.GetTopFindings(finding => new FindingListItemModel(finding));
+        public IEnumerable<FindingListItemModel> Execute(int? pageIndex, int? pageSize)
+            => _findingManager.GetTopFindings(pageIndex ?? 0, pageSize ?? 100, 
+                finding => new FindingListItemModel(finding));
     }
 }

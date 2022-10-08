@@ -11,6 +11,13 @@ namespace VikopApi.Api.Controllers
     [Route("api/[controller]/[action]")]
     public class FindingController : ControllerBase
     {
+        private readonly int _pageSize;
+
+        public FindingController(IConfiguration config)
+        {
+            _pageSize = int.Parse(config["PageSize"]);
+        }
+
         /// <summary>
         /// Gets all findings
         /// </summary>
@@ -25,17 +32,17 @@ namespace VikopApi.Api.Controllers
         /// * commentCount
         /// * created - creation date
         /// </response>
-        [HttpGet]
-        public IActionResult GetAll([FromServices] GetFindings getFindings)
-            => Ok(getFindings.Execute());
+        [HttpGet("{pageIndex:int?}")]
+        public IActionResult All([FromServices] GetFindings getFindings, int? pageIndex = 0)
+            => Ok(getFindings.Execute(pageIndex, _pageSize));
 
-        [HttpGet]
-        public IActionResult New([FromServices] GetNewFindings getNewFindings)
-            => Ok(getNewFindings.Execute());
+        [HttpGet("{pageIndex?}")]
+        public IActionResult New([FromServices] GetNewFindings getNewFindings, int? pageIndex = 0)
+            => Ok(getNewFindings.Execute(pageIndex, _pageSize));
 
-        [HttpGet]
-        public IActionResult Hot([FromServices] GetTopFindings getTopFindings)
-            => Ok(getTopFindings.Execute());
+        [HttpGet("{pageIndex?}")]
+        public IActionResult Hot([FromServices] GetTopFindings getTopFindings, int? pageIndex = 0)
+            => Ok(getTopFindings.Execute(pageIndex, _pageSize));
 
         /// <summary>
         /// Gets finding with given id
@@ -79,6 +86,7 @@ namespace VikopApi.Api.Controllers
                     Description = request.Description,
                     Picture = await fileManager.SaveFindingPicture(request.Picture),
                 }));
+
         /// <summary>
         /// Adds reaction to finding
         /// </summary>
@@ -140,5 +148,12 @@ namespace VikopApi.Api.Controllers
             [FromServices] IAuthManager authManager,
             [FromServices] GetUserReaction getUserReaction)
             => Ok(getUserReaction.Execute(findingId, authManager.GetCurrentUserId()));
+
+        /// <summary>
+        /// Gets count of all finding pages
+        /// </summary>
+        [HttpGet]
+        public IActionResult PageCount([FromServices] GetPageCount getPageCount)
+            => Ok(getPageCount.Execute(_pageSize));
     }
 }

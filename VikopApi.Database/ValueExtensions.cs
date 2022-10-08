@@ -14,12 +14,11 @@ namespace VikopApi.Database
 
             @this.Comments
                 .Select(comment => comment.Comment).ToList()
-                .ForEach(comment => value += comment.CommentValue());
+                .ForEach(comment => value += comment.CommentValue() / 100);
 
             var timeFromCreation = DateTime.Now - @this.Created;
 
-            value -= timeFromCreation.Days * 500;
-            value -= timeFromCreation.Hours * 50;
+            value -= timeFromCreation.Days * 1000;
 
             return value;
         }
