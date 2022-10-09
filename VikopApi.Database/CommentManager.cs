@@ -110,43 +110,5 @@ namespace VikopApi.Database
                 .ThenInclude(comment => comment.Reactions)
                 .FirstOrDefault(comment => comment.Id == mainCommentId)?
                 .SubComments.Select(selector);
-
-        public async Task<bool> AddPost(Post post)
-        {
-            _dbContext.Posts.Add(post);
-
-            return await _dbContext.SaveChangesAsync() > 0;
-        }
-
-        public IEnumerable<T> GetPosts<T>(Func<Post, T> selector)
-            => _dbContext.Posts
-                .Include(post => post.Comment)
-                .ThenInclude(comment => comment.Creator)
-                .Include(post => post.Comment)
-                .ThenInclude(comment => comment.Reactions)
-                .Select(selector);
-
-        public IEnumerable<T> GetTopPosts<T>(Func<Post, T> selector)
-            => _dbContext.Posts
-                .Include(post => post.Comment)
-                .ThenInclude(comment => comment.Creator)
-                .Include(post => post.Comment)
-                .ThenInclude(comment => comment.Reactions)
-                .Include(post => post.Comment)
-                .ThenInclude(comment => comment.SubComments)
-                .ThenInclude(subcomment => subcomment.Comment)
-                .ThenInclude(subcomment => subcomment.Reactions)
-                .AsEnumerable()
-                .OrderByDescending(post => post.Comment.CommentValue())
-                .Select(selector);
-
-        public IEnumerable<T> GetNewPosts<T>(Func<Post, T> selector)
-            => _dbContext.Posts
-                .Include(post => post.Comment)
-                .ThenInclude(comment => comment.Creator)
-                .Include(post => post.Comment)
-                .ThenInclude(comment => comment.Reactions)
-                .OrderByDescending(post => post.Comment.Created)
-                .Select(selector);
     }
 }

@@ -18,6 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
             @this.AddScoped<ICommentManager, CommentManager>();
             @this.AddScoped<IAuthManager, AuthManager>();
             @this.AddScoped<IFileManager, FileManager>();
+            @this.AddScoped<IPostManager, PostManager>();
             return @this;
         }
     }
