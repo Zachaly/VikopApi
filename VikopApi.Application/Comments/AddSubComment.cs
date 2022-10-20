@@ -1,4 +1,5 @@
-﻿using VikopApi.Application.HelperModels;
+﻿using VikopApi.Application.Models;
+using VikopApi.Application.Models.Requests;
 
 namespace VikopApi.Application.Comments
 {

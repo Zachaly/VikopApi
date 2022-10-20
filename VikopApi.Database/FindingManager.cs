@@ -73,6 +73,8 @@ namespace VikopApi.Database
                 .Include(finding => finding.Comments)
                 .ThenInclude(comment => comment.Comment)
                 .ThenInclude(comment => comment.Reactions)
+                .Include(finding => finding.Tags)
+                .ThenInclude(tag => tag.Tag)
                 .Where(finding => finding.Id == id)
                 .Select(selector).FirstOrDefault();
 
@@ -80,6 +82,8 @@ namespace VikopApi.Database
             => _dbContext.Findings.Include(finding => finding.Creator)
                 .Include(finding => finding.Comments)
                 .Include(finding => finding.Reactions)
+                .Include(finding => finding.Tags)
+                .ThenInclude(tag => tag.Tag)
                 .Skip(pageIndex * pageSize)
                 .Take(pageSize)
                 .Select(selector);
@@ -94,6 +98,8 @@ namespace VikopApi.Database
              => _dbContext.Findings.Include(finding => finding.Creator)
                 .Include(finding => finding.Comments)
                 .Include(finding => finding.Reactions)
+                .Include(finding => finding.Tags)
+                .ThenInclude(tag => tag.Tag)
                 .OrderByDescending(finding => finding.Created)
                 .Skip(pageIndex * pageSize)
                 .Take(pageSize)
@@ -111,6 +117,8 @@ namespace VikopApi.Database
                 .ThenInclude(comment => comment.Comment)
                 .ThenInclude(comment => comment.Reactions)
                 .Include(finding => finding.Reactions)
+                .Include(finding => finding.Tags)
+                .ThenInclude(tag => tag.Tag)
                 .AsEnumerable()
                 .OrderByDescending(finding => finding.FindingValue())
                 .Skip(pageIndex * pageSize)

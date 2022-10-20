@@ -1,4 +1,6 @@
-﻿namespace VikopApi.Application
+﻿using VikopApi.Domain.Models.Abstractions;
+
+namespace VikopApi.Application
 {
     internal static class Extensions
     {

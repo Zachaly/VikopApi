@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions.Infrastructure;
 using VikopApi.Domain.Models;
 
 namespace VikopApi.Database
@@ -13,6 +14,9 @@ namespace VikopApi.Database
         public DbSet<CommentReaction> CommentReactions { get; set; }
         public DbSet<SubComment> SubComments { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<PostTag> PostTags { get; set; }
+        public DbSet<FindingTag> FindingTags { get; set; }
 
         public AppDbContext(DbContextOptions options) : base(options)
         {
@@ -62,6 +66,19 @@ namespace VikopApi.Database
                 .HasForeignKey(comment => comment.MainCommentId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<FindingTag>().HasKey(tag => new { tag.FindingId, tag.TagId });
+            builder.Entity<FindingTag>()
+                .HasOne(tag => tag.Finding)
+                .WithMany(finding => finding.Tags)
+                .HasForeignKey(tag => tag.FindingId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<PostTag>().HasKey(tag => new { tag.PostId, tag.TagId });
+            builder.Entity<PostTag>()
+                .HasOne(tag => tag.Post)
+                .WithMany(finding => finding.Tags)
+                .HasForeignKey(tag => tag.PostId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

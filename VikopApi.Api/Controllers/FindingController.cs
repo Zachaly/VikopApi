@@ -4,6 +4,7 @@ using VikopApi.Api.DTO;
 using VikopApi.Api.Infrastructure.AuthManager;
 using VikopApi.Api.Infrastructure.FileManager;
 using VikopApi.Application.Findings;
+using VikopApi.Application.Models.Requests;
 using VikopApi.Domain.Enums;
 
 namespace VikopApi.Api.Controllers
@@ -77,15 +78,19 @@ namespace VikopApi.Api.Controllers
             [FromForm] AddFindingModel request,
             [FromServices] AddFinding addFinding,
             [FromServices] IAuthManager authManager,
-            [FromServices] IFileManager fileManager) 
-            => Ok(await addFinding.Execute(new AddFinding.Request
-                {
-                    Title = request.Title,
-                    CreatorId = authManager.GetCurrentUserId(),
-                    Link = request.Link,
-                    Description = request.Description,
-                    Picture = await fileManager.SaveFindingPicture(request.Picture),
-                }));
+            [FromServices] IFileManager fileManager)
+        {
+            await addFinding.Execute(new AddFindingRequest
+            {
+                Title = request.Title,
+                CreatorId = authManager.GetCurrentUserId(),
+                Link = request.Link,
+                Description = request.Description,
+                Picture = await fileManager.SaveFindingPicture(request.Picture),
+            });
+
+           return Ok();
+        }
 
         /// <summary>
         /// Adds reaction to finding

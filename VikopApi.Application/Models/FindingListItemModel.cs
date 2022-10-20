@@ -1,4 +1,4 @@
-﻿namespace VikopApi.Application.HelperModels
+﻿namespace VikopApi.Application.Models
 {
     public class FindingListItemModel
     {
@@ -12,6 +12,7 @@
         public int CommentCount { get; set; }
         public string Created { get; set; }
         public int Reactions { get; set; }
+        public IEnumerable<Tag> TagList { get; set; }
 
         public FindingListItemModel()
         {
@@ -30,6 +31,7 @@
             CommentCount = finding.Comments.Count;
             Created = finding.Created.GetTime();
             Reactions = finding.Reactions.SumReactions();
+            TagList = finding.Tags.Select(tag => tag.Tag);
         }
     }
 }

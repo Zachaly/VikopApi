@@ -1,4 +1,4 @@
-﻿namespace VikopApi.Application.HelperModels
+﻿namespace VikopApi.Application.Models
 {
     public class CommentModel
     {

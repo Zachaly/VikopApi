@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using VikopApi.Api.DTO;
 using VikopApi.Api.Infrastructure.AuthManager;
 using VikopApi.Api.Infrastructure.FileManager;
+using VikopApi.Application.Models;
+using VikopApi.Application.Models.Requests;
 using VikopApi.Application.Posts;
 
 namespace VikopApi.Api.Controllers
@@ -22,11 +24,11 @@ namespace VikopApi.Api.Controllers
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> AddPost(
-            [FromForm] PostModel post,
+            [FromForm] DTO.PostModel post,
             [FromServices] AddPost addPost,
             [FromServices] IFileManager fileManager)
         {
-            var request = new AddPost.Request
+            var request = new AddPostRequest
             {
                 Content = post.Content,
                 CreatorId = _authManager.GetCurrentUserId(),

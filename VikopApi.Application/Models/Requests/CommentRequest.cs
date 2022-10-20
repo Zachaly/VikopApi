@@ -1,4 +1,4 @@
-﻿namespace VikopApi.Application.HelperModels
+﻿namespace VikopApi.Application.Models.Requests
 {
     public class CommentRequest
     {

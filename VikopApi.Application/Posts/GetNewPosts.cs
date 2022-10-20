@@ -1,4 +1,4 @@
-﻿using VikopApi.Application.HelperModels;
+﻿using VikopApi.Application.Models;
 
 namespace VikopApi.Application.Posts
 {
@@ -12,8 +12,12 @@ namespace VikopApi.Application.Posts
             _postManager = commentManager;
         }
 
-        public IEnumerable<CommentModel> Execute(int? pageIndex, int? pageSize)
+        public IEnumerable<PostModel> Execute(int? pageIndex, int? pageSize)
             => _postManager.GetNewPosts(pageIndex ?? 0, pageSize ?? 100,
-                post => new CommentModel(post.Comment));
+                post => new PostModel
+                {
+                    Content = new CommentModel(post.Comment),
+                    TagList = post.Tags.Select(tag => tag.Tag)
+                });
     }
 }

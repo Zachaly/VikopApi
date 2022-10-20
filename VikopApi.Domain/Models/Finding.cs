@@ -12,5 +12,6 @@
         public DateTime Created { get; set; }
         public ICollection<FindingComment> Comments { get; set; }
         public ICollection<FindingReaction> Reactions { get; set; }
+        public ICollection<FindingTag> Tags { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using VikopApi.Application.HelperModels;
+﻿using VikopApi.Application.Models;
 
 namespace VikopApi.Application.User
 {

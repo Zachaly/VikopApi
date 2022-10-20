@@ -1,6 +1,6 @@
 ﻿using VikopApi.Domain.Enums;
 
-namespace VikopApi.Domain.Models
+namespace VikopApi.Domain.Models.Abstractions
 {
     public interface IReaction
     {

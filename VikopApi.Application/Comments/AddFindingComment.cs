@@ -1,4 +1,6 @@
-﻿using VikopApi.Application.HelperModels;
+﻿using VikopApi.Application.Factories.Abstractions;
+using VikopApi.Application.Models;
+using VikopApi.Application.Models.Requests;
 
 namespace VikopApi.Application.Comments
 {
@@ -6,21 +8,17 @@ namespace VikopApi.Application.Comments
     public class AddFindingComment
     {
         private readonly ICommentManager _commentManager;
+        private readonly ICommentFactory _commentFactory;
 
-        public AddFindingComment(ICommentManager commentManager)
+        public AddFindingComment(ICommentManager commentManager, ICommentFactory commentFactory)
         {
             _commentManager = commentManager;
+            _commentFactory = commentFactory;
         }
 
         public async Task<CommentModel> Execute(Request request)
         {
-            var comment = new Comment
-            {
-                Content = request.Content,
-                Created = DateTime.Now,
-                CreatorId = request.CreatorId,
-                Picture = request.Picture
-            };
+            var comment = _commentFactory.Create(request);
 
             var res = await _commentManager.AddComment(comment);
 

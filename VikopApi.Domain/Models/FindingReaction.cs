@@ -1,4 +1,5 @@
 ﻿using VikopApi.Domain.Enums;
+using VikopApi.Domain.Models.Abstractions;
 
 namespace VikopApi.Domain.Models
 {
