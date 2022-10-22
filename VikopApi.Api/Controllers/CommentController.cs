@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VikopApi.Api.DTO;
-using VikopApi.Api.Infrastructure.AuthManager;
-using VikopApi.Api.Infrastructure.FileManager;
-using VikopApi.Application.Comments;
+using VikopApi.Application.Auth.Abstractions;
 using VikopApi.Application.Comments.Abstractions;
+using VikopApi.Application.Files.Abstractions;
 using VikopApi.Application.Models.Requests;
 using VikopApi.Application.Reactions.Abstractions;
 using VikopApi.Domain.Enums;
@@ -15,16 +14,16 @@ namespace VikopApi.Api.Controllers
     [Authorize]
     public class CommentController : ControllerBase
     {
-        private readonly IAuthManager _authManager;
-        private readonly IFileManager _fileManager;
+        private readonly IAuthService _authService;
+        private readonly IFileService _fileService;
         private readonly ICommentService _commentService;
         private readonly IReactionService _reactionService;
 
-        public CommentController(IAuthManager authManager, IFileManager fileManager,
+        public CommentController(IAuthService authManager, IFileService fileManager,
             ICommentService commentService, IReactionService reactionService)
         {
-            _authManager = authManager;
-            _fileManager = fileManager;
+            _authService = authManager;
+            _fileService = fileManager;
             _commentService = commentService;
             _reactionService = reactionService;
         }
@@ -47,14 +46,14 @@ namespace VikopApi.Api.Controllers
             var request = new AddFindingCommentRequest
             {
                 Content = commentModel.Content,
-                CreatorId = _authManager.GetCurrentUserId(),
+                CreatorId = _authService.GetCurrentUserId(),
                 FindingId = commentModel.FindingId,
                 Picture = ""
             };
 
             if(commentModel.Picture != null)
             {
-                request.Picture = await _fileManager.SaveCommentPicture(commentModel.Picture);
+                request.Picture = await _fileService.SaveCommentPicture(commentModel.Picture);
             }
 
             return Ok(await _commentService.AddFindingComment(request));
@@ -71,7 +70,7 @@ namespace VikopApi.Api.Controllers
             {
                 ObjectId = reactionModel.Id,
                 Reaction = (Reaction)reactionModel.Reaction,
-                UserId = _authManager.GetCurrentUserId(),
+                UserId = _authService.GetCurrentUserId(),
             };
 
             await _reactionService.AddCommentReaction(request);
@@ -90,7 +89,7 @@ namespace VikopApi.Api.Controllers
             {
                 ObjectId = reactionModel.Id,
                 Reaction = (Reaction)reactionModel.Reaction,
-                UserId = _authManager.GetCurrentUserId(),
+                UserId = _authService.GetCurrentUserId(),
             };
 
             await _reactionService.ChangeCommentReaction(request);
@@ -104,7 +103,7 @@ namespace VikopApi.Api.Controllers
         [HttpDelete("{commentId}")]
         public async Task<IActionResult> DeleteReaction(int commentId)
         {
-            await _reactionService.DeleteCommentReaction(commentId, _authManager.GetCurrentUserId());
+            await _reactionService.DeleteCommentReaction(commentId, _authService.GetCurrentUserId());
 
             return Ok();
         }
@@ -115,7 +114,7 @@ namespace VikopApi.Api.Controllers
         /// </summary>
         [HttpGet("{commentId}")]
         public IActionResult CurrentUserReaction(int commentId)
-            => Ok(_reactionService.GetCommentReaction(commentId, _authManager.GetCurrentUserId()));
+            => Ok(_reactionService.GetCommentReaction(commentId, _authService.GetCurrentUserId()));
 
 
         [HttpGet("{commentId}")]
@@ -129,14 +128,14 @@ namespace VikopApi.Api.Controllers
             var request = new AddSubcommentRequest
             {
                 Content = subComment.Content,
-                CreatorId = _authManager.GetCurrentUserId(),
+                CreatorId = _authService.GetCurrentUserId(),
                 MainCommentId = subComment.CommentId,
                 Picture = ""
             };
 
             if (subComment.Picture != null)
             {
-                request.Picture = await _fileManager.SaveCommentPicture(subComment.Picture);
+                request.Picture = await _fileService.SaveCommentPicture(subComment.Picture);
             }
 
             return Ok(await _commentService.AddSubcomment(request));
