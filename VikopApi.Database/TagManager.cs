@@ -3,6 +3,7 @@ using VikopApi.Domain.Models;
 
 namespace VikopApi.Database
 {
+    [Implementation(typeof(ITagManager))]
     public class TagManager : ITagManager
     {
         private readonly AppDbContext _dbContext;

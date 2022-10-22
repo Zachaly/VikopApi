@@ -1,16 +1,17 @@
 ﻿using FluentValidation;
 using VikopApi.Api.DTO;
 using VikopApi.Application.User;
+using VikopApi.Application.User.Abstractions;
 
 namespace VikopApi.Api.Validators
 {
     public class RegisterValidator : AbstractValidator<RegisterModel>
     {
-        private IsEmailOccupied _emailCheck;
+        private IUserService _userService;
 
-        public RegisterValidator(IsEmailOccupied emailOccupied)
+        public RegisterValidator(IUserService userService)
         {
-            _emailCheck = emailOccupied;
+            _userService = userService;
 
             RuleFor(model => model.Email)
                 .NotEmpty()
@@ -35,6 +36,6 @@ namespace VikopApi.Api.Validators
 
         }
 
-        private bool EmailCheck(string email) => !_emailCheck.Execute(email);
+        private bool EmailCheck(string email) => !_userService.IsEmailOccupied(email);
     }
 }

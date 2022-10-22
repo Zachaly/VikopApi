@@ -9,10 +9,6 @@ namespace VikopApi.Domain.Infractructure
         IEnumerable<T> GetNewFindings<T>(int pageIndex, int pageSize, Func<Finding, T> selector);
         IEnumerable<T> GetTopFindings<T>(int pageIndex, int pageSize, Func<Finding, T> selector);
         Task<bool> AddFinding(Finding finding);
-        Task<bool> AddReaction(FindingReaction reaction);
-        Task<bool> DeleteReaction(int findingId, string userId);
-        Task<bool> ChangeReaction(FindingReaction newReaction);
-        T GetUserReaction<T>(int findingId, string userId, Func<FindingReaction, T> selector);
         int GetPageCount(int pageSize);
     }
 }

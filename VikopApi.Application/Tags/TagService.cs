@@ -2,6 +2,7 @@
 
 namespace VikopApi.Application.Tags
 {
+    [Implementation(typeof(ITagService))]
     public class TagService : ITagService
     {
         private readonly ITagManager _tagManager;

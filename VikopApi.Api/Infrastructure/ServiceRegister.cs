@@ -1,27 +1,33 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using VikopApi.Api.Infrastructure.AuthManager;
 using VikopApi.Application;
+using VikopApi.Application.Comments;
+using VikopApi.Database;
+using VikopApi.Domain.Models;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceRegister
     {
-        /// <summary>
-        /// Registers classed marked as 'Service' in VikopApi.Application
-        /// </summary>
         public static IServiceCollection AddApplicationServices(this IServiceCollection @this)
         {
-            var serviceType = typeof(Service);
+            var types = new List<TypeInfo>();
+            types.AddRange(typeof(AppDbContext).Assembly.DefinedTypes);
+            types.AddRange(typeof(CommentFactory).Assembly.DefinedTypes);
+            types.AddRange(typeof(AuthManager).Assembly.DefinedTypes);
 
-            var definedTypes = serviceType.Assembly.DefinedTypes;
+            var services = types.
+                Where(type => type.GetTypeInfo().GetCustomAttribute<Implementation>() != null);
 
-            var services = definedTypes.
-                Where(type => type.GetTypeInfo().GetCustomAttribute<Service>() != null);
+            @this.AddHttpContextAccessor();
 
             foreach (var service in services)
             {
-                @this.AddTransient(service);
+                var attribute = service.GetCustomAttribute<Implementation>();
+                @this.AddScoped(attribute.Interface, service);
             }
-
             return @this;
         }
     }

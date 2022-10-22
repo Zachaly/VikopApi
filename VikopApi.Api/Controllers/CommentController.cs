@@ -4,6 +4,9 @@ using VikopApi.Api.DTO;
 using VikopApi.Api.Infrastructure.AuthManager;
 using VikopApi.Api.Infrastructure.FileManager;
 using VikopApi.Application.Comments;
+using VikopApi.Application.Comments.Abstractions;
+using VikopApi.Application.Models.Requests;
+using VikopApi.Application.Reactions.Abstractions;
 using VikopApi.Domain.Enums;
 
 namespace VikopApi.Api.Controllers
@@ -14,11 +17,16 @@ namespace VikopApi.Api.Controllers
     {
         private readonly IAuthManager _authManager;
         private readonly IFileManager _fileManager;
+        private readonly ICommentService _commentService;
+        private readonly IReactionService _reactionService;
 
-        public CommentController(IAuthManager authManager, IFileManager fileManager)
+        public CommentController(IAuthManager authManager, IFileManager fileManager,
+            ICommentService commentService, IReactionService reactionService)
         {
             _authManager = authManager;
             _fileManager = fileManager;
+            _commentService = commentService;
+            _reactionService = reactionService;
         }
 
         /// <summary>
@@ -34,10 +42,9 @@ namespace VikopApi.Api.Controllers
         /// </response>
         [HttpPost]
         public async Task<IActionResult> AddFindingComment(
-            [FromForm] FindingCommentModel commentModel,
-            [FromServices] AddFindingComment addComment)
+            [FromForm] FindingCommentModel commentModel)
         {
-            var request = new AddFindingComment.Request
+            var request = new AddFindingCommentRequest
             {
                 Content = commentModel.Content,
                 CreatorId = _authManager.GetCurrentUserId(),
@@ -50,7 +57,7 @@ namespace VikopApi.Api.Controllers
                 request.Picture = await _fileManager.SaveCommentPicture(commentModel.Picture);
             }
 
-            return Ok(await addComment.Execute(request));
+            return Ok(await _commentService.AddFindingComment(request));
         }
 
         /// <summary>
@@ -58,17 +65,18 @@ namespace VikopApi.Api.Controllers
         /// </summary>
         [HttpPost]
         public async Task<IActionResult> AddReaction(
-            ReactionModel reactionModel,
-            [FromServices] AddReaction addReaction)
+            ReactionModel reactionModel)
         {
-            var request = new AddReaction.Request
+            var request = new AddReactionRequest
             {
-                CommentId = reactionModel.Id,
+                ObjectId = reactionModel.Id,
                 Reaction = (Reaction)reactionModel.Reaction,
                 UserId = _authManager.GetCurrentUserId(),
             };
 
-            return Ok(await addReaction.Execute(request));
+            await _reactionService.AddCommentReaction(request);
+
+            return Ok();
         }
 
         /// <summary>
@@ -76,51 +84,49 @@ namespace VikopApi.Api.Controllers
         /// </summary>
         [HttpPut]
         public async Task<IActionResult> ChangeReaction(
-            ReactionModel reactionModel,
-            [FromServices] ChangeReaction changeReaction)
+            ReactionModel reactionModel)
         {
-            var request = new ChangeReaction.Request
+            var request = new AddReactionRequest
             {
-                CommentId = reactionModel.Id,
+                ObjectId = reactionModel.Id,
                 Reaction = (Reaction)reactionModel.Reaction,
                 UserId = _authManager.GetCurrentUserId(),
             };
 
-            return Ok(await changeReaction.Execute(request));
+            await _reactionService.ChangeCommentReaction(request);
+
+            return Ok();
         }
 
         /// <summary>
         /// Deletes current user's reaction
         /// </summary>
         [HttpDelete("{commentId}")]
-        public async Task<IActionResult> DeleteReaction(
-            int commentId,
-            [FromServices] DeleteReaction deleteReaction)
-            => Ok(await deleteReaction.Execute(commentId, _authManager.GetCurrentUserId()));
+        public async Task<IActionResult> DeleteReaction(int commentId)
+        {
+            await _reactionService.DeleteCommentReaction(commentId, _authManager.GetCurrentUserId());
+
+            return Ok();
+        }
+            
 
         /// <summary>
         /// Get current user's reaction of given comment
         /// </summary>
         [HttpGet("{commentId}")]
-        public IActionResult CurrentUserReaction(
-            int commentId,
-            [FromServices] GetUserReaction getUserReaction)
-            => Ok(getUserReaction.Execute(commentId, _authManager.GetCurrentUserId()));
+        public IActionResult CurrentUserReaction(int commentId)
+            => Ok(_reactionService.GetCommentReaction(commentId, _authManager.GetCurrentUserId()));
 
 
         [HttpGet("{commentId}")]
         [AllowAnonymous]
-        public IActionResult SubComments(
-            int commentId,
-            [FromServices] GetSubComments getSubComments)
-            => Ok(getSubComments.Execute(commentId));
+        public IActionResult SubComments(int commentId)
+            => Ok(_commentService.GetSubcomments(commentId));
 
         [HttpPost]
-        public async Task<IActionResult> AddSubComment(
-            [FromForm] SubCommentModel subComment,
-            [FromServices] AddSubComment addSubComment)
+        public async Task<IActionResult> AddSubComment([FromForm] SubCommentModel subComment)
         {
-            var request = new AddSubComment.Request
+            var request = new AddSubcommentRequest
             {
                 Content = subComment.Content,
                 CreatorId = _authManager.GetCurrentUserId(),
@@ -133,7 +139,7 @@ namespace VikopApi.Api.Controllers
                 request.Picture = await _fileManager.SaveCommentPicture(subComment.Picture);
             }
 
-            return Ok(await addSubComment.Execute(request));
+            return Ok(await _commentService.AddSubcomment(request));
         }
     }
 }

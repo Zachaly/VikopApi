@@ -48,9 +48,6 @@ builder.Services.AddAuthentication(config => {
     };
 });
 
-builder.Services.AddApplicationInfrastucture();
-builder.Services.AddFactiories();
-builder.Services.AddServices();
 builder.Services.AddApplicationServices();
 
 builder.Services.AddSingleton<RankUpdater>();

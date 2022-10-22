@@ -4,6 +4,7 @@ using VikopApi.Domain.Models;
 
 namespace VikopApi.Database
 {
+    [Implementation(typeof(IPostManager))]
     public class PostManager : IPostManager
     {
         private AppDbContext _dbContext;
