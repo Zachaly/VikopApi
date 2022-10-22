@@ -1,11 +1,12 @@
 ﻿using FluentValidation;
 using VikopApi.Api.DTO;
+using VikopApi.Application.Models.Requests;
 using VikopApi.Application.User;
 using VikopApi.Application.User.Abstractions;
 
 namespace VikopApi.Api.Validators
 {
-    public class RegisterValidator : AbstractValidator<RegisterModel>
+    public class RegisterValidator : AbstractValidator<AddUserRequest>
     {
         private IUserService _userService;
 
@@ -24,7 +25,7 @@ namespace VikopApi.Api.Validators
                 .NotEmpty()
                 .Length(10, 30)
                 .WithMessage("{PropertyName} must have between {MinLength} and {MaxLength} characters!")
-                .Matches("^[0-9a-zA-Z ]+$") // works for english, but does not let usage of contry specific characters like ł, cyrilic etc
+                .Matches("^[0-9a-zA-Z ]+$") // works for english, but does not let usage of country specific characters like ł, cyrilic etc
                 .WithMessage("{PropertyName} must consist of only alphanumeric characters!");
 
             RuleFor(model => model.Password)

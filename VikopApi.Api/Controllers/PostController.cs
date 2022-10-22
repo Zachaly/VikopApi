@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using VikopApi.Api.Infrastructure.AuthManager;
-using VikopApi.Api.Infrastructure.FileManager;
+using VikopApi.Application.Auth.Abstractions;
+using VikopApi.Application.Files.Abstractions;
 using VikopApi.Application.Models.Requests;
 using VikopApi.Application.Posts.Abstractions;
 using VikopApi.Domain.Enums;
@@ -11,17 +11,17 @@ namespace VikopApi.Api.Controllers
     [Route("api/[controller]/[action]")]
     public class PostController : ControllerBase
     {
-        private readonly IAuthManager _authManager;
+        private readonly IAuthService _authService;
         private readonly int _pageSize;
         private readonly IPostService _postService;
-        private readonly IFileManager _fileManager;
+        private readonly IFileService _fileService;
 
-        public PostController(IAuthManager authManager, IConfiguration config, IPostService postService, IFileManager fileManager)
+        public PostController(IAuthService authManager, IConfiguration config, IPostService postService, IFileService fileManager)
         {
-            _authManager = authManager;
+            _authService = authManager;
             _pageSize = int.Parse(config["PageSize"]);
             _postService = postService;
-            _fileManager = fileManager;
+            _fileService = fileManager;
         }
 
         [HttpPost]
@@ -31,14 +31,14 @@ namespace VikopApi.Api.Controllers
             var request = new AddPostRequest
             {
                 Content = post.Content,
-                CreatorId = _authManager.GetCurrentUserId(),
+                CreatorId = _authService.GetCurrentUserId(),
                 Picture = "",
                 Tags = post.Tags.Split(','),
             };
 
             if(post.Picture != null)
             {
-                request.Picture = await _fileManager.SaveCommentPicture(post.Picture);
+                request.Picture = await _fileService.SaveCommentPicture(post.Picture);
             }
 
             return Ok(await _postService.AddPost(request));

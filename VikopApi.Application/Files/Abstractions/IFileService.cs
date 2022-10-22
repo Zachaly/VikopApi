@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace VikopApi.Application.Files.Abstractions
 {
     public interface IFileService
     {
-        string GetCommentPicture(int id);
-        string GetFindingPicture(int id);
-        string GetProfilePicture(string id);
+        FileStream GetProfilePicture(string id);
+        FileStream GetFindingPicture(int id);
+        FileStream GetCommentPicture(int id);
+        Task<string> SaveFindingPicture(IFormFile file);
+        Task<string> SaveProfilePicture(IFormFile file);
+        Task<string> SaveCommentPicture(IFormFile file);
+        bool RemoveProfilePicture(string fileName);
+        bool RemoveFindingPicture(string fileName);
+        bool RemoveCommentPicture(string fileName);
     }
 }

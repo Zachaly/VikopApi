@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VikopApi.Api.DTO;
-using VikopApi.Api.Infrastructure.AuthManager;
-using VikopApi.Api.Infrastructure.FileManager;
-using VikopApi.Application.Findings;
+using VikopApi.Application.Auth.Abstractions;
+using VikopApi.Application.Files.Abstractions;
 using VikopApi.Application.Findings.Abstractions;
 using VikopApi.Application.Models.Requests;
 using VikopApi.Application.Reactions.Abstractions;
@@ -16,20 +15,20 @@ namespace VikopApi.Api.Controllers
     {
         private readonly int _pageSize;
         private readonly IFindingService _findingService;
-        private readonly IAuthManager _authManager;
-        private readonly IFileManager _fileManager;
+        private readonly IAuthService _authService;
+        private readonly IFileService _fileService;
         private readonly IReactionService _reactionService;
 
         public FindingController(IConfiguration config,
             IFindingService findingService,
-            IAuthManager authManager,
-            IFileManager fileManager,
+            IAuthService authManager,
+            IFileService fileService,
             IReactionService reactionService)
         {
             _pageSize = int.Parse(config["PageSize"]);
             _findingService = findingService;
-            _authManager = authManager;
-            _fileManager = fileManager;
+            _authService = authManager;
+            _fileService = fileService;
             _reactionService = reactionService;
         }
 
@@ -93,10 +92,10 @@ namespace VikopApi.Api.Controllers
             await _findingService.AddFinding(new AddFindingRequest
             {
                 Title = request.Title,
-                CreatorId = _authManager.GetCurrentUserId(),
+                CreatorId = _authService.GetCurrentUserId(),
                 Link = request.Link,
                 Description = request.Description,
-                Picture = await _fileManager.SaveFindingPicture(request.Picture),
+                Picture = await _fileService.SaveFindingPicture(request.Picture),
                 TagList = request.Tags.Split(',')
             });
 
@@ -114,7 +113,7 @@ namespace VikopApi.Api.Controllers
             {
                 ObjectId = reactionModel.Id,
                 Reaction = (Reaction)reactionModel.Reaction,
-                UserId = _authManager.GetCurrentUserId()
+                UserId = _authService.GetCurrentUserId()
             };
 
             await _reactionService.AddFindingReaction(request);
@@ -133,7 +132,7 @@ namespace VikopApi.Api.Controllers
             {
                 ObjectId = reactionModel.Id,
                 Reaction = (Reaction)reactionModel.Reaction,
-                UserId = _authManager.GetCurrentUserId()
+                UserId = _authService.GetCurrentUserId()
             };
 
             await _reactionService.ChangeFindingReaction(request);
@@ -148,7 +147,7 @@ namespace VikopApi.Api.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteReaction(int findingId)
         {
-            await _reactionService.DeleteFindingReaction(findingId, _authManager.GetCurrentUserId());
+            await _reactionService.DeleteFindingReaction(findingId, _authService.GetCurrentUserId());
 
             return Ok();
         }
@@ -160,7 +159,7 @@ namespace VikopApi.Api.Controllers
         [HttpGet("{findingId}")]
         [Authorize]
         public IActionResult CurrentUserReaction(int findingId)
-            => Ok(_reactionService.GetFindingReaction(findingId, _authManager.GetCurrentUserId()));
+            => Ok(_reactionService.GetFindingReaction(findingId, _authService.GetCurrentUserId()));
 
         /// <summary>
         /// Gets count of all finding pages

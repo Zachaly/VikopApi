@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using VikopApi.Api.Infrastructure.AuthManager;
 using VikopApi.Application;
 using VikopApi.Application.Comments;
 using VikopApi.Database;
@@ -16,7 +15,6 @@ namespace Microsoft.Extensions.DependencyInjection
             var types = new List<TypeInfo>();
             types.AddRange(typeof(AppDbContext).Assembly.DefinedTypes);
             types.AddRange(typeof(CommentFactory).Assembly.DefinedTypes);
-            types.AddRange(typeof(AuthManager).Assembly.DefinedTypes);
 
             var services = types.
                 Where(type => type.GetTypeInfo().GetCustomAttribute<Implementation>() != null);
