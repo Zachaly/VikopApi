@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using VikopApi.Api.DTO;
 using VikopApi.Api.Infrastructure.AuthManager;
 using VikopApi.Api.Infrastructure.FileManager;
-using VikopApi.Application.Models;
 using VikopApi.Application.Models.Requests;
 using VikopApi.Application.Posts;
 
@@ -32,7 +30,8 @@ namespace VikopApi.Api.Controllers
             {
                 Content = post.Content,
                 CreatorId = _authManager.GetCurrentUserId(),
-                Picture = ""
+                Picture = "",
+                Tags = post.Tags.Split(','),
             };
 
             if(post.Picture != null)

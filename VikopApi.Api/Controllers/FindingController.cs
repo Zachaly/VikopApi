@@ -87,6 +87,7 @@ namespace VikopApi.Api.Controllers
                 Link = request.Link,
                 Description = request.Description,
                 Picture = await fileManager.SaveFindingPicture(request.Picture),
+                TagList = request.Tags.Split(',')
             });
 
            return Ok();

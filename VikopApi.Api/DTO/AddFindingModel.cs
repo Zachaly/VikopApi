@@ -6,5 +6,6 @@
         public string Description { get; set; }
         public string Link { get; set; }
         public IFormFile? Picture { get; set; }
+        public string Tags { get; set; }
     }
 }
