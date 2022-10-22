@@ -4,7 +4,9 @@ using VikopApi.Api.DTO;
 using VikopApi.Api.Infrastructure.AuthManager;
 using VikopApi.Api.Infrastructure.FileManager;
 using VikopApi.Application.Findings;
+using VikopApi.Application.Findings.Abstractions;
 using VikopApi.Application.Models.Requests;
+using VikopApi.Application.Reactions.Abstractions;
 using VikopApi.Domain.Enums;
 
 namespace VikopApi.Api.Controllers
@@ -13,10 +15,22 @@ namespace VikopApi.Api.Controllers
     public class FindingController : ControllerBase
     {
         private readonly int _pageSize;
+        private readonly IFindingService _findingService;
+        private readonly IAuthManager _authManager;
+        private readonly IFileManager _fileManager;
+        private readonly IReactionService _reactionService;
 
-        public FindingController(IConfiguration config)
+        public FindingController(IConfiguration config,
+            IFindingService findingService,
+            IAuthManager authManager,
+            IFileManager fileManager,
+            IReactionService reactionService)
         {
             _pageSize = int.Parse(config["PageSize"]);
+            _findingService = findingService;
+            _authManager = authManager;
+            _fileManager = fileManager;
+            _reactionService = reactionService;
         }
 
         /// <summary>
@@ -34,16 +48,16 @@ namespace VikopApi.Api.Controllers
         /// * created - creation date
         /// </response>
         [HttpGet("{pageIndex:int?}")]
-        public IActionResult All([FromServices] GetFindings getFindings, int? pageIndex = 0)
-            => Ok(getFindings.Execute(pageIndex, _pageSize));
+        public IActionResult All(int? pageIndex = 0)
+            => Ok(_findingService.GetFindings(null, pageIndex, _pageSize));
 
         [HttpGet("{pageIndex?}")]
-        public IActionResult New([FromServices] GetNewFindings getNewFindings, int? pageIndex = 0)
-            => Ok(getNewFindings.Execute(pageIndex, _pageSize));
+        public IActionResult New(int? pageIndex = 0)
+            => Ok(_findingService.GetFindings(SortingType.New, pageIndex, _pageSize));
 
         [HttpGet("{pageIndex?}")]
-        public IActionResult Hot([FromServices] GetTopFindings getTopFindings, int? pageIndex = 0)
-            => Ok(getTopFindings.Execute(pageIndex, _pageSize));
+        public IActionResult Hot(int? pageIndex = 0)
+            => Ok(_findingService.GetFindings(SortingType.Top, pageIndex, _pageSize));
 
         /// <summary>
         /// Gets finding with given id
@@ -66,27 +80,23 @@ namespace VikopApi.Api.Controllers
         ///     - creatorId
         /// </response>
         [HttpGet("{id}")]
-        public IActionResult Get(int id, [FromServices] GetFinding getFinding)
-            => Ok(getFinding.Execute(id));
+        public IActionResult Get(int id)
+            => Ok(_findingService.GetFindingById(id));
 
         /// <summary>
         /// Adds new finding
         /// </summary>
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Add(
-            [FromForm] AddFindingModel request,
-            [FromServices] AddFinding addFinding,
-            [FromServices] IAuthManager authManager,
-            [FromServices] IFileManager fileManager)
+        public async Task<IActionResult> Add([FromForm] AddFindingModel request)
         {
-            await addFinding.Execute(new AddFindingRequest
+            await _findingService.AddFinding(new AddFindingRequest
             {
                 Title = request.Title,
-                CreatorId = authManager.GetCurrentUserId(),
+                CreatorId = _authManager.GetCurrentUserId(),
                 Link = request.Link,
                 Description = request.Description,
-                Picture = await fileManager.SaveFindingPicture(request.Picture),
+                Picture = await _fileManager.SaveFindingPicture(request.Picture),
                 TagList = request.Tags.Split(',')
             });
 
@@ -98,19 +108,18 @@ namespace VikopApi.Api.Controllers
         /// </summary>
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddReaction(
-            ReactionModel reactionModel,
-            [FromServices] AddReaction addReaction,
-            [FromServices] IAuthManager authManager)
+        public async Task<IActionResult> AddReaction(ReactionModel reactionModel)
         {
-            var request = new AddReaction.Request
+            var request = new AddReactionRequest
             {
-                FindingId = reactionModel.Id,
+                ObjectId = reactionModel.Id,
                 Reaction = (Reaction)reactionModel.Reaction,
-                UserId = authManager.GetCurrentUserId()
+                UserId = _authManager.GetCurrentUserId()
             };
 
-            return Ok(await addReaction.Execute(request));
+            await _reactionService.AddFindingReaction(request);
+
+            return Ok();
         }
 
         /// <summary>
@@ -118,19 +127,18 @@ namespace VikopApi.Api.Controllers
         /// </summary>
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> ChangeReaction(
-            ReactionModel reactionModel,
-            [FromServices] ChangeReaction addReaction,
-            [FromServices] IAuthManager authManager)
+        public async Task<IActionResult> ChangeReaction(ReactionModel reactionModel)
         {
-            var request = new ChangeReaction.Request
+            var request = new AddReactionRequest
             {
-                FindingId = reactionModel.Id,
+                ObjectId = reactionModel.Id,
                 Reaction = (Reaction)reactionModel.Reaction,
-                UserId = authManager.GetCurrentUserId()
+                UserId = _authManager.GetCurrentUserId()
             };
 
-            return Ok(await addReaction.Execute(request));
+            await _reactionService.ChangeFindingReaction(request);
+
+            return Ok();
         }
 
         /// <summary>
@@ -138,28 +146,27 @@ namespace VikopApi.Api.Controllers
         /// </summary>
         [HttpDelete("{findingId}")]
         [Authorize]
-        public async Task<IActionResult> DeleteReaction(
-            int findingId,
-            [FromServices] DeleteReaction deleteReaction,
-            [FromServices] IAuthManager authManager)
-            => Ok(await deleteReaction.Execute(findingId, authManager.GetCurrentUserId()));
+        public async Task<IActionResult> DeleteReaction(int findingId)
+        {
+            await _reactionService.DeleteFindingReaction(findingId, _authManager.GetCurrentUserId());
+
+            return Ok();
+        }
+            
 
         /// <summary>
         /// Get current user's reaction of given finding
         /// </summary>
         [HttpGet("{findingId}")]
         [Authorize]
-        public IActionResult CurrentUserReaction(
-            int findingId,
-            [FromServices] IAuthManager authManager,
-            [FromServices] GetUserReaction getUserReaction)
-            => Ok(getUserReaction.Execute(findingId, authManager.GetCurrentUserId()));
+        public IActionResult CurrentUserReaction(int findingId)
+            => Ok(_reactionService.GetFindingReaction(findingId, _authManager.GetCurrentUserId()));
 
         /// <summary>
         /// Gets count of all finding pages
         /// </summary>
         [HttpGet]
-        public IActionResult PageCount([FromServices] GetPageCount getPageCount)
-            => Ok(getPageCount.Execute(_pageSize));
+        public IActionResult PageCount()
+            => Ok(_findingService.GetPageCount(_pageSize));
     }
 }

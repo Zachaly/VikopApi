@@ -5,6 +5,7 @@ using VikopApi.Domain.Enums;
 
 namespace VikopApi.Database
 {
+    [Implementation(typeof(IApplicationUserManager))]
     public class ApplicationUserManager : IApplicationUserManager
     {
         private readonly AppDbContext _dbContext;

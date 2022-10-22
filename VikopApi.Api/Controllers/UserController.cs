@@ -7,7 +7,9 @@ using VikopApi.Api.DTO;
 using VikopApi.Api.Infrastructure.AuthManager;
 using VikopApi.Api.Infrastructure.FileManager;
 using VikopApi.Application.Files;
-using VikopApi.Application.User;
+using VikopApi.Application.Files.Abstractions;
+using VikopApi.Application.Models.Requests;
+using VikopApi.Application.User.Abstractions;
 using VikopApi.Domain.Models;
 
 namespace VikopApi.Api.Controllers
@@ -18,13 +20,17 @@ namespace VikopApi.Api.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IAuthManager _authManager;
         private readonly string _placeholderImage;
+        private readonly IUserService _userService;
+        private readonly IFileService _fileService;
 
         public UserController(UserManager<ApplicationUser> userManager, IAuthManager authManager,
-            IConfiguration config)
+            IConfiguration config, IUserService userService, IFileService fileService)
         {
             _userManager = userManager;
             _authManager = authManager;
             _placeholderImage = config["Image:Placeholder"];
+            _userService = userService;
+            _fileService = fileService;
         }
 
         /// <summary>
@@ -69,23 +75,23 @@ namespace VikopApi.Api.Controllers
         /// Returns list of all users
         /// </summary>
         [HttpGet]
-        public IActionResult Users([FromServices] GetUsers getUsers)
-            => Ok(getUsers.Execute());
+        public IActionResult Users()
+            => Ok(_userService.GetUsers());
 
         /// <summary>
         /// Returns user with given id
         /// </summary>
         [HttpGet("{id}")]
-        public IActionResult Profile(string id, [FromServices] GetUser getUser)
-            => Ok(getUser.Execute(id));
+        public IActionResult Profile(string id)
+            => Ok(_userService.GetUserById(id));
 
         [HttpGet("{id}")]
-        public IActionResult Posts(string id, [FromServices] GetUserPosts getUserPosts)
-            => Ok(getUserPosts.Execute(id));
+        public IActionResult Posts(string id)
+            => Ok(_userService.GetUserPosts(id));
 
         [HttpGet("{id}")]
-        public IActionResult Findings(string id, [FromServices] GetUserFindings getUserFindings)
-            => Ok(getUserFindings.Execute(id));
+        public IActionResult Findings(string id)
+            => Ok(_userService.GetUserFindings(id));
 
         /// <summary>
         /// User login
@@ -124,11 +130,9 @@ namespace VikopApi.Api.Controllers
         [Authorize]
         public async Task<IActionResult> Update(
             [FromForm] UpdateUserModel model,
-            [FromServices] UpdateUser updateUser,
-            [FromServices] IFileManager fileManager,
-            [FromServices] GetProfilePicture getProfilePicture)
+            [FromServices] IFileManager fileManager)
         {
-            var request = new UpdateUser.Request
+            var request = new UpdateUserRequest
             {
                 UserName = model.Username,
                 Id = _authManager.GetCurrentUserId(),
@@ -137,11 +141,11 @@ namespace VikopApi.Api.Controllers
 
             if(model.ProfilePicture != null)
             {
-                fileManager.RemoveProfilePicture(getProfilePicture.Execute(request.Id));
+                fileManager.RemoveProfilePicture(_fileService.GetProfilePicture(request.Id));
                 request.Picture = await fileManager.SaveProfilePicture(model.ProfilePicture);
             }
-
-            return Ok(await updateUser.Execute(request));
+            await _userService.UpdateUser(request);
+            return Ok();
         }
     }
 }

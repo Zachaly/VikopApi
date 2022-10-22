@@ -2,6 +2,7 @@
 
 namespace VikopApi.Application.Tags
 {
+    [Implementation(typeof(ITagFactory))]
     public class TagFactory : ITagFactory
     {
         public IEnumerable<Tag> Create(IEnumerable<string> tags)

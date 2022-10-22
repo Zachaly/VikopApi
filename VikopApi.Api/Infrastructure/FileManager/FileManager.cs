@@ -1,5 +1,8 @@
-﻿namespace VikopApi.Api.Infrastructure.FileManager
+﻿using VikopApi.Domain.Models;
+
+namespace VikopApi.Api.Infrastructure.FileManager
 {
+    [Implementation(typeof(IFileManager))]
     public class FileManager : IFileManager
     {
         private readonly string _profilePicturePath;

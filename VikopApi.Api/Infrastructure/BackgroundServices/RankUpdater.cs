@@ -1,4 +1,4 @@
-﻿using VikopApi.Application.User;
+﻿using VikopApi.Application.User.Abstractions;
 
 namespace VikopApi.Api.Infrastructure.BackgroundServices
 {
@@ -16,10 +16,10 @@ namespace VikopApi.Api.Infrastructure.BackgroundServices
         {
             using (var scope = _serviceProvider.CreateScope())
             {
-                var updateRank = scope.ServiceProvider.GetRequiredService<UpdateRanks>();
+                var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    var res = await updateRank.Execute();
+                    var res = await userService.UpdateRanks();
                     Console.WriteLine($"Ranks updated: {res}");
                     await Task.Delay(delay, stoppingToken);
                 }
