@@ -1,6 +1,10 @@
-﻿namespace VikopApi.Api.DTO
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
+using VikopApi.Application.Models;
+
+namespace VikopApi.Mediator.Requests
 {
-    public class AddFindingModel
+    public class AddFindingQuery : IRequest<Unit>
     {
         public string Title { get; set; }
         public string Description { get; set; }

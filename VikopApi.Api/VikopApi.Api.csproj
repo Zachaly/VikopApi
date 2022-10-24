@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.2" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.8">
@@ -25,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\VikopApi.Application\VikopApi.Application.csproj" />
     <ProjectReference Include="..\VikopApi.Database\VikopApi.Database.csproj" />
+    <ProjectReference Include="..\VikopApi.Mediator\VikopApi.Mediator.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using VikopApi.Api.DTO;
 using VikopApi.Application.Auth.Abstractions;
 using VikopApi.Application.Comments.Abstractions;
-using VikopApi.Application.Files.Abstractions;
-using VikopApi.Application.Models.Requests;
 using VikopApi.Application.Reactions.Abstractions;
-using VikopApi.Domain.Enums;
+using VikopApi.Mediator.Requests;
 
 namespace VikopApi.Api.Controllers
 {
@@ -14,18 +12,13 @@ namespace VikopApi.Api.Controllers
     [Authorize]
     public class CommentController : ControllerBase
     {
-        private readonly IAuthService _authService;
-        private readonly IFileService _fileService;
         private readonly ICommentService _commentService;
-        private readonly IReactionService _reactionService;
+        private readonly IMediator _mediator;
 
-        public CommentController(IAuthService authManager, IFileService fileManager,
-            ICommentService commentService, IReactionService reactionService)
+        public CommentController(ICommentService commentService, IMediator mediator)
         {
-            _authService = authManager;
-            _fileService = fileManager;
             _commentService = commentService;
-            _reactionService = reactionService;
+            _mediator = mediator;
         }
 
         /// <summary>
@@ -41,104 +34,24 @@ namespace VikopApi.Api.Controllers
         /// </response>
         [HttpPost]
         public async Task<IActionResult> AddFindingComment(
-            [FromForm] FindingCommentModel commentModel)
+            [FromForm] AddFindingCommentQuery request)
         {
-            var request = new AddFindingCommentRequest
-            {
-                Content = commentModel.Content,
-                CreatorId = _authService.GetCurrentUserId(),
-                FindingId = commentModel.FindingId,
-                Picture = ""
-            };
+            var res = await _mediator.Send(request);
 
-            if(commentModel.Picture != null)
-            {
-                request.Picture = await _fileService.SaveCommentPicture(commentModel.Picture);
-            }
-
-            return Ok(await _commentService.AddFindingComment(request));
-        }
-
-        /// <summary>
-        /// Adds reaction to comment
-        /// </summary>
-        [HttpPost]
-        public async Task<IActionResult> AddReaction(
-            ReactionModel reactionModel)
-        {
-            var request = new AddReactionRequest
-            {
-                ObjectId = reactionModel.Id,
-                Reaction = (Reaction)reactionModel.Reaction,
-                UserId = _authService.GetCurrentUserId(),
-            };
-
-            await _reactionService.AddCommentReaction(request);
-
-            return Ok();
-        }
-
-        /// <summary>
-        /// Changes reaction of current user to given comment
-        /// </summary>
-        [HttpPut]
-        public async Task<IActionResult> ChangeReaction(
-            ReactionModel reactionModel)
-        {
-            var request = new AddReactionRequest
-            {
-                ObjectId = reactionModel.Id,
-                Reaction = (Reaction)reactionModel.Reaction,
-                UserId = _authService.GetCurrentUserId(),
-            };
-
-            await _reactionService.ChangeCommentReaction(request);
-
-            return Ok();
-        }
-
-        /// <summary>
-        /// Deletes current user's reaction
-        /// </summary>
-        [HttpDelete("{commentId}")]
-        public async Task<IActionResult> DeleteReaction(int commentId)
-        {
-            await _reactionService.DeleteCommentReaction(commentId, _authService.GetCurrentUserId());
-
-            return Ok();
+            return Ok(res);
         }
             
-
-        /// <summary>
-        /// Get current user's reaction of given comment
-        /// </summary>
-        [HttpGet("{commentId}")]
-        public IActionResult CurrentUserReaction(int commentId)
-            => Ok(_reactionService.GetCommentReaction(commentId, _authService.GetCurrentUserId()));
-
-
         [HttpGet("{commentId}")]
         [AllowAnonymous]
         public IActionResult SubComments(int commentId)
             => Ok(_commentService.GetSubcomments(commentId));
 
         [HttpPost]
-        public async Task<IActionResult> AddSubComment([FromForm] SubCommentModel subComment)
+        public async Task<IActionResult> AddSubComment([FromForm] AddSubcommentQuery request)
         {
-            var request = new AddSubcommentRequest
-            {
-                Content = subComment.Content,
-                CreatorId = _authService.GetCurrentUserId(),
-                MainCommentId = subComment.CommentId,
-                Picture = ""
-            };
+            var res = await _mediator.Send(request);
 
-            if (subComment.Picture != null)
-            {
-                request.Picture = await _fileService.SaveCommentPicture(subComment.Picture);
-            }
-
-            return Ok(await _commentService.AddSubcomment(request));
+            return Ok(res);
         }
     }
 }

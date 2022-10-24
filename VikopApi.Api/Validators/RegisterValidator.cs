@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using VikopApi.Api.DTO;
 using VikopApi.Application.Models.Requests;
 using VikopApi.Application.User;
 using VikopApi.Application.User.Abstractions;
