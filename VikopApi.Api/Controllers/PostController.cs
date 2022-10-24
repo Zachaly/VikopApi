@@ -1,47 +1,33 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using VikopApi.Application.Auth.Abstractions;
-using VikopApi.Application.Files.Abstractions;
-using VikopApi.Application.Models.Requests;
 using VikopApi.Application.Posts.Abstractions;
 using VikopApi.Domain.Enums;
+using VikopApi.Mediator.Requests;
 
 namespace VikopApi.Api.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class PostController : ControllerBase
     {
-        private readonly IAuthService _authService;
         private readonly int _pageSize;
         private readonly IPostService _postService;
-        private readonly IFileService _fileService;
+        private readonly IMediator _mediator;
 
-        public PostController(IAuthService authManager, IConfiguration config, IPostService postService, IFileService fileManager)
+        public PostController(IConfiguration config, IPostService postService, IMediator mediator)
         {
-            _authService = authManager;
             _pageSize = int.Parse(config["PageSize"]);
             _postService = postService;
-            _fileService = fileManager;
+            _mediator = mediator;
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddPost([FromForm] DTO.PostModel post)
+        public async Task<IActionResult> AddPost([FromForm] AddPostQuery request)
         {
-            var request = new AddPostRequest
-            {
-                Content = post.Content,
-                CreatorId = _authService.GetCurrentUserId(),
-                Picture = "",
-                Tags = post.Tags.Split(','),
-            };
+            var res = await _mediator.Send(request);
 
-            if(post.Picture != null)
-            {
-                request.Picture = await _fileService.SaveCommentPicture(post.Picture);
-            }
-
-            return Ok(await _postService.AddPost(request));
+            return Ok(res);
         }
 
         [HttpGet("{pageIndex:int?}")]

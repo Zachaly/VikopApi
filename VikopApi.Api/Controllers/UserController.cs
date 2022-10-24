@@ -1,29 +1,27 @@
 ﻿using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using VikopApi.Api.DTO;
 using VikopApi.Application.Auth.Abstractions;
-using VikopApi.Application.Files.Abstractions;
 using VikopApi.Application.Models.Requests;
 using VikopApi.Application.User.Abstractions;
-using VikopApi.Domain.Models;
+using VikopApi.Mediator.Requests;
 
 namespace VikopApi.Api.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserService _userService;
         private readonly IAuthService _authService;
+        private readonly IMediator _mediator;
 
-        public UserController(UserManager<ApplicationUser> userManager, IUserService userService, IAuthService authService)
+        public UserController(IUserService userService, IAuthService authService,
+            IMediator mediator)
         {
-            _userManager = userManager;
             _userService = userService;
             _authService = authService;
+            _mediator = mediator;
         }
 
         /// <summary>
@@ -80,25 +78,14 @@ namespace VikopApi.Api.Controllers
         /// </summary>
         /// <returns>JWT Token</returns>
         [HttpPost]
-        public async Task<IActionResult> Login(LoginModel loginModel)
+        public async Task<IActionResult> Login(LoginQuery request)
         {
-            var user = await _userManager.FindByEmailAsync(loginModel.Email);
+            var res = await _mediator.Send(request);
 
-            if(user is null)
-            {
-                return BadRequest("Email or password is incorrect!");
-            }
+            if (res.Error)
+                return BadRequest(res.Errors);
 
-            if(!await _userManager.CheckPasswordAsync(user, loginModel.Password))
-            {
-                return BadRequest("Email or password is incorrect!");
-            }
-
-            var token = await _authService.GetToken(user);
-
-            var tokenJson = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return Ok(tokenJson);
+            return Ok(res.Token);
         }
 
         /// <summary>
@@ -110,24 +97,9 @@ namespace VikopApi.Api.Controllers
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> Update(
-            [FromForm] UpdateUserModel model,
-            [FromServices] IFileService fileManager)
+        public async Task<IActionResult> Update(UpdateUserCommand updateUserCommand)
         {
-            var request = new UpdateUserRequest
-            {
-                UserName = model.Username,
-                Id = _authService.GetCurrentUserId(),
-                Picture = ""
-            };
-
-            if(model.ProfilePicture != null)
-            {
-                fileManager.RemoveProfilePicture(request.Id);
-                request.Picture = await fileManager.SaveProfilePicture(model.ProfilePicture);
-            }
-
-            await _userService.UpdateUser(request);
+            await _mediator.Send(updateUserCommand);
             return Ok();
         }
     }

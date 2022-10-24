@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using VikopApi.Api.DTO;
 using VikopApi.Application.Auth.Abstractions;
 using VikopApi.Application.Files.Abstractions;
 using VikopApi.Application.Findings.Abstractions;
 using VikopApi.Application.Models.Requests;
 using VikopApi.Application.Reactions.Abstractions;
 using VikopApi.Domain.Enums;
+using VikopApi.Mediator.Requests;
 
 namespace VikopApi.Api.Controllers
 {
@@ -15,21 +16,15 @@ namespace VikopApi.Api.Controllers
     {
         private readonly int _pageSize;
         private readonly IFindingService _findingService;
-        private readonly IAuthService _authService;
-        private readonly IFileService _fileService;
-        private readonly IReactionService _reactionService;
+        private readonly IMediator _mediator;
 
         public FindingController(IConfiguration config,
             IFindingService findingService,
-            IAuthService authManager,
-            IFileService fileService,
-            IReactionService reactionService)
+            IMediator mediator)
         {
             _pageSize = int.Parse(config["PageSize"]);
             _findingService = findingService;
-            _authService = authManager;
-            _fileService = fileService;
-            _reactionService = reactionService;
+            _mediator = mediator;
         }
 
         /// <summary>
@@ -87,79 +82,12 @@ namespace VikopApi.Api.Controllers
         /// </summary>
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Add([FromForm] AddFindingModel request)
+        public async Task<IActionResult> Add([FromForm] AddFindingQuery request)
         {
-            await _findingService.AddFinding(new AddFindingRequest
-            {
-                Title = request.Title,
-                CreatorId = _authService.GetCurrentUserId(),
-                Link = request.Link,
-                Description = request.Description,
-                Picture = await _fileService.SaveFindingPicture(request.Picture),
-                TagList = request.Tags.Split(',')
-            });
+            await _mediator.Send(request);
 
            return Ok();
         }
-
-        /// <summary>
-        /// Adds reaction to finding
-        /// </summary>
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> AddReaction(ReactionModel reactionModel)
-        {
-            var request = new AddReactionRequest
-            {
-                ObjectId = reactionModel.Id,
-                Reaction = (Reaction)reactionModel.Reaction,
-                UserId = _authService.GetCurrentUserId()
-            };
-
-            await _reactionService.AddFindingReaction(request);
-
-            return Ok();
-        }
-
-        /// <summary>
-        /// Changes reaction of current user 
-        /// </summary>
-        [HttpPut]
-        [Authorize]
-        public async Task<IActionResult> ChangeReaction(ReactionModel reactionModel)
-        {
-            var request = new AddReactionRequest
-            {
-                ObjectId = reactionModel.Id,
-                Reaction = (Reaction)reactionModel.Reaction,
-                UserId = _authService.GetCurrentUserId()
-            };
-
-            await _reactionService.ChangeFindingReaction(request);
-
-            return Ok();
-        }
-
-        /// <summary>
-        /// Removes reaction of current user
-        /// </summary>
-        [HttpDelete("{findingId}")]
-        [Authorize]
-        public async Task<IActionResult> DeleteReaction(int findingId)
-        {
-            await _reactionService.DeleteFindingReaction(findingId, _authService.GetCurrentUserId());
-
-            return Ok();
-        }
-            
-
-        /// <summary>
-        /// Get current user's reaction of given finding
-        /// </summary>
-        [HttpGet("{findingId}")]
-        [Authorize]
-        public IActionResult CurrentUserReaction(int findingId)
-            => Ok(_reactionService.GetFindingReaction(findingId, _authService.GetCurrentUserId()));
 
         /// <summary>
         /// Gets count of all finding pages
