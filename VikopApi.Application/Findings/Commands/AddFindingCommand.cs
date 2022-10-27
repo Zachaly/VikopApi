@@ -1,13 +1,22 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using VikopApi.Application.Auth.Abstractions;
 using VikopApi.Application.Files.Abstractions;
 using VikopApi.Application.Findings.Abstractions;
 using VikopApi.Application.Models.Requests;
-using VikopApi.Mediator.Requests;
 
-namespace VikopApi.Mediator.Handlers
+namespace VikopApi.Application.Findings.Commands
 {
-    public class AddFindingHandler : IRequestHandler<AddFindingQuery>
+    public class AddFindingCommand : IRequest<Unit>
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Link { get; set; }
+        public IFormFile? Picture { get; set; }
+        public string Tags { get; set; }
+    }
+
+    public class AddFindingHandler : IRequestHandler<AddFindingCommand>
     {
         private readonly IFindingService _findingService;
         private readonly IAuthService _authService;
@@ -20,7 +29,7 @@ namespace VikopApi.Mediator.Handlers
             _fileService = fileService;
         }
 
-        public async Task<Unit> Handle(AddFindingQuery request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(AddFindingCommand request, CancellationToken cancellationToken)
         {
             await _findingService.AddFinding(new AddFindingRequest
             {

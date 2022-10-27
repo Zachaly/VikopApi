@@ -26,7 +26,6 @@
   <ItemGroup>
     <ProjectReference Include="..\VikopApi.Application\VikopApi.Application.csproj" />
     <ProjectReference Include="..\VikopApi.Database\VikopApi.Database.csproj" />
-    <ProjectReference Include="..\VikopApi.Mediator\VikopApi.Mediator.csproj" />
   </ItemGroup>
 
   <ItemGroup>

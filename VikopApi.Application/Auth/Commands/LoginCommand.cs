@@ -7,13 +7,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VikopApi.Application.Auth.Abstractions;
-using VikopApi.Domain.Models;
-using VikopApi.Mediator.Requests;
-using VikopApi.Mediator.Responses;
 
-namespace VikopApi.Mediator.Handlers
+namespace VikopApi.Application.Auth.Commands
 {
-    public class LoginHandler : IRequestHandler<LoginQuery, LoginResponse>
+    public class LoginCommand : IRequest<LoginResponse>
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
+
+    public class LoginResponse
+    {
+        public string Token { get; set; } = "";
+        public bool Error { get; set; } = false;
+        public string[] Errors { get; set; }
+    }
+
+    public class LoginHandler : IRequestHandler<LoginCommand, LoginResponse>
     {
         private readonly IAuthService _authService;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -24,7 +34,7 @@ namespace VikopApi.Mediator.Handlers
             _userManager = userManager;
         }
 
-        public async Task<LoginResponse> Handle(LoginQuery request, CancellationToken cancellationToken)
+        public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
 

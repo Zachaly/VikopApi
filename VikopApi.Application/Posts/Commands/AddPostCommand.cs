@@ -1,14 +1,21 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using VikopApi.Application.Auth.Abstractions;
 using VikopApi.Application.Files.Abstractions;
 using VikopApi.Application.Models;
 using VikopApi.Application.Models.Requests;
 using VikopApi.Application.Posts.Abstractions;
-using VikopApi.Mediator.Requests;
 
-namespace VikopApi.Mediator.Handlers
+namespace VikopApi.Application.Posts.Commands
 {
-    public class AddPostHandler : IRequestHandler<AddPostQuery, PostModel>
+    public class AddPostCommand : IRequest<PostModel>
+    {
+        public string Content { get; set; }
+        public IFormFile? Picture { get; set; }
+        public string Tags { get; set; }
+    }
+
+    public class AddPostHandler : IRequestHandler<AddPostCommand, PostModel>
     {
         private readonly IFileService _fileService;
         private readonly IAuthService _authService;
@@ -21,14 +28,14 @@ namespace VikopApi.Mediator.Handlers
             _postService = postService;
         }
 
-        public async Task<PostModel> Handle(AddPostQuery request, CancellationToken cancellationToken)
+        public async Task<PostModel> Handle(AddPostCommand request, CancellationToken cancellationToken)
         {
             var postRequest = new AddPostRequest
             {
                 Content = request.Content,
                 CreatorId = _authService.GetCurrentUserId(),
                 Picture = "",
-                Tags = request.Tags.Split(','),
+                Tags = request.Tags.Split(',').Select(tag => tag.Replace(" ", "")),
             };
 
             if (request.Picture != null)

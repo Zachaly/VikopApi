@@ -1,4 +1,4 @@
-﻿namespace VikopApi.Mediator.RequestEnums
+﻿namespace VikopApi.Application.Models.Enums
 {
     public enum ReactionCommandType
     {

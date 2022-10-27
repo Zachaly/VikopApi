@@ -1,14 +1,21 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using VikopApi.Application.Auth.Abstractions;
 using VikopApi.Application.Comments.Abstractions;
 using VikopApi.Application.Files.Abstractions;
 using VikopApi.Application.Models;
 using VikopApi.Application.Models.Requests;
-using VikopApi.Mediator.Requests;
 
-namespace VikopApi.Mediator.Handlers
+namespace VikopApi.Application.Comments.Commands
 {
-    public class AddFindingCommentHandler : IRequestHandler<AddFindingCommentQuery, CommentModel>
+    public class AddFindingCommentCommand : IRequest<CommentModel>
+    {
+        public int FindingId { get; set; }
+        public string Content { get; set; }
+        public IFormFile? Picture { get; set; }
+    }
+
+    public class AddFindingCommentHandler : IRequestHandler<AddFindingCommentCommand, CommentModel>
     {
         private readonly IFileService _fileService;
         private readonly IAuthService _authService;
@@ -21,7 +28,7 @@ namespace VikopApi.Mediator.Handlers
             _commentService = commentService;
         }
 
-        public async Task<CommentModel> Handle(AddFindingCommentQuery request, CancellationToken cancellationToken)
+        public async Task<CommentModel> Handle(AddFindingCommentCommand request, CancellationToken cancellationToken)
         {
             var commentRequest = new AddFindingCommentRequest
             {

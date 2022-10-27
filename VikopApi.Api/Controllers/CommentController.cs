@@ -1,10 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using VikopApi.Application.Auth.Abstractions;
 using VikopApi.Application.Comments.Abstractions;
-using VikopApi.Application.Reactions.Abstractions;
-using VikopApi.Mediator.Requests;
+using VikopApi.Application.Comments.Commands;
 
 namespace VikopApi.Api.Controllers
 {
@@ -34,7 +32,7 @@ namespace VikopApi.Api.Controllers
         /// </response>
         [HttpPost]
         public async Task<IActionResult> AddFindingComment(
-            [FromForm] AddFindingCommentQuery request)
+            [FromForm] AddFindingCommentCommand request)
         {
             var res = await _mediator.Send(request);
 
@@ -47,7 +45,7 @@ namespace VikopApi.Api.Controllers
             => Ok(_commentService.GetSubcomments(commentId));
 
         [HttpPost]
-        public async Task<IActionResult> AddSubComment([FromForm] AddSubcommentQuery request)
+        public async Task<IActionResult> AddSubComment([FromForm] AddSubcommentCommand request)
         {
             var res = await _mediator.Send(request);
 

@@ -1,12 +1,22 @@
 ﻿using MediatR;
 using VikopApi.Application.Auth.Abstractions;
+using VikopApi.Application.Models.Enums;
 using VikopApi.Application.Models.Requests;
 using VikopApi.Application.Reactions.Abstractions;
-using VikopApi.Mediator.RequestEnums;
-using VikopApi.Mediator.Requests;
+using VikopApi.Domain.Enums;
 
-namespace VikopApi.Mediator.Handlers
+namespace VikopApi.Application.Reactions.Commands
 {
+    public class ReactionCommand : IRequest<Unit>
+    {
+        public int ObjectId { get; set; }
+        public Reaction Reaction { get; set; }
+        ReactionCommandType _type;
+
+        public void SetCommandType(ReactionCommandType commandType) => _type = commandType;
+        public ReactionCommandType GetCommandType() => _type;
+    }
+
     public class ReactionHandler : IRequestHandler<ReactionCommand>
     {
         private readonly IReactionService _reactionService;
@@ -27,19 +37,19 @@ namespace VikopApi.Mediator.Handlers
                 UserId = _authService.GetCurrentUserId(),
             };
 
-            if(request.CommandType == ReactionCommandType.AddComment)
+            if (request.GetCommandType() == ReactionCommandType.AddComment)
             {
                 await _reactionService.AddCommentReaction(reaction);
             }
-            else if(request.CommandType == ReactionCommandType.AddFinding)
+            else if (request.GetCommandType() == ReactionCommandType.AddFinding)
             {
                 await _reactionService.AddFindingReaction(reaction);
             }
-            else if(request.CommandType == ReactionCommandType.ChangeFinding)
+            else if (request.GetCommandType() == ReactionCommandType.ChangeFinding)
             {
                 await _reactionService.ChangeFindingReaction(reaction);
             }
-            else if(request.CommandType == ReactionCommandType.ChangeComment)
+            else if (request.GetCommandType() == ReactionCommandType.ChangeComment)
             {
                 await _reactionService.ChangeCommentReaction(reaction);
             }

@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using VikopApi.Application.Models.Enums;
 using VikopApi.Application.Reactions.Abstractions;
-using VikopApi.Mediator.RequestEnums;
-using VikopApi.Mediator.Requests;
+using VikopApi.Application.Reactions.Commands;
 
 namespace VikopApi.Api.Controllers
 {

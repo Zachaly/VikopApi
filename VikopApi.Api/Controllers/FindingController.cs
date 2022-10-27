@@ -1,13 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using VikopApi.Application.Auth.Abstractions;
-using VikopApi.Application.Files.Abstractions;
 using VikopApi.Application.Findings.Abstractions;
-using VikopApi.Application.Models.Requests;
-using VikopApi.Application.Reactions.Abstractions;
+using VikopApi.Application.Findings.Commands;
 using VikopApi.Domain.Enums;
-using VikopApi.Mediator.Requests;
 
 namespace VikopApi.Api.Controllers
 {
@@ -82,7 +78,7 @@ namespace VikopApi.Api.Controllers
         /// </summary>
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Add([FromForm] AddFindingQuery request)
+        public async Task<IActionResult> Add([FromForm] AddFindingCommand request)
         {
             await _mediator.Send(request);
 

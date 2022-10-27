@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VikopApi.Application.Posts.Abstractions;
+using VikopApi.Application.Posts.Commands;
 using VikopApi.Domain.Enums;
-using VikopApi.Mediator.Requests;
 
 namespace VikopApi.Api.Controllers
 {
@@ -23,7 +23,7 @@ namespace VikopApi.Api.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddPost([FromForm] AddPostQuery request)
+        public async Task<IActionResult> AddPost([FromForm] AddPostCommand request)
         {
             var res = await _mediator.Send(request);
 

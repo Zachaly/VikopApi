@@ -3,9 +3,10 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VikopApi.Application.Auth.Abstractions;
+using VikopApi.Application.Auth.Commands;
 using VikopApi.Application.Models.Requests;
 using VikopApi.Application.User.Abstractions;
-using VikopApi.Mediator.Requests;
+using VikopApi.Application.User.Commands;
 
 namespace VikopApi.Api.Controllers
 {
@@ -38,16 +39,8 @@ namespace VikopApi.Api.Controllers
         /// </response>
         [HttpPost]
         public async Task<IActionResult> Register(
-            AddUserRequest request,
-            [FromServices] IValidator<AddUserRequest> validator)
+            AddUserRequest request)
         {
-            var validation = validator.Validate(request);
-
-            if (!validation.IsValid)
-            {
-                return BadRequest(validation.Errors.Select(error => error.ErrorMessage));
-            }
-
             return Ok(await _authService.AddUser(request));
         }
 
@@ -78,7 +71,7 @@ namespace VikopApi.Api.Controllers
         /// </summary>
         /// <returns>JWT Token</returns>
         [HttpPost]
-        public async Task<IActionResult> Login(LoginQuery request)
+        public async Task<IActionResult> Login(LoginCommand request)
         {
             var res = await _mediator.Send(request);
 

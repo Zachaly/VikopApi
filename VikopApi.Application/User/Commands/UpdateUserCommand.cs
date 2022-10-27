@@ -1,12 +1,18 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using VikopApi.Application.Auth.Abstractions;
 using VikopApi.Application.Files.Abstractions;
 using VikopApi.Application.Models.Requests;
 using VikopApi.Application.User.Abstractions;
-using VikopApi.Mediator.Requests;
 
-namespace VikopApi.Mediator.Handlers
+namespace VikopApi.Application.User.Commands
 {
+    public class UpdateUserCommand : IRequest
+    {
+        public string Username { get; set; }
+        public IFormFile? ProfilePicture { get; set; }
+    }
+
     public class UpdateUserHandler : IRequestHandler<UpdateUserCommand>
     {
         private readonly IAuthService _authService;

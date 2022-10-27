@@ -1,20 +1,21 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using VikopApi.Application.Auth.Abstractions;
 using VikopApi.Application.Comments.Abstractions;
 using VikopApi.Application.Files.Abstractions;
 using VikopApi.Application.Models;
 using VikopApi.Application.Models.Requests;
-using VikopApi.Domain.Models;
-using VikopApi.Mediator.Requests;
 
-namespace VikopApi.Mediator.Handlers
+namespace VikopApi.Application.Comments.Commands
 {
-    public class AddSubcommentHandler : IRequestHandler<AddSubcommentQuery, CommentModel>
+    public class AddSubcommentCommand : IRequest<CommentModel>
+    {
+        public int CommentId { get; set; }
+        public string Content { get; set; }
+        public IFormFile? Picture { get; set; }
+    }
+
+    public class AddSubcommentHandler : IRequestHandler<AddSubcommentCommand, CommentModel>
     {
         private readonly ICommentService _commentService;
         private readonly IAuthService _authService;
@@ -27,7 +28,7 @@ namespace VikopApi.Mediator.Handlers
             _fileService = fileService;
         }
 
-        public async Task<CommentModel> Handle(AddSubcommentQuery request, CancellationToken cancellationToken)
+        public async Task<CommentModel> Handle(AddSubcommentCommand request, CancellationToken cancellationToken)
         {
             var comment = new AddSubcommentRequest
             {

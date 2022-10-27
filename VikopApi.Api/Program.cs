@@ -1,5 +1,3 @@
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -10,10 +8,9 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 using VikopApi.Api.Infrastructure.BackgroundServices;
-using VikopApi.Api.Validators;
+using VikopApi.Application.Auth.Commands;
 using VikopApi.Database;
 using VikopApi.Domain.Models;
-using VikopApi.Mediator.Requests;
 
 [assembly: ApiController]
 var builder = WebApplication.CreateBuilder(args);
@@ -51,12 +48,10 @@ builder.Services.AddAuthentication(config => {
 });
 
 builder.Services.AddApplicationServices();
-builder.Services.AddMediatR(typeof(LoginQuery));
+builder.Services.AddMediatR(typeof(LoginCommand));
 builder.Services.AddSingleton<RankUpdater>();
 builder.Services.AddHostedService<RankUpdater>();
 
-builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
 builder.Services.AddControllers();
 
 builder.Services.AddCors();
