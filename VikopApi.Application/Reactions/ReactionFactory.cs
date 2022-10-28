@@ -14,7 +14,7 @@ namespace VikopApi.Application.Reactions
                 UserId = request.UserId,
             };
 
-        public FindingReaction CreateFinding(AddReactionRequest request)
+        public FindingReaction CreateFindingReaction(AddReactionRequest request)
             => new FindingReaction
             {
                 UserId = request.UserId,

@@ -1,4 +1,5 @@
-﻿using VikopApi.Application.Findings.Abstractions;
+﻿using VikopApi.Application.Comments.Abstractions;
+using VikopApi.Application.Findings.Abstractions;
 using VikopApi.Application.Models;
 using VikopApi.Application.Models.Requests;
 
@@ -7,6 +8,13 @@ namespace VikopApi.Application.Findings
     [Implementation(typeof(IFindingFactory))]
     public class FindingFactory : IFindingFactory
     {
+        private readonly ICommentFactory _commentFactory;
+
+        public FindingFactory(ICommentFactory commentFactory)
+        {
+            _commentFactory = commentFactory;
+        }
+
         public Finding Create(AddFindingRequest request)
             => new Finding
             {
@@ -38,7 +46,7 @@ namespace VikopApi.Application.Findings
             => new FindingModel
             {
                 Finding = CreateListItem(finding),
-                Comments = finding.Comments.Select(comment => new CommentModel(comment.Comment))
+                Comments = finding.Comments.Select(comment => _commentFactory.CreateModel(comment.Comment))
             };
     }
 }

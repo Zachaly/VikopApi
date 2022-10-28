@@ -16,7 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VikopApi.Api", "VikopApi.Ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VikopApi.Application", "VikopApi.Application\VikopApi.Application.csproj", "{3EBEE7A9-08C9-4F8E-A2BD-3CE55D0C510D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VikopApi.Database.Tests", "VikopApi.Database.Tests\VikopApi.Database.Tests.csproj", "{C01E797E-F3D9-4ACE-A636-233AFE63E332}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VikopApi.Tests.Unit", "VikopApi.Tests.Unit\VikopApi.Tests.Unit.csproj", "{C331A4F7-BFA2-4A49-B5DC-E269834983EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,10 +40,10 @@ Global
 		{3EBEE7A9-08C9-4F8E-A2BD-3CE55D0C510D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EBEE7A9-08C9-4F8E-A2BD-3CE55D0C510D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EBEE7A9-08C9-4F8E-A2BD-3CE55D0C510D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C01E797E-F3D9-4ACE-A636-233AFE63E332}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C01E797E-F3D9-4ACE-A636-233AFE63E332}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C01E797E-F3D9-4ACE-A636-233AFE63E332}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C01E797E-F3D9-4ACE-A636-233AFE63E332}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C331A4F7-BFA2-4A49-B5DC-E269834983EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C331A4F7-BFA2-4A49-B5DC-E269834983EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C331A4F7-BFA2-4A49-B5DC-E269834983EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C331A4F7-BFA2-4A49-B5DC-E269834983EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
