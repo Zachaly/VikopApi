@@ -82,7 +82,7 @@ namespace VikopApi.Tests.Unit.Services
             var userManager = GetUserManagerMock();
             userManager
                 .Setup(x => x.GetUserId(It.IsAny<ClaimsPrincipal>()))
-                .Returns(userPrincipal.Identities.First().Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value);
+                .Returns((ClaimsPrincipal principal) => principal.Identities.First().Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value);
 
             var service = new AuthService(config.Object, httpContextAccessor.Object, userManager.Object);
 
