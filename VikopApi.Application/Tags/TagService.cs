@@ -36,9 +36,9 @@ namespace VikopApi.Application.Tags
         {
             var tags = await Create(names);
 
-            var postTags = _tagFactory.CreateFinding(id, tags);
+            var findingTags = _tagFactory.CreateFinding(id, tags);
 
-            await _tagManager.AddTags(postTags);
+            await _tagManager.AddTags(findingTags);
 
             return tags;
         }
