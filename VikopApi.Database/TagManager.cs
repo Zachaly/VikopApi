@@ -36,7 +36,7 @@ namespace VikopApi.Database
                 return true;
             }
 
-            _dbContext.Tags.AddRange(names.Select(name => new Tag { Name = name.ToLower() }));
+            _dbContext.Tags.AddRange(notexistingTags.Select(name => new Tag { Name = name.ToLower() }));
 
             return await _dbContext.SaveChangesAsync() > 0;
         }

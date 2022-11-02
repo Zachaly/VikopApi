@@ -20,13 +20,15 @@ namespace VikopApi.Application.Findings
             _tagService = tagService;
         }
 
-        public async Task AddFinding(AddFindingRequest request)
+        public async Task<int> AddFinding(AddFindingRequest request)
         {
             var finding = _findingFactory.Create(request);
 
             await _findingManager.AddFinding(finding);
 
             await _tagService.CreateFinding(request.TagList, finding.Id);
+
+            return finding.Id;
         }
 
         public FindingModel GetFindingById(int id)
@@ -49,8 +51,8 @@ namespace VikopApi.Application.Findings
                 {
                     return _findingManager.GetTopFindings(page, size, selector);
                 }
-            }
-
+            } 
+            
             return _findingManager.GetAllFindings(page, size, selector);
         }
 

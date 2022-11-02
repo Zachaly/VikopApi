@@ -20,13 +20,13 @@ namespace VikopApi.Application.Reactions
             => await _reactionManager.AddReaction(_reactionFactory.CreateCommentReaction(request));
 
         public async Task AddFindingReaction(AddReactionRequest request)
-            => await _reactionManager.AddReaction(_reactionFactory.CreateFinding(request));
+            => await _reactionManager.AddReaction(_reactionFactory.CreateFindingReaction(request));
 
         public async Task ChangeCommentReaction(AddReactionRequest request)
             => await _reactionManager.ChangeReaction(_reactionFactory.CreateCommentReaction(request));
 
         public async Task ChangeFindingReaction(AddReactionRequest request)
-            => await _reactionManager.ChangeReaction(_reactionFactory.CreateFinding(request));
+            => await _reactionManager.ChangeReaction(_reactionFactory.CreateFindingReaction(request));
 
         public async Task DeleteCommentReaction(int commentId, string userId)
             => await _reactionManager.DeleteCommentReaction(commentId, userId);

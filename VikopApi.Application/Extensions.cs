@@ -2,7 +2,7 @@
 
 namespace VikopApi.Application
 {
-    internal static class Extensions
+    public static class Extensions
     {
         public static string GetTime(this DateTime @this)
             => @this.ToString("yyyy-M-dd, HH:m");
