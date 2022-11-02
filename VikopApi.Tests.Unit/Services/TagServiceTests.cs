@@ -1,9 +1,4 @@
 ﻿using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VikopApi.Application.Tags;
 using VikopApi.Application.Tags.Abtractions;
 using VikopApi.Domain.Infractructure;
