@@ -15,17 +15,5 @@
         {
 
         }
-
-        public CommentModel(Comment comment)
-        {
-            Content = comment.Content;
-            Created = comment.Created.GetTime();
-            CreatorId = comment.CreatorId;
-            CreatorName = comment.Creator.UserName;
-            CreatorRank = (int)comment.Creator.Rank;
-            Id = comment.Id;
-            Reactions = comment.Reactions.SumReactions();
-            HasPicture = !string.IsNullOrEmpty(comment.Picture);
-        }
     }
 }

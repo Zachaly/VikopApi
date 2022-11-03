@@ -20,20 +20,5 @@ namespace VikopApi.Application.Models
         {
 
         }
-
-        public FindingListItemModel(Finding finding)
-        {
-            CreatorId = finding.CreatorId;
-            CreatorName = finding.Creator.UserName;
-            CreatorRank = finding.Creator.Rank;
-            Description = finding.Description;
-            Id = finding.Id;
-            Link = finding.Link;
-            Title = finding.Title;
-            CommentCount = finding.Comments.Count;
-            Created = finding.Created.GetTime();
-            Reactions = finding.Reactions.SumReactions();
-            TagList = finding.Tags.Select(tag => tag.Tag);
-        }
     }
 }

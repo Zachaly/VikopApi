@@ -17,7 +17,17 @@ namespace VikopApi.Application.Comments
             };
 
         public CommentModel CreateModel(Comment comment)
-            => new CommentModel(comment);
+            => new CommentModel
+            {
+                Content = comment.Content,
+                Created = comment.Created.GetTime(),
+                CreatorId = comment.CreatorId,
+                CreatorName = comment.Creator.UserName,
+                CreatorRank = (int)comment.Creator.Rank,
+                Id = comment.Id,
+                Reactions = comment.Reactions.SumReactions(),
+                HasPicture = !string.IsNullOrEmpty(comment.Picture),
+            };
 
         public SubComment CreateSubComment(int subCommentId, int mainCommentId)
             => new SubComment

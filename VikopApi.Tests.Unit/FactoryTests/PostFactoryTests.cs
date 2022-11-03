@@ -18,7 +18,8 @@ namespace VikopApi.Tests.Unit.FactoryTests
         [Test]
         public void Create_ByComment()
         {
-            var factory = new PostFactory();
+            var commentFactory = new CommentFactory();
+            var factory = new PostFactory(commentFactory);
             var comment = new Comment
             {
                 Id = 1,
@@ -32,7 +33,8 @@ namespace VikopApi.Tests.Unit.FactoryTests
         [Test]
         public void CreateModel_ByPost()
         {
-            var factory = new PostFactory();
+            var commentFactory = new CommentFactory();
+            var factory = new PostFactory(commentFactory);
             var post = new Post
             {
                 Comment = new Comment
@@ -67,7 +69,8 @@ namespace VikopApi.Tests.Unit.FactoryTests
         [Test]
         public void CreateModel_CommentAndTags()
         {
-            var factory = new PostFactory();
+            var commentFactory = new CommentFactory();
+            var factory = new PostFactory(commentFactory);
             var comment = new Comment
             {
                 Id = 1,
