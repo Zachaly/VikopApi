@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using VikopApi.Api.Infrastructure.BackgroundServices;
 using VikopApi.Application.Auth.Commands;
@@ -63,7 +64,7 @@ builder.Services.AddSwaggerGen(options =>
     options.CustomSchemaIds(type => type.ToString());
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Version = "v1",
+        Version = "v2",
         Title = "Vikop API",
         Description = "API trying to mirror wykop.pl"
     });
@@ -98,7 +99,68 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => policy.RequireClaim("Role", "Admin"));
+    options.AddPolicy("Moderator", policy => policy.RequireClaim("Role", "Moderator"));
+
+    options.AddPolicy("Moderator", policy =>
+        policy.RequireAssertion(context =>
+        context.User.HasClaim("Role", "Moderator")
+        || context.User.HasClaim("Role", "Admin")));
+});
+
 var app = builder.Build();
+
+try
+{
+    // Creating admin user if one does not exist
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+        context.Database.EnsureCreated();
+
+        var createAdmin = !context.UserClaims.Any(x => x.ClaimValue == "Admin");
+
+        if (createAdmin)
+        {
+            Console.WriteLine("Admin user does not exist!");
+            Console.WriteLine("Do you want to create it? y/n");
+            var response = Console.ReadLine();
+            createAdmin = response == "y" || response == "Y";
+        }
+
+        if (createAdmin)
+        {
+            Console.WriteLine();
+            Console.Write("Username: ");
+            var username = Console.ReadLine();
+            Console.Write("Email: ");
+            var email = Console.ReadLine();
+            Console.Write("Password: ");
+            var password = Console.ReadLine();
+
+            var admin = new ApplicationUser
+            {
+                UserName = username,
+                Email = email,
+                ProfilePicture = builder.Configuration["Image:Placeholder"]
+            };
+
+            userManager.CreateAsync(admin, password).GetAwaiter().GetResult();
+
+            var adminClaim = new Claim("Role", "Admin");
+
+            userManager.AddClaimAsync(admin, adminClaim).GetAwaiter().GetResult();
+        }
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.Message);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
