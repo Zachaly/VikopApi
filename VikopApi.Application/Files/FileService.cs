@@ -86,9 +86,9 @@ namespace VikopApi.Application.Files
         public async Task<string> SaveCommentPicture(IFormFile file)
             => await SaveFile(file, _commentPicturePath, "");
 
-        private bool RemoveFile(string fileName, string path)
+        private bool RemoveFile(string? fileName, string path)
         {
-            if (fileName == _placeholderImage)
+            if (fileName == _placeholderImage || fileName is null)
             {
                 return true;
             }
@@ -109,13 +109,13 @@ namespace VikopApi.Application.Files
             }
         }
 
-        public bool RemoveProfilePicture(string fileName)
-            => RemoveFile(fileName, _profilePicturePath);
+        public bool RemoveProfilePicture(string userId)
+            => RemoveFile(_appUserManager.GetUserById(userId, user => user.ProfilePicture), _profilePicturePath);
 
-        public bool RemoveFindingPicture(string fileName)
-            => RemoveFile(fileName, _findingPicturePath);
+        public bool RemoveFindingPicture(int findingId)
+            => RemoveFile(_findingManager.GetFindingById(findingId, finding => finding.Picture), _findingPicturePath);
 
-        public bool RemoveCommentPicture(string fileName)
-            => RemoveFile(fileName, _commentPicturePath);
+        public bool RemoveCommentPicture(int commentId)
+            => RemoveFile(_commentManager.GetCommentById(commentId, comment => comment.Picture), _commentPicturePath);
     }
 }

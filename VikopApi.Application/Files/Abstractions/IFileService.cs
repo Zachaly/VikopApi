@@ -10,8 +10,8 @@ namespace VikopApi.Application.Files.Abstractions
         Task<string> SaveFindingPicture(IFormFile file);
         Task<string> SaveProfilePicture(IFormFile file);
         Task<string> SaveCommentPicture(IFormFile file);
-        bool RemoveProfilePicture(string fileName);
-        bool RemoveFindingPicture(string fileName);
-        bool RemoveCommentPicture(string fileName);
+        bool RemoveProfilePicture(string userId);
+        bool RemoveFindingPicture(int findingId);
+        bool RemoveCommentPicture(int commentId);
     }
 }

@@ -13,7 +13,7 @@ namespace VikopApi.Application.Posts.Commands
     {
         public string Content { get; set; }
         public IFormFile? Picture { get; set; }
-        public string Tags { get; set; }
+        public string? Tags { get; set; }
     }
 
     public class AddPostHandler : IRequestHandler<AddPostCommand, DataCommandResponseModel<PostModel>>
@@ -39,7 +39,7 @@ namespace VikopApi.Application.Posts.Commands
                 Content = request.Content,
                 CreatorId = _authService.GetCurrentUserId(),
                 Picture = "",
-                Tags = request.Tags.Split(',').Select(tag => tag.Replace(" ", "")),
+                Tags = request.Tags?.Split(',').Select(tag => tag.Replace(" ", "")) ?? new string[0],
             };
 
             if (request.Picture != null)

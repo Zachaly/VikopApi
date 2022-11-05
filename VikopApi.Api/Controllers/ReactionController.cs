@@ -27,9 +27,7 @@ namespace VikopApi.Api.Controllers
         {
             request.SetCommandType(ReactionCommandType.AddFinding);
 
-            await _mediator.Send(request);
-
-            return Ok();
+            return Ok(await _mediator.Send(request));
         }
 
         /// <summary>
@@ -41,9 +39,7 @@ namespace VikopApi.Api.Controllers
         {
             request.SetCommandType(ReactionCommandType.AddComment);
 
-            await _mediator.Send(request);
-
-            return Ok();
+            return Ok(await _mediator.Send(request));
         }
 
         [HttpPut]
@@ -52,9 +48,7 @@ namespace VikopApi.Api.Controllers
         {
             request.SetCommandType(ReactionCommandType.ChangeFinding);
 
-            await _mediator.Send(request);
-
-            return Ok();
+            return Ok(await _mediator.Send(request));
         }
 
         [HttpPut]
@@ -63,9 +57,7 @@ namespace VikopApi.Api.Controllers
         {
             request.SetCommandType(ReactionCommandType.ChangeComment);
 
-            await _mediator.Send(request);
-
-            return Ok();
+            return Ok(await _mediator.Send(request));
         }
 
         [HttpGet("finding/{findingId}/{userId}")]
@@ -82,20 +74,16 @@ namespace VikopApi.Api.Controllers
         {
             command.SetComment();
 
-            await _mediator.Send(command);
-
-            return Ok();
+            return Ok(await _mediator.Send(command));
         }
 
         [HttpDelete]
         [Route("finding")]
-        public async Task<IActionResult> DeleteFindingReaction(DeleteReactionCommand command)
+        public async Task<IActionResult> DeleteFindingReaction([FromBody] DeleteReactionCommand command)
         {
             command.SetFinding();
 
-            await _mediator.Send(command);
-
-            return Ok();
+            return Ok(await _mediator.Send(command));
         }
     }
 }

@@ -90,10 +90,9 @@ namespace VikopApi.Api.Controllers
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> Update(UpdateUserCommand updateUserCommand)
+        public async Task<IActionResult> Update([FromForm] UpdateUserCommand updateUserCommand)
         {
-            await _mediator.Send(updateUserCommand);
-            return Ok();
+            return Ok(await _mediator.Send(updateUserCommand));
         }
     }
 }

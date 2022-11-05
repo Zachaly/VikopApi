@@ -42,7 +42,7 @@ namespace VikopApi.Application.Posts
 
             await _postManager.AddPost(post);
 
-            return _postFactory.CreateModel(comment, await _tagService.CreatePost(request.Tags, post.Id));
+            return _postFactory.CreateModel(_commentManager.GetCommentById(comment.Id, x => x), await _tagService.CreatePost(request.Tags, post.Id));
         }
 
         public int GetPageCount(int pageSize)

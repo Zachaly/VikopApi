@@ -26,7 +26,10 @@ namespace VikopApi.Database
                 .Include(finding => finding.Reactions)
                 .Include(finding => finding.Creator)
                 .Include(finding => finding.Comments)
+                .Include(finding => finding.Tags)
+                .ThenInclude(tag => tag.Tag)
                 .Where(finding => finding.CreatorId == userId)
+                .OrderByDescending(finding => finding.Created)
                 .Select(selector);
 
         public IEnumerable<T> GetUserPosts<T>(string userId, Func<Post, T> selector)
@@ -35,7 +38,10 @@ namespace VikopApi.Database
                 .ThenInclude(comment => comment.Creator)
                 .Include(post => post.Comment)
                 .ThenInclude(comment => comment.Reactions)
+                .Include(post => post.Tags)
+                .ThenInclude(tag => tag.Tag)
                 .Where(post => post.Comment.CreatorId == userId)
+                .OrderByDescending(post => post.Comment.Created)
                 .Select(selector);
 
         public IEnumerable<T> GetUsers<T>(Func<ApplicationUser, T> selector)
