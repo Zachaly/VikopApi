@@ -37,6 +37,8 @@ namespace VikopApi.Application.Reactions.Commands
                 UserId = _authService.GetCurrentUserId(),
             };
 
+            var res = false;
+
             if (request.GetCommandType() == ReactionCommandType.AddComment)
             {
                 await _reactionService.AddCommentReaction(reaction);

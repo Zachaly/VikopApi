@@ -16,22 +16,22 @@ namespace VikopApi.Application.Reactions
             _reactionManager = reactionManager;
         }
 
-        public async Task AddCommentReaction(AddReactionRequest request)
+        public async Task<bool> AddCommentReaction(AddReactionRequest request)
             => await _reactionManager.AddReaction(_reactionFactory.CreateCommentReaction(request));
 
-        public async Task AddFindingReaction(AddReactionRequest request)
+        public async Task<bool> AddFindingReaction(AddReactionRequest request)
             => await _reactionManager.AddReaction(_reactionFactory.CreateFindingReaction(request));
 
-        public async Task ChangeCommentReaction(AddReactionRequest request)
+        public async Task<bool> ChangeCommentReaction(AddReactionRequest request)
             => await _reactionManager.ChangeReaction(_reactionFactory.CreateCommentReaction(request));
 
-        public async Task ChangeFindingReaction(AddReactionRequest request)
+        public async Task<bool> ChangeFindingReaction(AddReactionRequest request)
             => await _reactionManager.ChangeReaction(_reactionFactory.CreateFindingReaction(request));
 
-        public async Task DeleteCommentReaction(int commentId, string userId)
+        public async Task<bool> DeleteCommentReaction(int commentId, string userId)
             => await _reactionManager.DeleteCommentReaction(commentId, userId);
 
-        public async Task DeleteFindingReaction(int findingId, string userId)
+        public async Task<bool> DeleteFindingReaction(int findingId, string userId)
             => await _reactionManager.DeleteFindingReaction(findingId, userId);
 
         public Reaction GetCommentReaction(int commentId, string userId)

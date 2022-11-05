@@ -5,12 +5,12 @@ namespace VikopApi.Application.Reactions.Abstractions
 {
     public interface IReactionService
     {
-        Task AddCommentReaction(AddReactionRequest request);
-        Task ChangeCommentReaction(AddReactionRequest request);
-        Task AddFindingReaction(AddReactionRequest request);
-        Task ChangeFindingReaction(AddReactionRequest request);
-        Task DeleteCommentReaction(int commentId, string userId);
-        Task DeleteFindingReaction(int findingId, string userId);
+        Task<bool> AddCommentReaction(AddReactionRequest request);
+        Task<bool> ChangeCommentReaction(AddReactionRequest request);
+        Task<bool> AddFindingReaction(AddReactionRequest request);
+        Task<bool> ChangeFindingReaction(AddReactionRequest request);
+        Task<bool> DeleteCommentReaction(int commentId, string userId);
+        Task<bool> DeleteFindingReaction(int findingId, string userId);
         Reaction GetCommentReaction(int commentId, string userId);
         Reaction GetFindingReaction(int findingId, string userId);
     }
