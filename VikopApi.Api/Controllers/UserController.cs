@@ -75,10 +75,10 @@ namespace VikopApi.Api.Controllers
         {
             var res = await _mediator.Send(request);
 
-            if (res.Error)
-                return BadRequest(res.Errors);
+            if (res.Errors?.Any() ?? false)
+                return BadRequest(res);
 
-            return Ok(res.Token);
+            return Ok(res);
         }
 
         /// <summary>

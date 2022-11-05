@@ -7,10 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VikopApi.Application.Auth.Abstractions;
+using VikopApi.Application.Command.Abstractions;
+using VikopApi.Application.Models;
 
 namespace VikopApi.Application.Auth.Commands
 {
-    public class LoginCommand : IRequest<LoginResponse>
+    public class LoginCommand : IRequest<DataCommandResponseModel<LoginResponse>>
     {
         public string Email { get; set; }
         public string Password { get; set; }
@@ -19,40 +21,50 @@ namespace VikopApi.Application.Auth.Commands
     public class LoginResponse
     {
         public string Token { get; set; } = "";
-        public bool Error { get; set; } = false;
-        public string[] Errors { get; set; }
     }
 
-    public class LoginHandler : IRequestHandler<LoginCommand, LoginResponse>
+    public class LoginHandler : IRequestHandler<LoginCommand, DataCommandResponseModel<LoginResponse>>
     {
         private readonly IAuthService _authService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ICommandResponseFactory _commandResponseFactory;
 
-        public LoginHandler(IAuthService authService, UserManager<ApplicationUser> userManager)
+        public LoginHandler(IAuthService authService, UserManager<ApplicationUser> userManager, ICommandResponseFactory commandResponseFactory)
         {
             _authService = authService;
             _userManager = userManager;
+            _commandResponseFactory = commandResponseFactory;
         }
 
-        public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
+        public async Task<DataCommandResponseModel<LoginResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
 
             if (user is null)
             {
-                return new LoginResponse { Error = true, Errors = new string[] { "Email or password is incorrect!" } };
+                return WrongPasses();
             }
 
             if (!await _userManager.CheckPasswordAsync(user, request.Password))
             {
-                return new LoginResponse { Error = true, Errors = new string[] { "Email or password is incorrect!" } };
+                return WrongPasses();
             }
 
             var token = await _authService.GetToken(user);
 
             var tokenJson = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return new LoginResponse { Token = tokenJson };
+            var response = new LoginResponse { Token = tokenJson };
+
+            return _commandResponseFactory.CreateSuccess(response);
+        }
+
+        private DataCommandResponseModel<LoginResponse> WrongPasses()
+        {
+            var errors = new Dictionary<string, IEnumerable<string>>();
+            errors.Add("InvalidPasses", new string[] { "Email or password is incorrect!" });
+
+            return _commandResponseFactory.CreateFailure<LoginResponse>(errors);
         }
     }
 }
