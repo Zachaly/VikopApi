@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VikopApi.Application.Findings.Abstractions;
 using VikopApi.Application.Findings.Commands;
+using VikopApi.Application.Models.Requests;
 using VikopApi.Domain.Enums;
 
 namespace VikopApi.Api.Controllers
@@ -91,5 +92,9 @@ namespace VikopApi.Api.Controllers
         [HttpGet]
         public IActionResult PageCount()
             => Ok(_findingService.GetPageCount(_pageSize));
+
+        [HttpGet]
+        public IActionResult Search([FromQuery] SearchFindingsRequest request)
+            => Ok(_findingService.Search(request));
     }
 }

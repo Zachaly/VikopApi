@@ -40,6 +40,9 @@ namespace VikopApi.Tests.Unit.Services
                 })
                 .ReturnsAsync(true);
 
+            commentManagerMock.Setup(x => x.GetCommentById(It.IsAny<int>(), It.IsAny<Func<Comment, Comment>>()))
+                .Returns((int id, Func<Comment, Comment> selector) => comments.Where(x => x.Id == id).Select(selector).FirstOrDefault());
+
             var postFactoryMock = new Mock<IPostFactory>();
             postFactoryMock.Setup(x => x.Create(It.IsAny<Comment>()))
                 .Returns((Comment comment) => new Post { Comment = comment, CommentId = comment.Id });

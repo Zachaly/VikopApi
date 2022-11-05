@@ -58,5 +58,19 @@ namespace VikopApi.Application.Findings
 
         public int GetPageCount(int pageSize)
             => _findingManager.GetPageCount(pageSize);
+
+        public IEnumerable<FindingListItemModel> Search(SearchFindingsRequest request)
+        {
+            var conditions = new List<Func<Finding, bool>>();
+
+            if(request.SearchTitle.GetValueOrDefault())
+                conditions.Add(finding => finding.Title.ToLower().Contains(request.Text.ToLower()));
+            if (request.SearchCreator.GetValueOrDefault())
+                conditions.Add(finding => finding.Creator.UserName.ToLower().Contains(request.Text.ToLower()));
+            if (request.SearchTag.GetValueOrDefault())
+                conditions.Add(finding => finding.Tags.Any(tag => tag.Tag.Name.ToLower().Contains(request.Text.ToLower())));
+
+            return _findingManager.SearchFindings(request.PageIndex ?? 0, request.PageSize ?? 10, conditions, finding => _findingFactory.CreateListItem(finding));
+        }
     }
 }

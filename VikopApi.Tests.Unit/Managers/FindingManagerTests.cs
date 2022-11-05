@@ -237,5 +237,32 @@ namespace VikopApi.Tests.Unit.Managers
 
             Assert.That(res, Is.EqualTo(expectedCount));
         }
+
+        [Test]
+        public void SearchFindings()
+        {
+            var findings = new List<Finding>
+            {
+                new Finding { Id = 1 },
+                new Finding { Id = 2 },
+                new Finding { Id = 3 },
+                new Finding { Id = 4 },
+                new Finding { Id = 5 },
+                new Finding { Id = 6 },
+                new Finding { Id = 7 },
+                new Finding { Id = 8 },
+                new Finding { Id = 9 },
+            };
+            var dbContext = Extensions.GetAppDbContext();
+            dbContext.AddContent(findings);
+            var manager = new FindingManager(dbContext);
+            var conditions = new List<Func<Finding, bool>>();
+
+            conditions.Add(finding => finding.Id == 2);
+
+            var res = manager.SearchFindings(0, 10, conditions, x => x);
+
+            Assert.That(res, Is.EquivalentTo(findings.Where(x => x.Id == 2)));
+        }
     }
 }

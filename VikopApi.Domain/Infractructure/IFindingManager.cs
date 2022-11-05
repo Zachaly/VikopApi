@@ -10,5 +10,6 @@ namespace VikopApi.Domain.Infractructure
         IEnumerable<T> GetTopFindings<T>(int pageIndex, int pageSize, Func<Finding, T> selector);
         Task<bool> AddFinding(Finding finding);
         int GetPageCount(int pageSize);
+        IEnumerable<T> SearchFindings<T>(int pageIndex, int pageSize, IEnumerable<Func<Finding, bool>> conditions, Func<Finding, T> selector);
     }
 }

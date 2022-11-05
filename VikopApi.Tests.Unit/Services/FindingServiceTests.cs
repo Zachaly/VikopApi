@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using Microsoft.VisualBasic;
+using Moq;
+using System.Drawing;
 using VikopApi.Application;
 using VikopApi.Application.Findings;
 using VikopApi.Application.Findings.Abstractions;
@@ -313,6 +315,144 @@ namespace VikopApi.Tests.Unit.Services
             var result = service.GetPageCount(size);
 
             Assert.That(result, Is.EqualTo(expectedCount));
+        }
+
+        [Test]
+        public void Search_ByTitle()
+        {
+            var findings = new List<Finding>
+            {
+                new Finding { Id = 1, Title = "title" },
+                new Finding { Id = 2, Title = "title title" },
+                new Finding { Id = 3, Title = "t" },
+                new Finding { Id = 4, Title = "i" },
+                new Finding { Id = 5, Title = "t" },
+                new Finding { Id = 6, Title = "l" },
+                new Finding { Id = 7, Title = "e" },
+                new Finding { Id = 8, Title = "ti" },
+                new Finding { Id = 9, Title = "tle" },
+            };
+
+            var managerMock = new Mock<IFindingManager>();
+            managerMock.Setup(x => x.SearchFindings(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<IEnumerable<Func<Finding, bool>>>(), It.IsAny<Func<Finding, FindingListItemModel>>()))
+                .Returns((int index, int size, IEnumerable<Func<Finding, bool>> conditions, Func<Finding, FindingListItemModel> selector)
+                    => findings.Where(x => conditions.All(y => y(x))).Select(selector));
+
+            var factoryMock = new Mock<IFindingFactory>();
+            factoryMock.Setup(x => x.CreateListItem(It.IsAny<Finding>()))
+                .Returns((Finding finding) => new FindingListItemModel { Id = finding.Id, Title = finding.Title });
+
+            var tagServiceMock = new Mock<ITagService>();
+
+            var service = new FindingService(factoryMock.Object, managerMock.Object, tagServiceMock.Object);
+
+            var request = new SearchFindingsRequest
+            {
+                SearchTitle = true,
+                Text = "title",
+                PageIndex = 0,
+                PageSize = 10
+            };
+
+            var result = service.Search(request);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Count(), Is.EqualTo(2));
+                Assert.That(result.All(x => x.Title.Contains(request.Text)));
+            });
+        }
+
+        [Test]
+        public void Search_ByCreator()
+        {
+            var findings = new List<Finding>
+            {
+                new Finding { Id = 1, Creator = new ApplicationUser { UserName = "name" } },
+                new Finding { Id = 2, Creator = new ApplicationUser { UserName = "name name" } },
+                new Finding { Id = 3, Creator = new ApplicationUser { UserName = "n" } },
+                new Finding { Id = 4, Creator = new ApplicationUser { UserName = "a" } },
+                new Finding { Id = 5, Creator = new ApplicationUser { UserName = "m" } },
+                new Finding { Id = 6, Creator = new ApplicationUser { UserName = "e" } },
+                new Finding { Id = 7, Creator = new ApplicationUser { UserName = "na" } },
+                new Finding { Id = 8, Creator = new ApplicationUser { UserName = "me" } },
+                new Finding { Id = 9, Creator = new ApplicationUser { UserName = "names" } },
+            };
+
+            var managerMock = new Mock<IFindingManager>();
+            managerMock.Setup(x => x.SearchFindings(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<IEnumerable<Func<Finding, bool>>>(), It.IsAny<Func<Finding, FindingListItemModel>>()))
+                .Returns((int index, int size, IEnumerable<Func<Finding, bool>> conditions, Func<Finding, FindingListItemModel> selector)
+                    => findings.Where(x => conditions.All(y => y(x))).Select(selector));
+
+            var factoryMock = new Mock<IFindingFactory>();
+            factoryMock.Setup(x => x.CreateListItem(It.IsAny<Finding>()))
+                .Returns((Finding finding) => new FindingListItemModel { Id = finding.Id, CreatorName = finding.Creator.UserName });
+
+            var tagServiceMock = new Mock<ITagService>();
+
+            var service = new FindingService(factoryMock.Object, managerMock.Object, tagServiceMock.Object);
+
+            var request = new SearchFindingsRequest
+            {
+                SearchCreator = true,
+                Text = "name",
+                PageIndex = 0,
+                PageSize = 10
+            };
+
+            var result = service.Search(request);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Count(), Is.EqualTo(3));
+                Assert.That(result.All(x => x.CreatorName.Contains(request.Text)));
+            });
+        }
+
+        [Test]
+        public void Search_ByTag()
+        {
+            var findings = new List<Finding>
+            {
+                new Finding { Id = 1, Tags = new List<FindingTag> { new FindingTag { Tag = new Tag { Name = "tagname" } } } },
+                new Finding { Id = 2, Tags = new List<FindingTag> { new FindingTag { Tag = new Tag { Name = "tagnametagname" } } } },
+                new Finding { Id = 3, Tags = new List<FindingTag> { new FindingTag { Tag = new Tag { Name = "t" } } } },
+                new Finding { Id = 4, Tags = new List<FindingTag> { new FindingTag { Tag = new Tag { Name = "a" } } } },
+                new Finding { Id = 5, Tags = new List<FindingTag> { new FindingTag { Tag = new Tag { Name = "g" } } } },
+                new Finding { Id = 6, Tags = new List<FindingTag> { new FindingTag { Tag = new Tag { Name = "ag" } } } },
+                new Finding { Id = 7, Tags = new List<FindingTag> { new FindingTag { Tag = new Tag { Name = "ta" } } } },
+                new Finding { Id = 8, Tags = new List<FindingTag> { new FindingTag { Tag = new Tag { Name = "tg" } } } },
+                new Finding { Id = 9, Tags = new List<FindingTag> { new FindingTag { Tag = new Tag { Name = "tagnames" } } } },
+            };
+
+            var managerMock = new Mock<IFindingManager>();
+            managerMock.Setup(x => x.SearchFindings(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<IEnumerable<Func<Finding, bool>>>(), It.IsAny<Func<Finding, FindingListItemModel>>()))
+                .Returns((int index, int size, IEnumerable<Func<Finding, bool>> conditions, Func<Finding, FindingListItemModel> selector)
+                    => findings.Where(x => conditions.All(y => y(x))).Select(selector));
+
+            var factoryMock = new Mock<IFindingFactory>();
+            factoryMock.Setup(x => x.CreateListItem(It.IsAny<Finding>()))
+                .Returns((Finding finding) => new FindingListItemModel { Id = finding.Id, TagList = finding.Tags.Select(x => x.Tag) });
+
+            var tagServiceMock = new Mock<ITagService>();
+
+            var service = new FindingService(factoryMock.Object, managerMock.Object, tagServiceMock.Object);
+
+            var request = new SearchFindingsRequest
+            {
+                SearchTag = true,
+                Text = "tagname",
+                PageIndex = 0,
+                PageSize = 10
+            };
+
+            var result = service.Search(request);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Count(), Is.EqualTo(3));
+                Assert.That(result.All(x => x.TagList.All(x => x.Name.Contains(request.Text))));
+            });
         }
     }
 }

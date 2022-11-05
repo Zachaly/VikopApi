@@ -10,5 +10,6 @@ namespace VikopApi.Application.Findings.Abstractions
         IEnumerable<FindingListItemModel> GetFindings(SortingType? sortingType, int? pageIndex, int? pageSize);
         FindingModel GetFindingById(int id);
         int GetPageCount(int pageSize);
+        IEnumerable<FindingListItemModel> Search(SearchFindingsRequest request);
     }
 }

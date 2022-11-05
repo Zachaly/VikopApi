@@ -78,5 +78,18 @@ namespace VikopApi.Database
 
         public int GetPageCount(int pageSize)
             => (int)Math.Ceiling(_dbContext.Findings.Count() / (decimal)pageSize);
+
+        public IEnumerable<T> SearchFindings<T>(int pageIndex, int pageSize, IEnumerable<Func<Finding, bool>> conditions, Func<Finding, T> selector)
+            => _dbContext.Findings.Include(finding => finding.Creator)
+                .Include(finding => finding.Comments)
+                .Include(finding => finding.Reactions)
+                .Include(finding => finding.Tags)
+                .ThenInclude(tag => tag.Tag)
+                .OrderByDescending(finding => finding.Created)
+                .AsEnumerable()
+                .Where(finding => conditions.All(condition => condition(finding)))
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .Select(selector);
     }
 }
