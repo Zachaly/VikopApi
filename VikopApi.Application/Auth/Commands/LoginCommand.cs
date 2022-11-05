@@ -1,11 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VikopApi.Application.Auth.Abstractions;
 using VikopApi.Application.Command.Abstractions;
 using VikopApi.Application.Models;
@@ -21,6 +16,7 @@ namespace VikopApi.Application.Auth.Commands
     public class LoginResponse
     {
         public string Token { get; set; } = "";
+        public IEnumerable<string> Claims { get; set; }
     }
 
     public class LoginHandler : IRequestHandler<LoginCommand, DataCommandResponseModel<LoginResponse>>
@@ -54,7 +50,11 @@ namespace VikopApi.Application.Auth.Commands
 
             var tokenJson = new JwtSecurityTokenHandler().WriteToken(token);
 
-            var response = new LoginResponse { Token = tokenJson };
+            var response = new LoginResponse 
+            { 
+                Token = tokenJson,
+                Claims = (await _userManager.GetClaimsAsync(user)).Select(x => x.Value)
+            };
 
             return _commandResponseFactory.CreateSuccess(response);
         }
