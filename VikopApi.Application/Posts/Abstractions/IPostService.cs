@@ -9,5 +9,6 @@ namespace VikopApi.Application.Posts.Abstractions
         Task<PostModel> AddPost(AddPostRequest request);
         IEnumerable<PostModel> GetPosts(SortingType? sortingType, int? pageIndex, int? pageSize);
         int GetPageCount(int pageSize);
+        IEnumerable<PostModel> Search(SearchPostRequest request);
     }
 }

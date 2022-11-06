@@ -357,5 +357,107 @@ namespace VikopApi.Tests.Unit.Services
                 Assert.That(res.FirstOrDefault()?.Content.Id, Is.EqualTo(expectedResult.FirstOrDefault()?.Comment?.Id));
             });
         }
+
+        [Test]
+        public void Search_ByCreator()
+        {
+            var posts = new List<Post>
+            {
+                new Post { Id = 1, Comment = new Comment { Creator = new ApplicationUser { UserName = "name" } } },
+                new Post { Id = 2, Comment = new Comment { Creator = new ApplicationUser { UserName = "name name" } } },
+                new Post { Id = 3, Comment = new Comment { Creator = new ApplicationUser { UserName = "n" } } },
+                new Post { Id = 4, Comment = new Comment { Creator = new ApplicationUser { UserName = "a" } } },
+                new Post { Id = 5, Comment = new Comment { Creator = new ApplicationUser { UserName = "m" } } },
+                new Post { Id = 6, Comment = new Comment { Creator = new ApplicationUser { UserName = "e" } } },
+                new Post { Id = 7, Comment = new Comment { Creator = new ApplicationUser { UserName = "na" } } },
+                new Post { Id = 8, Comment = new Comment { Creator = new ApplicationUser { UserName = "me" } } },
+                new Post { Id = 9, Comment = new Comment { Creator = new ApplicationUser { UserName = "names" } } },
+            };
+
+            var commentFactoryMock = new Mock<ICommentFactory>();
+
+            var commentManagerMock = new Mock<ICommentManager>();
+
+            var postFactoryMock = new Mock<IPostFactory>();
+            postFactoryMock.Setup(x => x.CreateModel(It.IsAny<Post>()))
+                .Returns((Post post) => new PostModel { Content = new CommentModel { CreatorName = post.Comment.Creator.UserName } });
+
+            var postManagerMock = new Mock<IPostManager>();
+            postManagerMock.Setup(x => x.SearchPosts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<IEnumerable<Func<Post, bool>>>(), It.IsAny<Func<Post, PostModel>>()))
+                .Returns((int index, int size, IEnumerable<Func<Post, bool>> conditions, Func<Post, PostModel> selector)
+                    => posts.Where(x => conditions.All(y => y(x))).Select(selector));
+
+            var tagServiceMock = new Mock<ITagService>();
+
+            var postService = new PostService(postFactoryMock.Object, postManagerMock.Object, commentFactoryMock.Object,
+                commentManagerMock.Object, tagServiceMock.Object);
+
+            var request = new SearchPostRequest
+            {
+                Text = "name",
+                SearchCreator = true,
+                PageIndex = 0,
+                PageSize = 10
+            };
+
+            var res = postService.Search(request);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(res.Count(), Is.EqualTo(3));
+                Assert.That(res.All(x => x.Content.CreatorName.Contains(request.Text)));
+            });
+        }
+
+        [Test]
+        public void Search_ByTags()
+        {
+            var posts = new List<Post>
+            {
+                new Post { Id = 1, Tags = new List<PostTag> { new PostTag { Tag = new Tag { Name = "tagname" } } } },
+                new Post { Id = 2, Tags = new List<PostTag> { new PostTag { Tag = new Tag { Name = "tagnametag" } } } },
+                new Post { Id = 3, Tags = new List<PostTag> { new PostTag { Tag = new Tag { Name = "t" } } } },
+                new Post { Id = 4, Tags = new List<PostTag> { new PostTag { Tag = new Tag { Name = "a" } } } },
+                new Post { Id = 5, Tags = new List<PostTag> { new PostTag { Tag = new Tag { Name = "g" } } } },
+                new Post { Id = 6, Tags = new List<PostTag> { new PostTag { Tag = new Tag { Name = "n" } } } },
+                new Post { Id = 7, Tags = new List<PostTag> { new PostTag { Tag = new Tag { Name = "a" } } } },
+                new Post { Id = 8, Tags = new List<PostTag> { new PostTag { Tag = new Tag { Name = "m" } } } },
+                new Post { Id = 9, Tags = new List<PostTag> { new PostTag { Tag = new Tag { Name = "e" } } } },
+            };
+
+            var commentFactoryMock = new Mock<ICommentFactory>();
+
+            var commentManagerMock = new Mock<ICommentManager>();
+
+            var postFactoryMock = new Mock<IPostFactory>();
+            postFactoryMock.Setup(x => x.CreateModel(It.IsAny<Post>()))
+                .Returns((Post post) => new PostModel { TagList = post.Tags.Select(x => x.Tag) });
+
+            var postManagerMock = new Mock<IPostManager>();
+            postManagerMock.Setup(x => x.SearchPosts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<IEnumerable<Func<Post, bool>>>(), It.IsAny<Func<Post, PostModel>>()))
+                .Returns((int index, int size, IEnumerable<Func<Post, bool>> conditions, Func<Post, PostModel> selector)
+                    => posts.Where(x => conditions.All(y => y(x))).Select(selector));
+
+            var tagServiceMock = new Mock<ITagService>();
+
+            var postService = new PostService(postFactoryMock.Object, postManagerMock.Object, commentFactoryMock.Object,
+                commentManagerMock.Object, tagServiceMock.Object);
+
+            var request = new SearchPostRequest
+            {
+                Text = "tagname",
+                SearchTag = true,
+                PageIndex = 0,
+                PageSize = 10
+            };
+
+            var res = postService.Search(request);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(res.Count(), Is.EqualTo(2));
+                Assert.That(res.All(x => x.TagList.All(x => x.Name.Contains(request.Text))));
+            });
+        }
     }
 }

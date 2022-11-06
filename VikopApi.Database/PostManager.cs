@@ -66,5 +66,20 @@ namespace VikopApi.Database
 
         public int GetPageCount(int pageSize)
             => (int)Math.Ceiling(_dbContext.Posts.Count() / (decimal)pageSize);
+
+        public IEnumerable<T> SearchPosts<T>(int pageIndex, int pageSize, IEnumerable<Func<Post, bool>> conditions, Func<Post, T> selector)
+            => _dbContext.Posts
+                    .Include(post => post.Comment)
+                    .ThenInclude(comment => comment.Creator)
+                    .Include(post => post.Comment)
+                    .ThenInclude(comment => comment.Reactions)
+                    .Include(post => post.Tags)
+                    .ThenInclude(tag => tag.Tag)
+                    .AsEnumerable()
+                    .Where(post => conditions.All(condition => condition(post)))
+                    .OrderByDescending(post => post.Comment.Created)
+                    .Skip(pageIndex * pageSize)
+                    .Take(pageSize)
+                    .Select(selector);
     }
 }

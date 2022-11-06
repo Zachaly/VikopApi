@@ -69,5 +69,17 @@ namespace VikopApi.Application.Posts
 
             return _postManager.GetPosts(index, size, postSelector);
         }
+
+        public IEnumerable<PostModel> Search(SearchPostRequest request)
+        {
+            var conditions = new List<Func<Post, bool>>();
+
+            if (request.SearchCreator.GetValueOrDefault())
+                conditions.Add(post => post.Comment.Creator.UserName.Contains(request.Text));
+            if (request.SearchTag.GetValueOrDefault())
+                conditions.Add(post => post.Tags.Any(tag => tag.Tag.Name.Contains(request.Text)));
+
+            return _postManager.SearchPosts(request.PageIndex ?? 0, request.PageSize ?? 10, conditions, post => _postFactory.CreateModel(post));
+        }
     }
 }

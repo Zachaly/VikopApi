@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using VikopApi.Application.Models.Requests;
 using VikopApi.Application.Posts.Abstractions;
 using VikopApi.Application.Posts.Commands;
 using VikopApi.Domain.Enums;
@@ -45,5 +46,9 @@ namespace VikopApi.Api.Controllers
         [HttpGet]
         public IActionResult PageCount()
             => Ok(_postService.GetPageCount(_pageSize));
+
+        [HttpGet]
+        public IActionResult Search([FromQuery] SearchPostRequest request)
+            => Ok(_postService.Search(request));
     }
 }

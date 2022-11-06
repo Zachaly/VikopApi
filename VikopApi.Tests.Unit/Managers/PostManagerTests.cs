@@ -1,4 +1,5 @@
-﻿using VikopApi.Database;
+﻿using System.Drawing;
+using VikopApi.Database;
 using VikopApi.Domain.Enums;
 using VikopApi.Domain.Models;
 
@@ -342,6 +343,34 @@ namespace VikopApi.Tests.Unit.Managers
             var res = manager.GetPageCount(size);
 
             Assert.That(res, Is.EqualTo(expectedCount));
+        }
+
+        [Test]
+        public void SearchPosts()
+        {
+            var posts = new List<Post>
+            {
+                new Post { Id = 1, Comment = new Comment() },
+                new Post { Id = 2, Comment = new Comment() },
+                new Post { Id = 3, Comment = new Comment() },
+                new Post { Id = 4, Comment = new Comment() },
+                new Post { Id = 5, Comment = new Comment() },
+                new Post { Id = 6, Comment = new Comment() },
+                new Post { Id = 7, Comment = new Comment() },
+                new Post { Id = 8, Comment = new Comment() },
+                new Post { Id = 9, Comment = new Comment() },
+            };
+            var dbContext = Extensions.GetAppDbContext();
+            dbContext.AddContent(posts);
+            var manager = new PostManager(dbContext);
+
+            var conditions = new List<Func<Post, bool>>();
+            conditions.Add(post => post.Id == 2);
+            var post = dbContext.Posts.AsEnumerable().Where(x => conditions.All(y => y(x))).ToList();
+
+            var res = manager.SearchPosts(0, 10, conditions, x => x).ToList();
+
+            Assert.That(res, Is.EquivalentTo(posts.Where(x => x.Id == 2)));
         }
     }
 }
