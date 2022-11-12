@@ -372,5 +372,52 @@ namespace VikopApi.Tests.Unit.Managers
 
             Assert.That(res, Is.EquivalentTo(posts.Where(x => x.Id == 2)));
         }
+
+        [Test]
+        public async Task RemovePostById()
+        {
+            var posts = new List<Post>
+            {
+                new Post { Id = 4, CommentId = 1 },
+                new Post { Id = 3, CommentId = 2 },
+                new Post { Id = 2, CommentId = 3 },
+                new Post { Id = 1, CommentId = 4 },
+            };
+
+            var comments = new List<Comment>
+            {
+                new Comment { Id = 1 },
+                new Comment { Id = 2 },
+                new Comment { Id = 3 },
+                new Comment { Id = 4 }
+            };
+
+            var tags = new List<PostTag>
+            {
+                new PostTag { PostId = 3, Tag = new Tag { Name = "tag" } },
+                new PostTag { PostId = 2, Tag = new Tag { Name = "tag" } },
+                new PostTag { PostId = 3, Tag = new Tag { Name = "tag" } },
+                new PostTag { PostId = 1, Tag = new Tag { Name = "tag" } },
+            };
+
+            var dbContext = Extensions.GetAppDbContext();
+            dbContext.AddContent(comments);
+            dbContext.AddContent(posts);
+            dbContext.AddContent(tags);
+
+            var manager = new PostManager(dbContext);
+
+            const int Id = 3;
+            var res = await manager.RemovePostById(Id);
+            var post = dbContext.Posts.ToArray();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(res, Is.True);
+                Assert.That(!dbContext.Posts.Any(x => x.Id == Id));
+                Assert.That(!dbContext.Comments.Any(x => x.Id == 2));
+                Assert.That(!dbContext.PostTags.Any(x => x.PostId == Id));
+            });
+        }
     }
 }

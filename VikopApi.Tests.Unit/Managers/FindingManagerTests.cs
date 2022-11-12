@@ -1,4 +1,5 @@
-﻿using VikopApi.Database;
+﻿using NUnit.Framework.Interfaces;
+using VikopApi.Database;
 using VikopApi.Domain.Enums;
 using VikopApi.Domain.Models;
 
@@ -263,6 +264,41 @@ namespace VikopApi.Tests.Unit.Managers
             var res = manager.SearchFindings(0, 10, conditions, x => x);
 
             Assert.That(res, Is.EquivalentTo(findings.Where(x => x.Id == 2)));
+        }
+
+        [Test]
+        public async Task RemoveFindingById()
+        {
+            var findings = new List<Finding>
+            {
+                new Finding { Id = 1 },
+                new Finding { Id = 2 },
+                new Finding { Id = 3 },
+                new Finding { Id = 4 },
+            };
+
+            var comments = new List<FindingComment>
+            {
+                new FindingComment { CommentId = 1, FindingId = 2 },
+                new FindingComment { CommentId = 2, FindingId = 2 },
+                new FindingComment { CommentId = 3, FindingId = 2 }
+            };
+
+            var dbContext = Extensions.GetAppDbContext();
+            dbContext.AddContent(findings);
+            dbContext.AddContent(comments);
+
+            var manager = new FindingManager(dbContext);
+
+            const int Id = 2;
+            var res = await manager.RemoveFindingById(Id);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(res, Is.True);
+                Assert.That(!dbContext.Findings.Any(x => x.Id == Id));
+                Assert.That(!dbContext.FindingComments.Any(x => x.FindingId == Id));
+            });
         }
     }
 }

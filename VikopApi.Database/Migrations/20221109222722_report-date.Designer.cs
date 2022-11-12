@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VikopApi.Database;
 
@@ -11,9 +12,10 @@ using VikopApi.Database;
 namespace VikopApi.Database.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221109222722_report-date")]
+    partial class reportdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -360,13 +362,16 @@ namespace VikopApi.Database.Migrations
 
                     b.Property<string>("ReportingUserId")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FindingId");
 
-                    b.HasIndex("ReportingUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("FindingReports");
                 });
@@ -424,13 +429,16 @@ namespace VikopApi.Database.Migrations
 
                     b.Property<string>("ReportingUserId")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PostId");
 
-                    b.HasIndex("ReportingUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("PostReports");
                 });
@@ -616,15 +624,13 @@ namespace VikopApi.Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VikopApi.Domain.Models.ApplicationUser", "ReportingUser")
+                    b.HasOne("VikopApi.Domain.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("ReportingUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Finding");
 
-                    b.Navigation("ReportingUser");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("VikopApi.Domain.Models.FindingTag", b =>
@@ -665,15 +671,13 @@ namespace VikopApi.Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VikopApi.Domain.Models.ApplicationUser", "ReportingUser")
+                    b.HasOne("VikopApi.Domain.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("ReportingUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Post");
 
-                    b.Navigation("ReportingUser");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("VikopApi.Domain.Models.PostTag", b =>

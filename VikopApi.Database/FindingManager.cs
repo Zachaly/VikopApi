@@ -91,5 +91,14 @@ namespace VikopApi.Database
                 .Skip(pageIndex * pageSize)
                 .Take(pageSize)
                 .Select(selector);
+
+        public async Task<bool> RemoveFindingById(int id)
+        {
+            var finding = _dbContext.Findings.FirstOrDefault(finding => finding.Id == id);
+
+            _dbContext.Findings.Remove(finding);
+
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
     }
 }

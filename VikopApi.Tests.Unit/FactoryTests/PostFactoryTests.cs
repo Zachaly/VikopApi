@@ -47,7 +47,8 @@ namespace VikopApi.Tests.Unit.FactoryTests
                     Picture = "pic",
                     Reactions = new List<CommentReaction>()
                 },
-                Tags = new List<PostTag> { new PostTag { Tag = new Tag { Id = 1, Name = "tag" } } }
+                Tags = new List<PostTag> { new PostTag { Tag = new Tag { Id = 1, Name = "tag" } } },
+                Id = 3
             };
 
             var model = factory.CreateModel(post);
@@ -63,6 +64,7 @@ namespace VikopApi.Tests.Unit.FactoryTests
                 Assert.That(model.Content.CreatorName, Is.EqualTo(post.Comment.Creator.UserName));
                 Assert.That(model.Content.Reactions, Is.EqualTo(post.Comment.Reactions.SumReactions()));
                 Assert.That(model.TagList, Is.EquivalentTo(post.Tags.Select(tag => tag.Tag)));
+                Assert.That(model.Id, Is.EqualTo(post.Id));
             });
         }
 

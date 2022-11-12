@@ -454,5 +454,42 @@ namespace VikopApi.Tests.Unit.Services
                 Assert.That(result.All(x => x.TagList.All(x => x.Name.Contains(request.Text))));
             });
         }
+
+        [Test]
+        public async Task RemoveFindingById()
+        {
+            var findings = new List<Finding>
+            {
+                new Finding { Id = 1 },
+                new Finding { Id = 2 },
+                new Finding { Id = 3 },
+                new Finding { Id = 4 },
+                new Finding { Id = 5 },
+                new Finding { Id = 6 },
+                new Finding { Id = 7 },
+                new Finding { Id = 8 },
+                new Finding { Id = 9 },
+            };
+
+            var managerMock = new Mock<IFindingManager>();
+            managerMock.Setup(x => x.RemoveFindingById(It.IsAny<int>()))
+                .Callback((int id) => findings.Remove(findings.First(x => x.Id == id)))
+                .ReturnsAsync(true);
+
+            var factoryMock = new Mock<IFindingFactory>();
+
+            var tagServiceMock = new Mock<ITagService>();
+
+            var service = new FindingService(factoryMock.Object, managerMock.Object, tagServiceMock.Object);
+
+            const int Id = 4;
+            var res = await service.RemoveFindingById(Id);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(res, Is.True);
+                Assert.That(!findings.Any(x => x.Id == Id));
+            });
+        }
     }
 }

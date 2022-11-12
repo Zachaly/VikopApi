@@ -459,5 +459,47 @@ namespace VikopApi.Tests.Unit.Services
                 Assert.That(res.All(x => x.TagList.All(x => x.Name.Contains(request.Text))));
             });
         }
+
+        [Test]
+        public async Task RemovePostById()
+        {
+            var posts = new List<Post>
+            {
+                new Post { Id = 1 },
+                new Post { Id = 2 },
+                new Post { Id = 3 },
+                new Post { Id = 4 },
+                new Post { Id = 5 },
+                new Post { Id = 6 },
+                new Post { Id = 7 },
+                new Post { Id = 8 },
+                new Post { Id = 9 },
+            };
+
+            var commentFactoryMock = new Mock<ICommentFactory>();
+
+            var commentManagerMock = new Mock<ICommentManager>();
+
+            var postFactoryMock = new Mock<IPostFactory>();
+
+            var postManagerMock = new Mock<IPostManager>();
+            postManagerMock.Setup(x => x.RemovePostById(It.IsAny<int>()))
+                .Callback((int id) => posts.Remove(posts.First(x => x.Id == id)))
+                .ReturnsAsync(true);
+
+            var tagServiceMock = new Mock<ITagService>();
+
+            var postService = new PostService(postFactoryMock.Object, postManagerMock.Object, commentFactoryMock.Object,
+                commentManagerMock.Object, tagServiceMock.Object);
+
+            const int Id = 3;
+            var res = await postService.RemovePostById(Id);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(res, Is.True);
+                Assert.That(!posts.Any(x => x.Id == Id));
+            });
+        }
     }
 }

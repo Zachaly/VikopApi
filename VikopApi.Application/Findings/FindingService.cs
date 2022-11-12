@@ -72,5 +72,7 @@ namespace VikopApi.Application.Findings
 
             return _findingManager.SearchFindings(request.PageIndex ?? 0, request.PageSize ?? 10, conditions, finding => _findingFactory.CreateListItem(finding));
         }
+        public Task<bool> RemoveFindingById(int id)
+            => _findingManager.RemoveFindingById(id);
     }
 }

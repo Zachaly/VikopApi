@@ -13,7 +13,7 @@ namespace VikopApi.Tests.Unit.Managers
             var comment = new Comment { Id = 1 };
             var dbContext = Extensions.GetAppDbContext();
             var manager = new CommentManager(dbContext);
-
+            
             var res = await manager.AddComment(comment);
 
             Assert.Multiple(() =>

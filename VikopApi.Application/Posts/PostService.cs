@@ -81,5 +81,8 @@ namespace VikopApi.Application.Posts
 
             return _postManager.SearchPosts(request.PageIndex ?? 0, request.PageSize ?? 10, conditions, post => _postFactory.CreateModel(post));
         }
+
+        public Task<bool> RemovePostById(int id)
+            => _postManager.RemovePostById(id);
     }
 }

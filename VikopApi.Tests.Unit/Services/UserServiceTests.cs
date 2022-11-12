@@ -304,5 +304,37 @@ namespace VikopApi.Tests.Unit.Services
                 Assert.That(user.ProfilePicture, Is.EqualTo(request.Picture));
             });
         }
+
+        [Test]
+        public async Task SetRank()
+        {
+            var users = new List<ApplicationUser>
+            {
+                new ApplicationUser { Id = "id1", Rank = Rank.Green },
+                new ApplicationUser { Id = "id2", Rank = Rank.Green },
+                new ApplicationUser { Id = "id3", Rank = Rank.Green },
+                new ApplicationUser { Id = "id4", Rank = Rank.Green },
+            };
+
+            var userManagerMock = new Mock<IApplicationUserManager>();
+            userManagerMock.Setup(x => x.UpdateUser(It.IsAny<string>(), It.IsAny<Action<ApplicationUser>>()))
+                .Callback((string id, Action<ApplicationUser> action) =>
+                {
+                    var user = users.FirstOrDefault(x => x.Id == id);
+
+                    action(user);
+                });
+            
+            var userFactoryMock = new Mock<IUserFactory>();
+
+            var findingFactoryMock = new Mock<IFindingFactory>();
+            var postFactoryMock = new Mock<IPostFactory>();
+
+            var service = new UserService(userManagerMock.Object, userFactoryMock.Object, findingFactoryMock.Object, postFactoryMock.Object);
+
+            await service.SetUserRank("id1", Rank.Moderator);
+
+            Assert.That(users.FirstOrDefault(x => x.Id == "id1").Rank, Is.EqualTo(Rank.Moderator));
+        }
     }
 }

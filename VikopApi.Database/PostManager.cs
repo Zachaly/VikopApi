@@ -81,5 +81,15 @@ namespace VikopApi.Database
                     .Skip(pageIndex * pageSize)
                     .Take(pageSize)
                     .Select(selector);
+
+        public async Task<bool> RemovePostById(int id)
+        {
+            var post = _dbContext.Posts.Include(post => post.Comment).FirstOrDefault(x => x.Id == id);
+
+            _dbContext.Posts.Remove(post);
+            _dbContext.Comments.Remove(post.Comment);
+
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using VikopApi.Application.Models;
 using VikopApi.Application.Models.Requests;
+using VikopApi.Domain.Enums;
 
 namespace VikopApi.Application.User.Abstractions
 {
@@ -12,5 +13,6 @@ namespace VikopApi.Application.User.Abstractions
         IEnumerable<PostModel> GetUserPosts(string userId);
         bool IsEmailOccupied(string email);
         Task<bool> UpdateRanks();
+        Task SetUserRank(string userId, Rank rank);
     }
 }

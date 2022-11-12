@@ -24,7 +24,8 @@ namespace VikopApi.Application.Posts
             => new PostModel
             {
                 Content = _commentFactory.CreateModel(post.Comment),
-                TagList = post.Tags.Select(tag => tag.Tag)
+                TagList = post.Tags.Select(tag => tag.Tag),
+                Id = post.Id
             };
 
         public PostModel CreateModel(Comment comment, IEnumerable<Tag> tags)

@@ -10,5 +10,6 @@ namespace VikopApi.Application.Posts.Abstractions
         IEnumerable<PostModel> GetPosts(SortingType? sortingType, int? pageIndex, int? pageSize);
         int GetPageCount(int pageSize);
         IEnumerable<PostModel> Search(SearchPostRequest request);
+        Task<bool> RemovePostById(int id);
     }
 }

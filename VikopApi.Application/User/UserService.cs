@@ -3,6 +3,7 @@ using VikopApi.Application.Models;
 using VikopApi.Application.Models.Requests;
 using VikopApi.Application.Posts.Abstractions;
 using VikopApi.Application.User.Abstractions;
+using VikopApi.Domain.Enums;
 
 namespace VikopApi.Application.User
 {
@@ -53,5 +54,8 @@ namespace VikopApi.Application.User
                     user.ProfilePicture = request.Picture;
                 }
             });
+
+        public Task SetUserRank(string userId, Rank rank)
+            => _appUserManager.UpdateUser(userId, user => user.Rank = rank);
     }
 }

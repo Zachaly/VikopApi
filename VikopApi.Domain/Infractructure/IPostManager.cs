@@ -10,5 +10,6 @@ namespace VikopApi.Domain.Infractructure
         IEnumerable<T> GetNewPosts<T>(int pageIndex, int pageSize, Func<Post, T> selector);
         int GetPageCount(int pageSize);
         IEnumerable<T> SearchPosts<T>(int pageIndex, int pageSize, IEnumerable<Func<Post, bool>> conditions, Func<Post, T> selector);
+        Task<bool> RemovePostById(int id);
     }
 }
