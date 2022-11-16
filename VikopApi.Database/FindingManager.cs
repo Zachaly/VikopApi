@@ -94,9 +94,21 @@ namespace VikopApi.Database
 
         public async Task<bool> RemoveFindingById(int id)
         {
-            var finding = _dbContext.Findings.FirstOrDefault(finding => finding.Id == id);
+            var finding = _dbContext.Findings
+                .Include(finding => finding.Comments)
+                .ThenInclude(comment => comment.Comment)
+                .ThenInclude(comment => comment.SubComments)
+                .FirstOrDefault(finding => finding.Id == id);
 
             _dbContext.Findings.Remove(finding);
+
+            var subComments = finding.Comments
+                .Select(comment => comment.Comment)
+                .SelectMany(comment => comment.SubComments)
+                .Select(comment => comment.Comment);
+
+            _dbContext.Comments.RemoveRange(subComments);
+            _dbContext.Comments.RemoveRange(finding.Comments.Select(comment => comment.Comment));
 
             return await _dbContext.SaveChangesAsync() > 0;
         }

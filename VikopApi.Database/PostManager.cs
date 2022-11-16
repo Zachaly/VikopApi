@@ -84,9 +84,12 @@ namespace VikopApi.Database
 
         public async Task<bool> RemovePostById(int id)
         {
-            var post = _dbContext.Posts.Include(post => post.Comment).FirstOrDefault(x => x.Id == id);
+            var post = _dbContext.Posts.Include(post => post.Comment)
+                .ThenInclude(comment => comment.SubComments)
+                .FirstOrDefault(x => x.Id == id);
 
             _dbContext.Posts.Remove(post);
+            _dbContext.SubComments.RemoveRange(post.Comment.SubComments);
             _dbContext.Comments.Remove(post.Comment);
 
             return await _dbContext.SaveChangesAsync() > 0;
