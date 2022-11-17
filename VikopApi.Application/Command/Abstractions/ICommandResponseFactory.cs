@@ -1,4 +1,4 @@
-﻿using VikopApi.Application.Models;
+﻿using VikopApi.Application.Models.Command;
 
 namespace VikopApi.Application.Command.Abstractions
 {

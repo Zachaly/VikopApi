@@ -1,5 +1,5 @@
 ﻿using VikopApi.Application.Comments.Abstractions;
-using VikopApi.Application.Models;
+using VikopApi.Application.Models.Post;
 using VikopApi.Application.Posts.Abstractions;
 
 namespace VikopApi.Application.Posts

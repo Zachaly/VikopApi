@@ -1,4 +1,4 @@
-﻿using VikopApi.Application.Models.Requests;
+﻿using VikopApi.Application.Models.Reaction.Requests;
 
 namespace VikopApi.Application.Reactions.Abstractions
 {

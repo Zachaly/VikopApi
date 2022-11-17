@@ -1,12 +1,11 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VikopApi.Application.Auth.Abstractions;
-using VikopApi.Application.Auth.Commands;
-using VikopApi.Application.Models.Requests;
+using VikopApi.Application.Models.Auth.Commands;
+using VikopApi.Application.Models.User.Commands;
+using VikopApi.Application.Models.User.Requests;
 using VikopApi.Application.User.Abstractions;
-using VikopApi.Application.User.Commands;
 
 namespace VikopApi.Api.Controllers
 {

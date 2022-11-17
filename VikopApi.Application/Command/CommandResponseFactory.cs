@@ -1,5 +1,5 @@
 ﻿using VikopApi.Application.Command.Abstractions;
-using VikopApi.Application.Models;
+using VikopApi.Application.Models.Command;
 
 namespace VikopApi.Application.Command
 {

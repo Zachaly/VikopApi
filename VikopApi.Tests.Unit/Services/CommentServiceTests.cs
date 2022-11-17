@@ -1,8 +1,8 @@
 ﻿using Moq;
 using VikopApi.Application.Comments;
 using VikopApi.Application.Comments.Abstractions;
-using VikopApi.Application.Models;
-using VikopApi.Application.Models.Requests;
+using VikopApi.Application.Models.Comment;
+using VikopApi.Application.Models.Comment.Requests;
 using VikopApi.Domain.Infractructure;
 using VikopApi.Domain.Models;
 

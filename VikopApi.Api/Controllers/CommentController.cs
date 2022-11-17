@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VikopApi.Application.Comments.Abstractions;
 using VikopApi.Application.Comments.Commands;
+using VikopApi.Application.Models.Comment.Commands;
 
 namespace VikopApi.Api.Controllers
 {

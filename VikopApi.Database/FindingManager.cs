@@ -103,9 +103,10 @@ namespace VikopApi.Database
             _dbContext.Findings.Remove(finding);
 
             var subComments = finding.Comments
-                .Select(comment => comment.Comment)
-                .SelectMany(comment => comment.SubComments)
-                .Select(comment => comment.Comment);
+                .Select(comment => comment.Comment ?? new Comment())
+                .SelectMany(comment => comment.SubComments ?? new List<SubComment>())
+                .Select(comment => comment.Comment ?? new Comment())
+                .ToList();
 
             _dbContext.Comments.RemoveRange(subComments);
             _dbContext.Comments.RemoveRange(finding.Comments.Select(comment => comment.Comment));

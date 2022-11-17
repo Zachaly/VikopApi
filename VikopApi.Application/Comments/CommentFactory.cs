@@ -1,6 +1,6 @@
 ﻿using VikopApi.Application.Comments.Abstractions;
-using VikopApi.Application.Models;
-using VikopApi.Application.Models.Requests;
+using VikopApi.Application.Models.Comment;
+using VikopApi.Application.Models.Comment.Requests;
 
 namespace VikopApi.Application.Comments
 {

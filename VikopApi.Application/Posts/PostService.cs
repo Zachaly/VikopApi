@@ -1,6 +1,6 @@
 ﻿using VikopApi.Application.Comments.Abstractions;
-using VikopApi.Application.Models;
-using VikopApi.Application.Models.Requests;
+using VikopApi.Application.Models.Post;
+using VikopApi.Application.Models.Post.Requests;
 using VikopApi.Application.Posts.Abstractions;
 using VikopApi.Application.Tags.Abtractions;
 using VikopApi.Domain.Enums;

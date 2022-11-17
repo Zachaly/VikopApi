@@ -1,6 +1,5 @@
 ﻿using VikopApi.Application;
 using VikopApi.Application.Comments;
-using VikopApi.Application.Models.Requests;
 using VikopApi.Domain.Enums;
 using VikopApi.Domain.Models;
 
@@ -13,7 +12,7 @@ namespace VikopApi.Tests.Unit.FactoryTests
         public void Create_ByAddCommentRequest()
         {
             var factory = new CommentFactory();
-            var request = new AddCommentRequest
+            var request = new Application.Models.Comment.Requests.AddCommentRequest
             {
                 Content = "content",
                 CreatorId = "id",

@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using VikopApi.Api.Infrastructure.BackgroundServices;
-using VikopApi.Application.Auth.Commands;
+using VikopApi.Application.Models.Auth.Commands;
 using VikopApi.Database;
 using VikopApi.Domain.Models;
 

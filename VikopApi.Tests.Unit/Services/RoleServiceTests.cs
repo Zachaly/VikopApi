@@ -3,6 +3,7 @@ using Moq;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using VikopApi.Application.Models;
+using VikopApi.Application.Models.User;
 using VikopApi.Application.Role;
 using VikopApi.Application.User;
 using VikopApi.Application.User.Abstractions;

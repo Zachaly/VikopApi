@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using VikopApi.Application.Models;
+using VikopApi.Application.Models.User;
 
 namespace VikopApi.Application.Role.Abstractions
 {

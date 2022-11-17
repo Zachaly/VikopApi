@@ -1,6 +1,8 @@
 ﻿using VikopApi.Application.Findings.Abstractions;
-using VikopApi.Application.Models;
-using VikopApi.Application.Models.Requests;
+using VikopApi.Application.Models.Finding;
+using VikopApi.Application.Models.Post;
+using VikopApi.Application.Models.User;
+using VikopApi.Application.Models.User.Requests;
 using VikopApi.Application.Posts.Abstractions;
 using VikopApi.Application.User.Abstractions;
 using VikopApi.Domain.Enums;

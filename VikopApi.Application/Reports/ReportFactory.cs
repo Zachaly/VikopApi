@@ -1,6 +1,6 @@
 ﻿using VikopApi.Application.Findings.Abstractions;
-using VikopApi.Application.Models;
-using VikopApi.Application.Models.Requests;
+using VikopApi.Application.Models.Report;
+using VikopApi.Application.Models.Report.Requests;
 using VikopApi.Application.Posts.Abstractions;
 using VikopApi.Application.Reports.Abstractions;
 using VikopApi.Application.User.Abstractions;

@@ -7,8 +7,8 @@ using System.Security.Claims;
 using Moq;
 using System.Text;
 using VikopApi.Application.Auth;
-using VikopApi.Application.Models.Requests;
 using VikopApi.Domain.Models;
+using VikopApi.Application.Models.User.Requests;
 
 namespace VikopApi.Tests.Unit.Services
 {

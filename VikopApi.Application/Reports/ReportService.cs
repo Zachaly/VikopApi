@@ -1,5 +1,5 @@
-﻿using VikopApi.Application.Models;
-using VikopApi.Application.Models.Requests;
+﻿using VikopApi.Application.Models.Report;
+using VikopApi.Application.Models.Report.Requests;
 using VikopApi.Application.Reports.Abstractions;
 
 namespace VikopApi.Application.Reports

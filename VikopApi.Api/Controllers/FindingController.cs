@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VikopApi.Application.Findings.Abstractions;
 using VikopApi.Application.Findings.Commands;
-using VikopApi.Application.Models.Requests;
+using VikopApi.Application.Models.Finding.Command;
+using VikopApi.Application.Models.Finding.Requests;
 using VikopApi.Domain.Enums;
 
 namespace VikopApi.Api.Controllers

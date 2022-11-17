@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
-using VikopApi.Application.Models;
+using VikopApi.Application.Models.User;
 using VikopApi.Application.Role.Abstractions;
 using VikopApi.Application.User.Abstractions;
 

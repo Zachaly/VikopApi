@@ -2,8 +2,7 @@
 using VikopApi.Application;
 using VikopApi.Application.Comments;
 using VikopApi.Application.Findings;
-using VikopApi.Application.Models;
-using VikopApi.Application.Models.Requests;
+using VikopApi.Application.Models.Finding.Requests;
 using VikopApi.Domain.Enums;
 using VikopApi.Domain.Models;
 

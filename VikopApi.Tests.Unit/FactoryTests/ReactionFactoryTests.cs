@@ -1,4 +1,4 @@
-﻿using VikopApi.Application.Models.Requests;
+﻿using VikopApi.Application.Models.Reaction.Requests;
 using VikopApi.Application.Reactions;
 using VikopApi.Domain.Enums;
 

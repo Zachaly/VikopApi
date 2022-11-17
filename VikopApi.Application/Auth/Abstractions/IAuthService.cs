@@ -1,5 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using VikopApi.Application.Models.Requests;
+using VikopApi.Application.Models.User.Requests;
 
 namespace VikopApi.Application.Auth.Abstractions
 {

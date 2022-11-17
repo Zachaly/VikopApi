@@ -1,5 +1,5 @@
 ﻿using VikopApi.Application.Command;
-using VikopApi.Application.Models;
+using VikopApi.Application.Models.Command;
 
 namespace VikopApi.Tests.Unit.FactoryTests
 {

@@ -1,11 +1,9 @@
-﻿using Microsoft.VisualBasic;
-using Moq;
-using System.Drawing;
+﻿using Moq;
 using VikopApi.Application;
 using VikopApi.Application.Findings;
 using VikopApi.Application.Findings.Abstractions;
-using VikopApi.Application.Models;
-using VikopApi.Application.Models.Requests;
+using VikopApi.Application.Models.Finding;
+using VikopApi.Application.Models.Finding.Requests;
 using VikopApi.Application.Tags.Abtractions;
 using VikopApi.Domain.Enums;
 using VikopApi.Domain.Infractructure;

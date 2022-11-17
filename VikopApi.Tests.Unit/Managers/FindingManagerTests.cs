@@ -279,9 +279,9 @@ namespace VikopApi.Tests.Unit.Managers
 
             var comments = new List<FindingComment>
             {
-                new FindingComment { CommentId = 1, FindingId = 2 },
-                new FindingComment { CommentId = 2, FindingId = 2 },
-                new FindingComment { CommentId = 3, FindingId = 2 }
+                new FindingComment { CommentId = 1, FindingId = 2, Comment = new Comment() },
+                new FindingComment { CommentId = 2, FindingId = 2, Comment = new Comment() },
+                new FindingComment { CommentId = 3, FindingId = 2, Comment = new Comment() }
             };
 
             var dbContext = Extensions.GetAppDbContext();

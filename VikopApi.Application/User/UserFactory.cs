@@ -1,4 +1,4 @@
-﻿using VikopApi.Application.Models;
+﻿using VikopApi.Application.Models.User;
 using VikopApi.Application.User.Abstractions;
 
 namespace VikopApi.Application.User

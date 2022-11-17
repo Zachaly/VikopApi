@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VikopApi.Application.Models.Report.Commands;
 using VikopApi.Application.Reports.Abstractions;
 using VikopApi.Application.Reports.Commands;
 

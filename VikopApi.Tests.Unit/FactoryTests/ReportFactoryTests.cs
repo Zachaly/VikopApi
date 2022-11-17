@@ -1,7 +1,7 @@
 ﻿using VikopApi.Application;
 using VikopApi.Application.Comments;
 using VikopApi.Application.Findings;
-using VikopApi.Application.Models.Requests;
+using VikopApi.Application.Models.Report.Requests;
 using VikopApi.Application.Posts;
 using VikopApi.Application.Reports;
 using VikopApi.Application.User;

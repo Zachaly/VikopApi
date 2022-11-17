@@ -1,5 +1,5 @@
-﻿using VikopApi.Application.Models;
-using VikopApi.Application.Models.Requests;
+﻿using VikopApi.Application.Models.Finding;
+using VikopApi.Application.Models.Finding.Requests;
 using VikopApi.Domain.Enums;
 
 namespace VikopApi.Application.Findings.Abstractions

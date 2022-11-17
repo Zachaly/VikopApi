@@ -1,6 +1,6 @@
 ﻿using Moq;
-using VikopApi.Application.Models;
-using VikopApi.Application.Models.Requests;
+using VikopApi.Application.Models.Report;
+using VikopApi.Application.Models.Report.Requests;
 using VikopApi.Application.Reports;
 using VikopApi.Application.Reports.Abstractions;
 using VikopApi.Domain.Infractructure;

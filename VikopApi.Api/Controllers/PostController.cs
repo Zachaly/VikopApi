@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using VikopApi.Application.Models.Requests;
+using VikopApi.Application.Models.Post.Commands;
+using VikopApi.Application.Models.Post.Requests;
 using VikopApi.Application.Posts.Abstractions;
-using VikopApi.Application.Posts.Commands;
 using VikopApi.Domain.Enums;
 
 namespace VikopApi.Api.Controllers
