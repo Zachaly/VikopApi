@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VikopApi.Application.Models.Post.Commands;
 using VikopApi.Application.Models.Post.Requests;
+using VikopApi.Application.Models.Post.Validation;
 using VikopApi.Application.Posts.Abstractions;
 using VikopApi.Domain.Enums;
 
@@ -24,8 +25,16 @@ namespace VikopApi.Api.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddPost([FromForm] AddPostCommand request)
+        public async Task<IActionResult> AddPost(
+            [FromForm] AddPostCommand request,
+            [FromServices] AddPostValidator validator)
         {
+            var validation = validator.Validate(request);
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.Errors);
+            }
+
             var res = await _mediator.Send(request);
 
             return Ok(res);

@@ -1,14 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VikopApi.Application.Models.Report.Commands;
+using VikopApi.Application.Models.Report.Validators;
 using VikopApi.Application.Reports.Abstractions;
-using VikopApi.Application.Reports.Commands;
 
 namespace VikopApi.Api.Controllers
 {
@@ -39,8 +34,16 @@ namespace VikopApi.Api.Controllers
 
         [HttpPost]
         [Route("post")]
-        public async Task<IActionResult> AddPostReport(AddReportCommand addReportCommand)
+        public async Task<IActionResult> AddPostReport(
+            AddReportCommand addReportCommand,
+            [FromServices] AddReportValidator validator)
         {
+            var validation = validator.Validate(addReportCommand);
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.Errors);
+            }
+
             addReportCommand.SetPost();
 
             return Ok(await _mediator.Send(addReportCommand));
@@ -48,8 +51,16 @@ namespace VikopApi.Api.Controllers
 
         [HttpPost]
         [Route("finding")]
-        public async Task<IActionResult> AddFindingReport(AddReportCommand addReportCommand)
+        public async Task<IActionResult> AddFindingReport(
+            AddReportCommand addReportCommand,
+            [FromServices] AddReportValidator validator)
         {
+            var validation = validator.Validate(addReportCommand);
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.Errors);
+            }
+
             addReportCommand.SetFinding();
 
             return Ok(await _mediator.Send(addReportCommand));

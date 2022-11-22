@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using VikopApi.Application.Models.Role.Commands;
+using VikopApi.Application.Models.Role.Validators;
 using VikopApi.Application.Role.Abstractions;
 using VikopApi.Application.Role.Commands;
 
@@ -25,8 +27,18 @@ namespace VikopApi.Api.Controllers
             => Ok(await _roleService.GetUsersWithRole(roleName));
 
         [HttpPut]
-        public async Task<IActionResult> Add(AddRoleCommand command)
-            => Ok(await _mediator.Send(command));
+        public async Task<IActionResult> Add(
+            AddRoleCommand command,
+            [FromServices] AddRoleValidator validator)
+        {
+            var validation = validator.Validate(command);
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.Errors);
+            }
+
+            return Ok(await _mediator.Send(command));
+        }
 
         [HttpPut]
         public async Task<IActionResult> Remove(RemoveRoleCommand command)

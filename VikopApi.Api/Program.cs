@@ -1,3 +1,4 @@
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using VikopApi.Api.Infrastructure.BackgroundServices;
 using VikopApi.Application.Models.Auth.Commands;
+using VikopApi.Application.Models.Comment.Validators;
 using VikopApi.Database;
 using VikopApi.Domain.Models;
 
@@ -56,6 +58,8 @@ builder.Services.AddHostedService<RankUpdater>();
 builder.Services.AddControllers();
 
 builder.Services.AddCors();
+
+builder.Services.AddValidatorsFromAssemblyContaining<AddCommentValidator>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

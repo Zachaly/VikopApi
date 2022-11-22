@@ -1,10 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using VikopApi.Application.Auth.Abstractions;
 using VikopApi.Application.Models.Auth.Commands;
 using VikopApi.Application.Models.User.Commands;
 using VikopApi.Application.Models.User.Requests;
+using VikopApi.Application.Models.User.Validators;
 using VikopApi.Application.User.Abstractions;
 
 namespace VikopApi.Api.Controllers
@@ -38,8 +40,15 @@ namespace VikopApi.Api.Controllers
         /// </response>
         [HttpPost]
         public async Task<IActionResult> Register(
-            AddUserRequest request)
+            AddUserRequest request,
+            [FromServices] AddUserValidator validator)
         {
+            var validation = validator.Validate(request);
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.Errors);
+            }
+
             return Ok(await _authService.AddUser(request));
         }
 
@@ -89,8 +98,16 @@ namespace VikopApi.Api.Controllers
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> Update([FromForm] UpdateUserCommand updateUserCommand)
+        public async Task<IActionResult> Update(
+            [FromForm] UpdateUserCommand updateUserCommand,
+            [FromServices] UpdateUserValidator validator)
         {
+            var validation = validator.Validate(updateUserCommand);
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.Errors);
+            }
+
             return Ok(await _mediator.Send(updateUserCommand));
         }
     }

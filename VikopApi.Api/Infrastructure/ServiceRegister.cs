@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using VikopApi.Application;
+﻿using System.Reflection;
 using VikopApi.Application.Comments;
 using VikopApi.Database;
 using VikopApi.Domain.Models;

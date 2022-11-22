@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VikopApi.Application.Comments.Abstractions;
-using VikopApi.Application.Comments.Commands;
 using VikopApi.Application.Models.Comment.Commands;
+using VikopApi.Application.Models.Comment.Validators;
 
 namespace VikopApi.Api.Controllers
 {
@@ -33,8 +33,15 @@ namespace VikopApi.Api.Controllers
         /// </response>
         [HttpPost]
         public async Task<IActionResult> AddFindingComment(
-            [FromForm] AddFindingCommentCommand request)
+            [FromForm] AddFindingCommentCommand request,
+            [FromServices] AddCommentValidator validator)
         {
+            var validation = validator.Validate(request);
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.Errors);
+            }
+
             var res = await _mediator.Send(request);
 
             return Ok(res);
@@ -46,8 +53,16 @@ namespace VikopApi.Api.Controllers
             => Ok(_commentService.GetSubcomments(commentId));
 
         [HttpPost]
-        public async Task<IActionResult> AddSubComment([FromForm] AddSubcommentCommand request)
+        public async Task<IActionResult> AddSubComment(
+            [FromForm] AddSubcommentCommand request,
+            [FromServices] AddCommentValidator validator)
         {
+            var validation = validator.Validate(request);
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.Errors);
+            }
+
             var res = await _mediator.Send(request);
 
             return Ok(res);

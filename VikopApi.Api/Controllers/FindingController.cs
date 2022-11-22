@@ -5,6 +5,7 @@ using VikopApi.Application.Findings.Abstractions;
 using VikopApi.Application.Findings.Commands;
 using VikopApi.Application.Models.Finding.Command;
 using VikopApi.Application.Models.Finding.Requests;
+using VikopApi.Application.Models.Finding.Validators;
 using VikopApi.Domain.Enums;
 
 namespace VikopApi.Api.Controllers
@@ -80,11 +81,19 @@ namespace VikopApi.Api.Controllers
         /// </summary>
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Add([FromForm] AddFindingCommand request)
+        public async Task<IActionResult> Add(
+            [FromForm] AddFindingCommand request,
+            [FromServices] AddFindingValidator validator)
         {
+            var validation = validator.Validate(request);
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.Errors);
+            }
+
             await _mediator.Send(request);
 
-           return Ok();
+            return Ok();
         }
 
         /// <summary>
