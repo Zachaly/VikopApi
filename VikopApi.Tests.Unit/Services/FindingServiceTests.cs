@@ -2,6 +2,7 @@
 using VikopApi.Application;
 using VikopApi.Application.Findings;
 using VikopApi.Application.Findings.Abstractions;
+using VikopApi.Application.Models;
 using VikopApi.Application.Models.Finding;
 using VikopApi.Application.Models.Finding.Requests;
 using VikopApi.Application.Tags.Abtractions;
@@ -114,7 +115,9 @@ namespace VikopApi.Tests.Unit.Services
 
             var service = new FindingService(factoryMock.Object, managerMock.Object, tagServiceMock.Object);
 
-            var res = service.GetFindings(null, pageIndex, pageSize);
+            var request = new PagedRequest { PageIndex = pageIndex, PageSize = pageSize, SortingType = null };
+
+            var res = service.GetFindings(request);
 
             var expectedResult = findings.Skip((pageSize ?? 10) * (pageIndex ?? 0))
                 .Take(pageSize ?? 10)
@@ -158,7 +161,9 @@ namespace VikopApi.Tests.Unit.Services
 
             var service = new FindingService(factoryMock.Object, managerMock.Object, tagServiceMock.Object);
 
-            var res = service.GetFindings(SortingType.New, pageIndex, pageSize);
+            var request = new PagedRequest { PageIndex = pageIndex, PageSize = pageSize, SortingType = SortingType.New };
+
+            var res = service.GetFindings(request);
 
             var expectedResult = findings.OrderByDescending(x => x.Created)
                 .Skip((pageSize ?? 10) * (pageIndex ?? 0))
@@ -233,7 +238,9 @@ namespace VikopApi.Tests.Unit.Services
 
             var service = new FindingService(factoryMock.Object, managerMock.Object, tagServiceMock.Object);
 
-            var res = service.GetFindings(SortingType.Top, pageIndex, pageSize);
+            var request = new PagedRequest { PageIndex = pageIndex, PageSize = pageSize, SortingType = SortingType.Top };
+
+            var res = service.GetFindings(request);
 
             var expectedResult = findings.OrderByDescending(x => x.Reactions.SumReactions())
                 .Skip((pageSize ?? 10) * (pageIndex ?? 0))

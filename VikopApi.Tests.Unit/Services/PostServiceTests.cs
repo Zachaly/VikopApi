@@ -1,6 +1,7 @@
 ﻿using Moq;
 using VikopApi.Application;
 using VikopApi.Application.Comments.Abstractions;
+using VikopApi.Application.Models;
 using VikopApi.Application.Models.Comment;
 using VikopApi.Application.Models.Comment.Requests;
 using VikopApi.Application.Models.Post;
@@ -221,7 +222,9 @@ namespace VikopApi.Tests.Unit.Services
             var postService = new PostService(postFactoryMock.Object, postManagerMock.Object, commentFactoryMock.Object,
                 commentManagerMock.Object, tagServiceMock.Object);
 
-            var res = postService.GetPosts(null, pageIndex, pageSize);
+            var request = new PagedRequest { PageIndex = pageIndex, PageSize = pageSize, SortingType = null };
+
+            var res = postService.GetPosts(request);
 
             var expectedResult = posts.Skip((pageIndex ?? 0) * (pageSize ?? 15)).Take(pageSize ?? 15);
 
@@ -268,7 +271,9 @@ namespace VikopApi.Tests.Unit.Services
             var postService = new PostService(postFactoryMock.Object, postManagerMock.Object, commentFactoryMock.Object,
                 commentManagerMock.Object, tagServiceMock.Object);
 
-            var res = postService.GetPosts(SortingType.New, pageIndex, pageSize);
+            var request = new PagedRequest { PageIndex = pageIndex, PageSize = pageSize, SortingType = SortingType.New };
+
+            var res = postService.GetPosts(request);
 
             var expectedResult = posts.OrderBy(x => x.Comment.Created)
                 .Skip((pageIndex ?? 0) * (pageSize ?? 15))
@@ -347,7 +352,9 @@ namespace VikopApi.Tests.Unit.Services
             var postService = new PostService(postFactoryMock.Object, postManagerMock.Object, commentFactoryMock.Object,
                 commentManagerMock.Object, tagServiceMock.Object);
 
-            var res = postService.GetPosts(SortingType.Top, pageIndex, pageSize);
+            var request = new PagedRequest { PageIndex = pageIndex, PageSize = pageSize, SortingType = SortingType.Top };
+
+            var res = postService.GetPosts(request);
 
             var expectedResult = posts.OrderBy(x => x.Comment.Reactions.SumReactions())
                 .Skip((pageIndex ?? 0) * (pageSize ?? 15))

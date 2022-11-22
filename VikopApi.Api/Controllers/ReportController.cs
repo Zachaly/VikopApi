@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using VikopApi.Application.Models;
 using VikopApi.Application.Models.Report.Commands;
 using VikopApi.Application.Models.Report.Validators;
 using VikopApi.Application.Reports.Abstractions;
@@ -23,14 +24,14 @@ namespace VikopApi.Api.Controllers
         [HttpGet]
         [Route("post")]
         [Authorize(Policy = "Moderator")]
-        public IActionResult GetPostReports([FromQuery] int? pageIndex, [FromQuery] int? pageSize)
-            => Ok(_reportService.GetPostReports(pageIndex, pageSize));
+        public IActionResult GetPostReports([FromQuery] PagedRequest request)
+            => Ok(_reportService.GetPostReports(request));
 
         [HttpGet]
         [Route("finding")]
         [Authorize(Policy = "Moderator")]
-        public IActionResult GetFindingReports([FromQuery] int? pageIndex, [FromQuery] int? pageSize)
-            => Ok(_reportService.GetFindingReports(pageIndex, pageSize));
+        public IActionResult GetFindingReports([FromQuery] PagedRequest request)
+            => Ok(_reportService.GetFindingReports(request));
 
         [HttpPost]
         [Route("post")]

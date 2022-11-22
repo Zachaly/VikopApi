@@ -1,4 +1,5 @@
 ﻿using Moq;
+using VikopApi.Application.Models;
 using VikopApi.Application.Models.Report;
 using VikopApi.Application.Models.Report.Requests;
 using VikopApi.Application.Reports;
@@ -38,7 +39,9 @@ namespace VikopApi.Tests.Unit.Services
 
             var service = new ReportService(managerMock.Object, factoryMock.Object);
 
-            var res = service.GetFindingReports(pageIndex, pageSize);
+            var request = new PagedRequest { PageIndex = pageIndex, PageSize = pageSize };
+
+            var res = service.GetFindingReports(request);
 
             var expected = reports.Skip((pageIndex ?? 0) * (pageSize ?? 10)).Take(pageSize ?? 10);
 
@@ -75,7 +78,9 @@ namespace VikopApi.Tests.Unit.Services
 
             var service = new ReportService(managerMock.Object, factoryMock.Object);
 
-            var res = service.GetPostReports(pageIndex, pageSize);
+            var request = new PagedRequest { PageIndex = pageIndex, PageSize = pageSize };
+
+            var res = service.GetPostReports(request);
 
             var expected = reports.Skip((pageIndex ?? 0) * (pageSize ?? 10)).Take(pageSize ?? 10);
 

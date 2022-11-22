@@ -2,26 +2,21 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VikopApi.Application.Findings.Abstractions;
-using VikopApi.Application.Findings.Commands;
+using VikopApi.Application.Models;
 using VikopApi.Application.Models.Finding.Command;
 using VikopApi.Application.Models.Finding.Requests;
 using VikopApi.Application.Models.Finding.Validators;
-using VikopApi.Domain.Enums;
 
 namespace VikopApi.Api.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     public class FindingController : ControllerBase
     {
-        private readonly int _pageSize;
         private readonly IFindingService _findingService;
         private readonly IMediator _mediator;
 
-        public FindingController(IConfiguration config,
-            IFindingService findingService,
-            IMediator mediator)
+        public FindingController(IFindingService findingService, IMediator mediator)
         {
-            _pageSize = int.Parse(config["PageSize"]);
             _findingService = findingService;
             _mediator = mediator;
         }
@@ -40,17 +35,9 @@ namespace VikopApi.Api.Controllers
         /// * commentCount
         /// * created - creation date
         /// </response>
-        [HttpGet("{pageIndex:int?}")]
-        public IActionResult All(int? pageIndex = 0)
-            => Ok(_findingService.GetFindings(null, pageIndex, _pageSize));
-
-        [HttpGet("{pageIndex?}")]
-        public IActionResult New(int? pageIndex = 0)
-            => Ok(_findingService.GetFindings(SortingType.New, pageIndex, _pageSize));
-
-        [HttpGet("{pageIndex?}")]
-        public IActionResult Hot(int? pageIndex = 0)
-            => Ok(_findingService.GetFindings(SortingType.Top, pageIndex, _pageSize));
+        [HttpGet]
+        public IActionResult Get([FromQuery] PagedRequest request)
+            => Ok(_findingService.GetFindings(request));
 
         /// <summary>
         /// Gets finding with given id
@@ -81,7 +68,7 @@ namespace VikopApi.Api.Controllers
         /// </summary>
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Add(
+        public async Task<IActionResult> Post(
             [FromForm] AddFindingCommand request,
             [FromServices] AddFindingValidator validator)
         {
@@ -99,11 +86,11 @@ namespace VikopApi.Api.Controllers
         /// <summary>
         /// Gets count of all finding pages
         /// </summary>
-        [HttpGet]
-        public IActionResult PageCount()
-            => Ok(_findingService.GetPageCount(_pageSize));
+        [HttpGet("count/{pageSize}")]
+        public IActionResult PageCount(int pageSize)
+            => Ok(_findingService.GetPageCount(pageSize));
 
-        [HttpGet]
+        [HttpGet("search")]
         public IActionResult Search([FromQuery] SearchFindingsRequest request)
             => Ok(_findingService.Search(request));
     }

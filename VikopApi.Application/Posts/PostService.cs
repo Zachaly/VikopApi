@@ -1,4 +1,5 @@
 ﻿using VikopApi.Application.Comments.Abstractions;
+using VikopApi.Application.Models;
 using VikopApi.Application.Models.Post;
 using VikopApi.Application.Models.Post.Requests;
 using VikopApi.Application.Posts.Abstractions;
@@ -48,20 +49,19 @@ namespace VikopApi.Application.Posts
         public int GetPageCount(int pageSize)
             => _postManager.GetPageCount(pageSize);
 
-        public IEnumerable<PostModel> GetPosts(SortingType? sortingType, int? pageIndex, int? pageSize)
+        public IEnumerable<PostModel> GetPosts(PagedRequest request)
         {
             Func<Post, PostModel> postSelector = (post) => _postFactory.CreateModel(post);
 
-            var index = pageIndex ?? 0;
-            var size = pageSize ?? 15;
+            var (index, size) = request.GetIndexAndSize();
 
-            if (sortingType.HasValue)
+            if (request.SortingType.HasValue)
             {
-                if(sortingType.Value == SortingType.New)
+                if(request.SortingType.Value == SortingType.New)
                 {
                     return _postManager.GetNewPosts(index, size, postSelector);
                 }
-                else if(sortingType.Value == SortingType.Top)
+                else if(request.SortingType.Value == SortingType.Top)
                 {
                     return _postManager.GetTopPosts(index, size, postSelector);
                 }
@@ -74,12 +74,14 @@ namespace VikopApi.Application.Posts
         {
             var conditions = new List<Func<Post, bool>>();
 
+            var (index, size) = request.GetIndexAndSize();
+
             if (request.SearchCreator.GetValueOrDefault())
                 conditions.Add(post => post.Comment.Creator.UserName.Contains(request.Text));
             if (request.SearchTag.GetValueOrDefault())
                 conditions.Add(post => post.Tags.Any(tag => tag.Tag.Name.Contains(request.Text)));
 
-            return _postManager.SearchPosts(request.PageIndex ?? 0, request.PageSize ?? 10, conditions, post => _postFactory.CreateModel(post));
+            return _postManager.SearchPosts(index, size, conditions, post => _postFactory.CreateModel(post));
         }
 
         public Task<bool> RemovePostById(int id)

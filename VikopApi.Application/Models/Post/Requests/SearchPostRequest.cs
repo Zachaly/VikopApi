@@ -1,11 +1,9 @@
 ﻿namespace VikopApi.Application.Models.Post.Requests
 {
-    public class SearchPostRequest
+    public class SearchPostRequest : PagedRequest
     {
         public string Text { get; set; }
         public bool? SearchTag { get; set; }
         public bool? SearchCreator { get; set; }
-        public int? PageIndex { get; set; }
-        public int? PageSize { get; set; }
     }
 }

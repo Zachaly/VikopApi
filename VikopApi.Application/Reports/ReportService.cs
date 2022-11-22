@@ -1,4 +1,5 @@
-﻿using VikopApi.Application.Models.Report;
+﻿using VikopApi.Application.Models;
+using VikopApi.Application.Models.Report;
 using VikopApi.Application.Models.Report.Requests;
 using VikopApi.Application.Reports.Abstractions;
 
@@ -33,10 +34,9 @@ namespace VikopApi.Application.Reports
         public FindingReportModel GetFindingReportById(int id)
             => _reportManager.GetReportById(id, (FindingReport report) => _reportFactory.CreateModel(report));
 
-        public IEnumerable<ReportListItem> GetFindingReports(int? pageIndex, int? pageSize)
+        public IEnumerable<ReportListItem> GetFindingReports(PagedRequest request)
         {
-            var index = pageIndex ?? 0;
-            var size = pageSize ?? 10;
+            var (index, size) = request.GetIndexAndSize();
 
             return _reportManager.GetReports(index, size, (FindingReport report) => _reportFactory.CreateListItem(report));
         }
@@ -44,10 +44,9 @@ namespace VikopApi.Application.Reports
         public PostReportModel GetPostReportById(int id)
             => _reportManager.GetReportById(id, (PostReport report) => _reportFactory.CreateModel(report));
 
-        public IEnumerable<ReportListItem> GetPostReports(int? pageIndex, int? pageSize)
+        public IEnumerable<ReportListItem> GetPostReports(PagedRequest request)
         {
-            var index = pageIndex ?? 0;
-            var size = pageSize ?? 10;
+            var (index, size) = request.GetIndexAndSize();
 
             return _reportManager.GetReports(index, size, (PostReport report) => _reportFactory.CreateListItem(report));
         }

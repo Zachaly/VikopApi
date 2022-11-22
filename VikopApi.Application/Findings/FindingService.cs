@@ -1,4 +1,5 @@
 ﻿using VikopApi.Application.Findings.Abstractions;
+using VikopApi.Application.Models;
 using VikopApi.Application.Models.Finding;
 using VikopApi.Application.Models.Finding.Requests;
 using VikopApi.Application.Tags.Abtractions;
@@ -34,26 +35,25 @@ namespace VikopApi.Application.Findings
         public FindingModel GetFindingById(int id)
             => _findingManager.GetFindingById(id, finding => _findingFactory.CreateModel(finding));
 
-        public IEnumerable<FindingListItemModel> GetFindings(SortingType? sortingType, int? pageIndex, int? pageSize)
+        public IEnumerable<FindingListItemModel> GetFindings(PagedRequest request)
         {
             Func<Finding, FindingListItemModel> selector = finding => _findingFactory.CreateListItem(finding);
 
-            var page = pageIndex ?? 0;
-            var size = pageSize ?? 10;
+            var (index, size) = request.GetIndexAndSize();
 
-            if (sortingType.HasValue)
+            if (request.SortingType.HasValue)
             {
-                if(sortingType.Value == SortingType.New)
+                if(request.SortingType.Value == SortingType.New)
                 {
-                    return _findingManager.GetNewFindings(page, size, selector);
+                    return _findingManager.GetNewFindings(index, size, selector);
                 }
-                else if(sortingType.Value == SortingType.Top)
+                else if(request.SortingType.Value == SortingType.Top)
                 {
-                    return _findingManager.GetTopFindings(page, size, selector);
+                    return _findingManager.GetTopFindings(index, size, selector);
                 }
             } 
             
-            return _findingManager.GetAllFindings(page, size, selector);
+            return _findingManager.GetAllFindings(index, size, selector);
         }
 
         public int GetPageCount(int pageSize)
@@ -63,6 +63,8 @@ namespace VikopApi.Application.Findings
         {
             var conditions = new List<Func<Finding, bool>>();
 
+            var (index, size) = request.GetIndexAndSize();
+
             if(request.SearchTitle.GetValueOrDefault())
                 conditions.Add(finding => finding.Title.ToLower().Contains(request.Text.ToLower()));
             if (request.SearchCreator.GetValueOrDefault())
@@ -70,7 +72,7 @@ namespace VikopApi.Application.Findings
             if (request.SearchTag.GetValueOrDefault())
                 conditions.Add(finding => finding.Tags.Any(tag => tag.Tag.Name.ToLower().Contains(request.Text.ToLower())));
 
-            return _findingManager.SearchFindings(request.PageIndex ?? 0, request.PageSize ?? 10, conditions, finding => _findingFactory.CreateListItem(finding));
+            return _findingManager.SearchFindings(index, size, conditions, finding => _findingFactory.CreateListItem(finding));
         }
         public Task<bool> RemoveFindingById(int id)
             => _findingManager.RemoveFindingById(id);
